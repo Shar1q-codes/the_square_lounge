@@ -1,0 +1,117 @@
+@import "tailwindcss";
+
+/* ── Design tokens ─────────────────────────────────────────── */
+@theme {
+  --color-bg: #07070a;
+  --color-surface: #0f0f14;
+  --color-surface-2: #15151c;
+  --color-border: rgb(255 255 255 / 0.08);
+  --color-border-strong: rgb(255 255 255 / 0.16);
+
+  --color-gold: #d4b26a;
+  --color-gold-soft: #e6cf9a;
+  --color-gold-deep: #a8873f;
+  --color-blue: #3b82f6;
+
+  --color-fg: #f5f5f7;
+  --color-muted: #a1a1aa;
+
+  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  --shadow-glow-gold: 0 0 24px rgb(212 178 106 / 0.35), 0 0 64px rgb(212 178 106 / 0.12);
+  --shadow-glow-blue: 0 0 24px rgb(59 130 246 / 0.35), 0 0 64px rgb(59 130 246 / 0.12);
+
+  --ease-premium: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --animate-fade-up: fade-up 0.6s var(--ease-premium) both;
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+/* Lightbox dialog: fade in */
+dialog.lightbox[open] {
+  animation: fade-up 0.4s var(--ease-premium);
+}
+
+/* ── Base ──────────────────────────────────────────────────── */
+:root {
+  color-scheme: dark;
+}
+
+html {
+  background: var(--color-bg);
+  /* Native anchor jumps (reduced motion / no JS) land below the fixed navbar. */
+  scroll-padding-top: 72px;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: rgb(212 178 106 / 0.35);
+  color: var(--color-fg);
+}
+
+/* Accessible, on-brand focus ring */
+:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Lenis recommended styles */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* SquareLoader: the square outline draws itself, then undraws, on a loop */
+@keyframes square-draw {
+  0% {
+    stroke-dashoffset: 1;
+  }
+  70%,
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+.square-draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: square-draw 1.6s var(--ease-premium) infinite alternate;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

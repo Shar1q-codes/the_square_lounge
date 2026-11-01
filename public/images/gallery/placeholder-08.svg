@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="1125" viewBox="0 0 1500 1125">
+  <defs>
+    <radialGradient id="g" cx="0.54" cy="0.41" r="0.8">
+      <stop offset="0" stop-color="#3b82f6" stop-opacity="0.22"/>
+      <stop offset="0.55" stop-color="#0f0f14" stop-opacity="1"/>
+      <stop offset="1" stop-color="#07070a"/>
+    </radialGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="11.3"/></filter>
+    <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse"><path d="M60 0H0V60" fill="none" stroke="#ffffff" stroke-opacity="0.035"/></pattern>
+  </defs>
+  <rect width="1500" height="1125" fill="url(#g)"/>
+  <rect width="1500" height="1125" fill="url(#grid)"/>
+  <g transform="translate(810 461) rotate(8)">
+    <rect x="-225" y="-225" width="450" height="450" rx="27" fill="none" stroke="#3b82f6" stroke-width="7.5" filter="url(#glow)" opacity="0.9"/>
+    <rect x="-225" y="-225" width="450" height="450" rx="27" fill="none" stroke="#3b82f6" stroke-width="2.8125"/>
+    <rect x="-72" y="-72" width="144" height="144" rx="9" fill="#3b82f6" opacity="0.18"/>
+  </g>
+  <text x="90" y="950.55" font-family="Space Grotesk, Arial, sans-serif" font-size="44" letter-spacing="11" fill="#3b82f6" opacity="0.85">PHOTO PLACEHOLDER</text>
+  <text x="90" y="1046" font-family="Space Grotesk, Arial, sans-serif" font-size="83" font-weight="600" fill="#f5f5f7" opacity="0.9">Chill zone</text>
+</svg>

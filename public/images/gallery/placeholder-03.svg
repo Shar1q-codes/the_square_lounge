@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 1200 1200">
+  <defs>
+    <radialGradient id="g" cx="0.49" cy="0.46" r="0.8">
+      <stop offset="0" stop-color="#3b82f6" stop-opacity="0.22"/>
+      <stop offset="0.55" stop-color="#0f0f14" stop-opacity="1"/>
+      <stop offset="1" stop-color="#07070a"/>
+    </radialGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="14.4"/></filter>
+    <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse"><path d="M60 0H0V60" fill="none" stroke="#ffffff" stroke-opacity="0.035"/></pattern>
+  </defs>
+  <rect width="1200" height="1200" fill="url(#g)"/>
+  <rect width="1200" height="1200" fill="url(#grid)"/>
+  <g transform="translate(588 552) rotate(12)">
+    <rect x="-288" y="-288" width="576" height="576" rx="34.56" fill="none" stroke="#3b82f6" stroke-width="9.6" filter="url(#glow)" opacity="0.9"/>
+    <rect x="-288" y="-288" width="576" height="576" rx="34.56" fill="none" stroke="#3b82f6" stroke-width="3.6"/>
+    <rect x="-92.16" y="-92.16" width="184.32" height="184.32" rx="11.52" fill="#3b82f6" opacity="0.18"/>
+  </g>
+  <text x="72" y="1038.95" font-family="Space Grotesk, Arial, sans-serif" font-size="35" letter-spacing="9" fill="#3b82f6" opacity="0.85">PHOTO PLACEHOLDER</text>
+  <text x="72" y="1116" font-family="Space Grotesk, Arial, sans-serif" font-size="67" font-weight="600" fill="#f5f5f7" opacity="0.9">Ready player</text>
+</svg>
