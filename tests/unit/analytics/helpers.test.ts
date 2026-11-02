@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { businessDate, csvRow, heatLevel, pctChange, resolveRange } from "@/lib/analytics";
+import { businessDate, csvRow, heatLevel, pctChange, quietestHours, resolveRange } from "@/lib/analytics";
 
 // 3 Nov 2026, 15:00 IST
 const NOW = new Date("2026-11-03T09:30:00Z");
@@ -85,5 +85,14 @@ describe("heatLevel", () => {
     [3, 0, 0],
   ])("%s of max %s is level %i", (value, max, level) => {
     expect(heatLevel(value, max)).toBe(level);
+  });
+});
+
+describe("quietestHours", () => {
+  it("averages each hour across the week and returns the three quietest, earliest first on ties", () => {
+    const grid = [11, 12, 13, 20, 21].flatMap((hour) =>
+      [0, 1, 2, 3, 4, 5, 6].map((dow) => ({ dow, hour, playing: hour === 20 ? 3 : hour === 13 ? 0.5 : hour === 21 ? 2 : 0 })),
+    );
+    expect(quietestHours(grid)).toEqual([11, 12, 13]);
   });
 });

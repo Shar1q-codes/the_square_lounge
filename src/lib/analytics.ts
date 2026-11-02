@@ -94,3 +94,18 @@ export const WEEKDAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] 
 
 /** "11 am", "12 pm", "1 am". */
 export const hourLabel = (h: number) => `${h % 12 === 0 ? 12 : h % 12} ${h < 12 ? "am" : "pm"}`;
+
+/** The `count` opening hours with the fewest players on average across the week (happy-hour candidates). */
+export function quietestHours(grid: { hour: number; playing: number }[], count = 3): number[] {
+  const order = HEATMAP_HOURS as readonly number[];
+  const avg = order.map((hour) => {
+    const cells = grid.filter((c) => c.hour === hour);
+    return { hour, value: cells.length ? cells.reduce((s, c) => s + c.playing, 0) / cells.length : 0 };
+  });
+  return avg
+    .filter((a) => grid.some((c) => c.hour === a.hour))
+    .sort((a, b) => a.value - b.value || order.indexOf(a.hour) - order.indexOf(b.hour))
+    .slice(0, count)
+    .map((a) => a.hour)
+    .sort((a, b) => order.indexOf(a) - order.indexOf(b));
+}

@@ -21,7 +21,7 @@ Every task also clears `npm test`, `npm run lint`, `npm run typecheck`. One comm
 - [x] Loyalty: earned, spent, outstanding, vouchers by status, top offers
 
 ## Task 5: Dashboard
-- [ ] `/admin/analytics` admin-only, range picker in URL, all sections, works at 375 px
+- [x] `/admin/analytics` admin-only, range picker in URL, all sections, works at 375 px
 
 ## Task 6: Downloads and gate
 - [ ] CSV per report, win-back CSV opted-in only, audited

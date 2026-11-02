@@ -21,7 +21,7 @@ See [todo.md](todo.md).
 - [x] Task 2: Overview, trend, payments (+ seeded fixture)
 - [x] Task 3: Heatmap and stations
 - [x] Task 4: Areas, audience, top members, win-back, loyalty summary
-- [ ] Task 5: Dashboard page and charts
+- [x] Task 5: Dashboard page and charts
 - [ ] Task 6: CSV downloads, e2e, full gate
 
 ### Checkpoints
