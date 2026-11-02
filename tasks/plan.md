@@ -21,7 +21,7 @@ Add gamer accounts (email + password, mobile number as contact only), staff/admi
 See [todo.md](todo.md) for acceptance criteria per task.
 
 ### Phase 1: Foundation
-- [ ] Task 1: Tooling, database and test harness
+- [x] Task 1: Tooling, database and test harness
 - [ ] Task 2: Pure identity helpers (email, phone, password, member code, zod schemas)
 - [ ] Task 3: Login sessions, lockout and role guards
 

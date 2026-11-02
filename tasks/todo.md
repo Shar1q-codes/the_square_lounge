@@ -5,9 +5,9 @@ Each task must also clear the project bar: `npm test`, `npm run lint`, `npm run 
 ## Task 1: Tooling, database and test harness
 **Description:** Add dependencies, local Postgres, Drizzle config, the identity schema, migrations (including RLS), the server-only DB client, Vitest config and an integration-test helper.
 **Acceptance criteria:**
-- [ ] `docker compose up -d db` then `npm run db:migrate` creates all six tables on a clean DB
-- [ ] Every table has row-level security enabled (integration test checks `pg_class.relrowsecurity`)
-- [ ] `.env.example` documents every variable; `.env*` stays git-ignored
+- [x] `docker compose up -d db` then `npm run db:migrate` creates all six tables on a clean DB
+- [x] Every table has row-level security enabled (integration test checks `pg_class.relrowsecurity`)
+- [x] `.env.example` documents every variable; `.env*` stays git-ignored
 **Verification:** `npm test`, `npm run typecheck`, `npm run build`
 **Dependencies:** None
 **Files:** `package.json`, `docker-compose.yml`, `drizzle.config.ts`, `src/db/index.ts`, `src/db/schema/identity.ts`, `drizzle/*`, `vitest.config.ts`, `tests/integration/db.ts`, `.env.example`
