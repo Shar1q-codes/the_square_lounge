@@ -49,9 +49,9 @@ Each task must also clear the project bar: `npm test`, `npm run lint`, `npm run 
 
 ## Task 5: Gamer login and logout (`/login`)
 **Acceptance criteria:**
-- [ ] Correct email + password logs in; wrong details show one generic message
-- [ ] Locked identifier is refused with a "try again in 15 minutes" message
-- [ ] Logout revokes the session row and clears the cookie
+- [x] Correct email + password logs in; wrong details show one generic message
+- [x] Locked identifier is refused with a "try again in 15 minutes" message
+- [x] Logout revokes the session row and clears the cookie
 **Verification:** `npm test -- tests/integration/identity/login`
 **Dependencies:** Task 4
 **Files:** `src/app/(gamer)/login/{page,actions}.tsx`, `src/components/account/LoginForm.tsx`, `src/server/identity/gamers.ts`

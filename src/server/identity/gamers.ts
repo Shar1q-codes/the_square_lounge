@@ -1,10 +1,37 @@
 import "server-only";
+import { and, eq, isNull } from "drizzle-orm";
 import { db, schema } from "@/db";
 import type { Gamer } from "@/db/schema";
 import { PRIVACY_NOTICE_VERSION } from "@/config/privacy";
 import type { SignUpInput } from "@/lib/validation/identity";
+import { normaliseEmail } from "./email";
+import { isLockedOut, recordLoginAttempt } from "./lockout";
 import { generateMemberCode } from "./memberCode";
-import { hashPassword } from "./password";
+import { hashPassword, verifyPassword } from "./password";
+
+export type LoginResult = { ok: true; gamerId: string } | { ok: false; reason: "invalid" | "locked" };
+
+// Checked when the email is unknown, so both cases take about as long.
+let dummyHash: Promise<string> | undefined;
+
+/** Checks a gamer's email and password, applying the 5-in-15-minutes lockout. */
+export async function verifyGamerLogin(rawEmail: string, password: string): Promise<LoginResult> {
+  const email = normaliseEmail(rawEmail);
+  if (!email) return { ok: false, reason: "invalid" };
+  if (await isLockedOut("gamer", email)) return { ok: false, reason: "locked" };
+
+  const [gamer] = await db
+    .select({ id: schema.gamers.id, passwordHash: schema.gamers.passwordHash })
+    .from(schema.gamers)
+    .where(and(eq(schema.gamers.email, email), isNull(schema.gamers.deletedAt)))
+    .limit(1);
+
+  dummyHash ??= hashPassword("timing-equaliser");
+  const ok = await verifyPassword(password, gamer?.passwordHash ?? (await dummyHash));
+  const succeeded = ok && !!gamer;
+  await recordLoginAttempt("gamer", email, succeeded);
+  return succeeded ? { ok: true, gamerId: gamer.id } : { ok: false, reason: "invalid" };
+}
 
 /** Postgres unique-violation on a given constraint (Drizzle wraps driver errors in `cause`). */
 export function isUniqueViolation(error: unknown, constraint: string): boolean {
