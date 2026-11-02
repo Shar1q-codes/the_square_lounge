@@ -18,6 +18,7 @@ export const metadata: Metadata = { title: "Analytics | The Square Lounge" };
 
 const rupees = (paise: number) => formatRupees(paise);
 const hours = (minutes: number) => `${(minutes / 60).toFixed(minutes < 600 ? 1 : 0)} h`;
+const members = (n: number) => `${n} member${n === 1 ? "" : "s"}`;
 const percent = (part: number, whole: number) => (whole ? `${Math.round((part / whole) * 100)}%` : "–");
 const day = (iso: string) =>
   new Intl.DateTimeFormat("en-IN", { day: "numeric", month: "short", timeZone: "UTC" }).format(new Date(`${iso}T00:00:00Z`));
@@ -118,25 +119,25 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Section title="Areas" csv={exportHref("areas", range)}>
-          <BarList rows={areas.map((a) => ({ label: a.label, value: a.visits, display: `${a.visits} visits`, detail: `${a.members} members · ${rupees(a.revenuePaise)}` }))} />
+          <BarList rows={areas.map((a) => ({ label: a.label, value: a.visits, display: `${a.visits} visits`, detail: `${members(a.members)} · ${rupees(a.revenuePaise)}` }))} />
         </Section>
         <Section title="Pincodes" csv={exportHref("pincodes", range)}>
-          <BarList rows={pincodes.map((a) => ({ label: a.label, value: a.visits, display: `${a.visits} visits`, detail: `${a.members} members` }))} />
+          <BarList rows={pincodes.map((a) => ({ label: a.label, value: a.visits, display: `${a.visits} visits`, detail: `${members(a.members)}` }))} />
         </Section>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
         <Section title="Age" csv={exportHref("audience", range)}>
-          <BarList rows={people.ageBands.map((r) => ({ label: AGE_LABEL[r.key], value: r.visits, display: `${r.visits} visits`, detail: `${r.members} members` }))} />
+          <BarList rows={people.ageBands.map((r) => ({ label: AGE_LABEL[r.key], value: r.visits, display: `${r.visits} visits`, detail: `${members(r.members)}` }))} />
         </Section>
         <Section title="Gender">
-          <BarList rows={people.genders.filter((r) => r.members > 0).map((r) => ({ label: GENDER_LABEL[r.key], value: r.visits, display: `${r.visits} visits`, detail: `${r.members} members` }))} />
+          <BarList rows={people.genders.filter((r) => r.members > 0).map((r) => ({ label: GENDER_LABEL[r.key], value: r.visits, display: `${r.visits} visits`, detail: `${members(r.members)}` }))} />
         </Section>
         <Section title="How they found us" intro="Members who visited, and how many have come back more than once.">
           <BarList
             rows={people.sources
               .filter((r) => r.members > 0)
-              .map((r) => ({ label: SOURCE_LABEL[r.key], value: r.members, display: `${r.members} members`, detail: `${r.returning} returning` }))}
+              .map((r) => ({ label: SOURCE_LABEL[r.key], value: r.members, display: members(r.members), detail: `${r.returning} returning` }))}
           />
         </Section>
       </div>

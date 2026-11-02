@@ -49,7 +49,7 @@ async function visitRows(range: Range): Promise<Cell[][]> {
         to_char(v.ended_at at time zone 'Asia/Kolkata', 'YYYY-MM-DD HH24:MI') as "end",
         v.minutes as "minutes", st.name as "station", st.console::text as "console",
         case when g.deleted_at is null then g.member_code else 'deleted' end as "code",
-        initcap(trim(g.area)) as "area", g.pincode as "pincode",
+        trim(g.area) as "area", g.pincode as "pincode",
         case when g.birth_year is null then 'unknown'
              when ${year} - g.birth_year < 18 then '13–17'
              when ${year} - g.birth_year < 25 then '18–24'

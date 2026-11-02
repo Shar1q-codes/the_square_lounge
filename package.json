@@ -14,7 +14,13 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:seed-admin": "npm run db:seed",
-    "db:seed": "tsx --conditions=react-server --tsconfig tsconfig.json scripts/seed.ts"
+    "db:seed": "tsx --conditions=react-server --tsconfig tsconfig.json scripts/seed.ts",
+    "db:seed-demo": "tsx --conditions=react-server --tsconfig tsconfig.json scripts/demo.ts seed",
+    "db:clear-demo": "tsx --conditions=react-server --tsconfig tsconfig.json scripts/demo.ts clear",
+    "supabase:migrate": "tsx --conditions=react-server --tsconfig tsconfig.json scripts/migrate.ts --supabase",
+    "supabase:seed": "tsx --conditions=react-server --tsconfig tsconfig.json scripts/seed.ts --supabase",
+    "supabase:seed-demo": "tsx --conditions=react-server --tsconfig tsconfig.json scripts/demo.ts seed --supabase",
+    "supabase:clear-demo": "tsx --conditions=react-server --tsconfig tsconfig.json scripts/demo.ts clear --supabase"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",

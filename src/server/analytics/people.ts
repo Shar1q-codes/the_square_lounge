@@ -22,14 +22,16 @@ function topWithOther(rows: PlaceRow[]): PlaceRow[] {
 }
 
 async function byPlace(range: Range, column: "area" | "pincode") {
-  // Areas are typed by members, so "malakpet " and "Malakpet" are the same place.
-  const label = column === "area" ? sql`initcap(trim(g.area))` : sql`g.pincode`;
+  // Areas are typed by members, so "malakpet " and "Malakpet" are one place, shown with its most common
+  // spelling (keeps "LB Nagar" as typed rather than forcing "Lb Nagar").
+  const key = column === "area" ? sql`lower(trim(g.area))` : sql`g.pincode`;
+  const label = column === "area" ? sql`mode() within group (order by trim(g.area))` : sql`g.pincode`;
   const rows = await queryVisits<PlaceRow>(
     ...current(range),
     sql`select ${label} as "label", count(*)::int as "visits", count(distinct v.gamer_id)::int as "members",
         coalesce(round(sum(v.share)), 0)::int as "revenuePaise"
       from visits v join gamers g on g.id = v.gamer_id
-      group by 1 order by 2 desc, 1`,
+      group by ${key} order by 2 desc, 1`,
   );
   return topWithOther([...rows]);
 }
@@ -114,7 +116,7 @@ async function lapsed(now: Date, onlyOptedIn: boolean): Promise<LapsedRow[]> {
       from play_sessions group by gamer_id
     )
     select g.full_name as "fullName", g.member_code as "memberCode", g.email as "email", g.phone as "phone",
-      initcap(trim(g.area)) as "area", g.marketing_opt_in as "optedIn", s.visits::int as "visits", s.last_visit as "lastVisit"
+      trim(g.area) as "area", g.marketing_opt_in as "optedIn", s.visits::int as "visits", s.last_visit as "lastVisit"
     from stats s join gamers g on g.id = s.gamer_id
     where g.deleted_at is null
       and s.visits >= 2
