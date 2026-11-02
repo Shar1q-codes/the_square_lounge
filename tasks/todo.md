@@ -30,4 +30,6 @@ Every task also clears `npm test`, `npm run lint`, `npm run typecheck`. One comm
 ### Checkpoint B ✅ (browser: admin adds offer → check-out earns points → admin bonus → member claims → counter redeems once; cron returns 401 without secret)
 
 ## Task 6: E2E and gate
-- [ ] Offer → earn → claim → redeem in Playwright; README; full gate
+- [x] Offer → earn → claim → redeem in Playwright; README; full gate
+
+### Checkpoint C ✅ (241 unit/integration + 7 e2e tests, lint, typecheck, build)

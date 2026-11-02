@@ -32,7 +32,7 @@ See [todo.md](todo.md).
 - [x] Browser: create offer → earn → claim → redeem
 
 ### Phase 3
-- [ ] Task 6: E2E and full gate
+- [x] Task 6: E2E and full gate
 
 ## Risks
 
