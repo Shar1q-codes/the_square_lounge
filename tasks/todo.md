@@ -16,9 +16,9 @@ Each task must also clear the project bar: `npm test`, `npm run lint`, `npm run 
 ## Task 2: Pure identity helpers
 **Description:** Email and Indian-mobile normalisation, scrypt hash/verify, member-code generation, and shared zod schemas for sign-up, profile and staff forms.
 **Acceptance criteria:**
-- [ ] `+91 98765 43210`, `09876543210`, `9876543210` all normalise to `+919876543210`; `5876543210` is rejected
-- [ ] Sign-up schema rejects under-13s, requires guardian consent under 18, rejects pincodes starting with 0
-- [ ] Password hashes verify, wrong passwords don't, and hashes differ for the same password
+- [x] `+91 98765 43210`, `09876543210`, `9876543210` all normalise to `+919876543210`; `5876543210` is rejected
+- [x] Sign-up schema rejects under-13s, requires guardian consent under 18, rejects pincodes starting with 0
+- [x] Password hashes verify, wrong passwords don't, and hashes differ for the same password
 **Verification:** `npm test -- tests/unit/identity`
 **Dependencies:** Task 1
 **Files:** `src/server/identity/{email,phone,password,memberCode}.ts`, `src/lib/validation/identity.ts`, `tests/unit/identity/*`
