@@ -21,10 +21,10 @@ See [todo.md](todo.md).
 
 ### Phase 1: Foundation
 - [x] Task 1: Schema, migration (RLS), `maxCheckIns`, `db:seed`
-- [ ] Task 2: Pure helpers and validation (minutes, rupees→paise, void window, zod)
+- [x] Task 2: Pure helpers and validation (minutes, rupees→paise, void window, zod)
 
 ### Checkpoint A
-- [ ] Tests, lint, typecheck, build pass; fresh DB migrates with RLS on all 9 tables
+- [x] Tests, lint, typecheck, build pass; fresh DB migrates with RLS on all 9 tables
 
 ### Phase 2: Counter flows
 - [ ] Task 3: Check-in domain (refusals, capacity lock, concurrency)

@@ -9,12 +9,12 @@ Every task also clears: `npm test`, `npm run lint`, `npm run typecheck` pass. On
 **Files:** `src/db/schema/sessions.ts`, `src/db/schema/index.ts`, `drizzle/0002_*`, `drizzle/0003_*`, `src/config/site.ts`, `scripts/seed.ts`, `package.json` · **Scope:** M
 
 ## Task 2: Pure helpers and validation
-- [ ] `minutesBetween` gives whole minutes, never negative
-- [ ] `parseRupees`: "150" → 15000, "150.50" → 15050, "" → null, "-5"/"abc"/"1.234" rejected
-- [ ] `canVoid` true up to and including 15 min, false after; zod schemas for check-in, check-out, void, correction
+- [x] `minutesBetween` gives whole minutes, never negative
+- [x] `parseRupees`: "150" → 15000, "150.50" → 15050, "" → null, "-5"/"abc"/"1.234" rejected
+- [x] `canVoid` true up to and including 15 min, false after; zod schemas for check-in, check-out, void, correction
 **Files:** `src/lib/sessions.ts`, `src/lib/validation/sessions.ts`, `tests/unit/sessions/*` · **Scope:** S
 
-### Checkpoint A
+### Checkpoint A ✅ (148 tests, build clean, fresh DB: 9/9 tables with RLS)
 
 ## Task 3: Check-in
 - [ ] Refuses: already playing (with station + time), station full, station inactive, deleted/unknown gamer
