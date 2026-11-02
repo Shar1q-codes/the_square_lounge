@@ -1,59 +1,43 @@
-# Implementation Plan: `play-sessions` module
+# Implementation Plan: `loyalty` module
 
-Spec: [SPEC-play-sessions.md](../SPEC-play-sessions.md) · Map: [CAPABILITY-MAP.md](../CAPABILITY-MAP.md) · Previous module: [identity](identity/plan.md)
+Spec: [SPEC-loyalty.md](../SPEC-loyalty.md) · Map: [CAPABILITY-MAP.md](../CAPABILITY-MAP.md) · Previous: [play-sessions](play-sessions/plan.md)
 
-## Overview
-
-Staff check members in and out of stations from a live board; each check-out records a payment; mistakes are voided (staff, 15 min) or corrected (admin, audited); gamers see "Now playing" and recent visits. Built on branch `feat/play-sessions`, stacked on `feat/identity`.
+Approved 2026-11-03 with the spec's defaults (same rate for PS5 and PS4, no pre-loaded offers). Branch `feat/loyalty`, stacked on `feat/play-sessions`.
 
 ## Architecture Decisions
 
-- **Database clock for all times** (`now()` in SQL), so counter devices with wrong clocks can't skew durations. Domain functions still accept `now` for tests where the rule is time-based (void window), comparing against DB-stored times.
-- **One open session per gamer** enforced by a partial unique index; **station capacity** enforced inside a transaction holding `SELECT … FOR UPDATE` on the station row.
-- **Check-out returns closed sessions** (`closeSessions()`), the hook `loyalty` will use to award points in the same transaction.
-- **Stations live in the DB, seeded from `site.ts`** (`npm run db:seed`, upsert by id). New optional `maxCheckIns` per station, default 8, separate from the marketing `maxPlayers`.
-- **Board freshness:** server-rendered board + client `router.refresh()` every 30 s; per-player timers tick client-side from `startedAt`.
-- **Money in paise** (`integer`), parsed from rupee input by a pure helper.
+- **Ledger is the only source of truth.** `addLedgerEntry(tx, entry)` is the single writer; balance = `sum(delta)`.
+- **Award inside the caller's transaction:** `closeSessions()` and `correctSession()` call `awardForSessions(tx, …)`, so a check-out and its points commit together.
+- **Spend under a lock:** claims lock the gamer row (`FOR UPDATE`) and the offer row, then check balance, stock and limits.
+- **Expiry is lazy plus a daily cron:** `expireOverdueVouchers()` runs before vouchers are listed or redeemed, and from `/api/cron/expire-vouchers` (bearer `CRON_SECRET`).
+- **Pure maths in `src/lib/loyalty.ts`** (safe for client bundles): `pointsFor`, voucher code format.
 
 ## Task List
 
 See [todo.md](todo.md).
 
-### Phase 1: Foundation
-- [x] Task 1: Schema, migration (RLS), `maxCheckIns`, `db:seed`
-- [x] Task 2: Pure helpers and validation (minutes, rupees→paise, void window, zod)
+### Phase 1
+- [ ] Task 1: Config, schema, migration (RLS), pure helpers
+- [ ] Task 2: Ledger and awarding (check-out, corrections)
 
 ### Checkpoint A
-- [x] Tests, lint, typecheck, build pass; fresh DB migrates with RLS on all 9 tables
+- [ ] Tests/lint/typecheck/build pass; fresh DB has RLS on all 12 tables
 
-### Phase 2: Counter flows
-- [x] Task 3: Check-in domain (refusals, capacity lock, concurrency)
-- [x] Task 4: Check-out (single / station), payments, void, `closeSessions()`
-- [x] Task 5: Station board UI: check-in, check-out, void, scan button
+### Phase 2
+- [ ] Task 3: Offers domain and `/admin/offers`
+- [ ] Task 4: Shop, claims, vouchers, points page, balance on account
+- [ ] Task 5: Counter redeem, expiry (lazy + cron), admin adjustments, export/deletion
 
 ### Checkpoint B
-- [x] Browser: check in 2 members → live timers → check out station with payment
+- [ ] Browser: create offer → earn → claim → redeem
 
-### Phase 3: Admin and gamer views
-- [x] Task 6: Admin corrections (`/admin/sessions`)
-- [x] Task 7: Gamer "Now playing", recent visits, export includes sessions
-- [x] Task 8: E2E and full gate
+### Phase 3
+- [ ] Task 6: E2E and full gate
 
-### Checkpoint C
-- [x] All 10 acceptance criteria covered; full command set green
+## Risks
 
-## Risks and Mitigations
-
-| Risk | Impact | Mitigation |
-|------|--------|------------|
-| Two counters fill the last seat at once | Med | Row lock on station + integration test running both in parallel |
-| Forgotten check-outs inflate durations/points | Med | "Needs attention" flag after 12 h, admin correction, loyalty cap |
-| Device clock drift | Low | DB `now()` for start/end |
-| Board polling load | Low | 30 s refresh, one indexed query for open sessions |
-
-## Notes for `loyalty`
-
-- Award points from `closeSessions()`'s returned sessions, inside its transaction.
-- Admin corrections (`correctSession`) can also close a session or change its length without a check-out:
-  loyalty must award or adjust points there too, or those sessions earn nothing.
-- Voided sessions never earn points.
+| Risk | Mitigation |
+|------|-----------|
+| Double award for a session | Partial unique index on `(session_id) where reason='session'`; corrections write the difference only |
+| Two taps overspend / oversell | Row locks on gamer and offer; parallel-claim integration test |
+| Cron not configured on Vercel | Lazy expiry still refunds whenever vouchers are viewed or redeemed |
