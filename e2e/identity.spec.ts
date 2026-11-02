@@ -96,6 +96,8 @@ test.describe("staff and admin", () => {
     await expect(page).toHaveURL(/\/staff$/);
 
     await page.getByRole("link", { name: "Gamers" }).click();
+    // The station board has a field with the same label, so wait for the Gamers page first.
+    await expect(page.getByRole("heading", { name: "Find a gamer" })).toBeVisible();
     await page.getByLabel("Member code, email or mobile").fill(memberCode.toLowerCase());
     await page.getByRole("button", { name: "Search" }).click();
     await expect(page.getByText("Counter Gamer")).toBeVisible();

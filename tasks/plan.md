@@ -37,10 +37,10 @@ See [todo.md](todo.md).
 ### Phase 3: Admin and gamer views
 - [x] Task 6: Admin corrections (`/admin/sessions`)
 - [x] Task 7: Gamer "Now playing", recent visits, export includes sessions
-- [ ] Task 8: E2E and full gate
+- [x] Task 8: E2E and full gate
 
 ### Checkpoint C
-- [ ] All 10 acceptance criteria covered; full command set green
+- [x] All 10 acceptance criteria covered; full command set green
 
 ## Risks and Mitigations
 
@@ -50,3 +50,10 @@ See [todo.md](todo.md).
 | Forgotten check-outs inflate durations/points | Med | "Needs attention" flag after 12 h, admin correction, loyalty cap |
 | Device clock drift | Low | DB `now()` for start/end |
 | Board polling load | Low | 30 s refresh, one indexed query for open sessions |
+
+## Notes for `loyalty`
+
+- Award points from `closeSessions()`'s returned sessions, inside its transaction.
+- Admin corrections (`correctSession`) can also close a session or change its length without a check-out:
+  loyalty must award or adjust points there too, or those sessions earn nothing.
+- Voided sessions never earn points.

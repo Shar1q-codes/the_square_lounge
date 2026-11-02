@@ -47,8 +47,8 @@ Every task also clears: `npm test`, `npm run lint`, `npm run typecheck` pass. On
 **Files:** `src/server/sessions/history.ts`, `src/server/identity/consent.ts`, `src/components/account/{NowPlaying,RecentVisits}.tsx`, `src/app/(gamer)/account/page.tsx`, `tests/integration/sessions/history.test.ts` · **Scope:** M
 
 ## Task 8: E2E and gate
-- [ ] Staff checks in two members at one station → board shows both → checks out station with ₹300 UPI → gamer sees the visit
-- [ ] `npm test`, `npm run test:e2e`, lint, typecheck, build all pass
+- [x] Staff checks in two members at one station → board shows both → checks out station with ₹300 UPI → gamer sees the visit
+- [x] `npm test`, `npm run test:e2e`, lint, typecheck, build all pass
 **Files:** `e2e/sessions.spec.ts`, `e2e/helpers.ts`, `README.md` · **Scope:** S
 
-### Checkpoint C
+### Checkpoint C ✅ (176 unit/integration + 6 e2e tests, lint, typecheck, build)

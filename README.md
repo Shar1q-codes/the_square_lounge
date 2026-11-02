@@ -62,8 +62,15 @@ src/
 
 ## Member accounts (backend)
 
-Spec and plan: `CAPABILITY-MAP.md`, `SPEC-identity.md`, `tasks/`. Pages: `/join`, `/login`, `/account`,
-`/account/privacy`, `/privacy`, `/staff/login`, `/staff/gamers`, `/admin/staff`.
+Specs: `CAPABILITY-MAP.md`, `SPEC-identity.md`, `SPEC-play-sessions.md`; plans in `tasks/`.
+
+- Gamers: `/join`, `/login`, `/account` (member QR, now playing, recent visits), `/account/privacy`, `/privacy`
+- Counter: `/staff/login`, `/staff` (station board: check in/out, payments, cancel within 15 min), `/staff/gamers`
+- Admin: `/admin/sessions` (fix forgotten check-outs, audited), `/admin/staff`
+
+Stations come from `site.stations` in `src/config/site.ts`. `maxCheckIns` is how many members staff can check
+in at once (default 8, for 6–8 player games); `maxPlayers` is only the number shown on the website.
+Re-run `npm run db:seed` after changing stations.
 
 First-time setup (needs Docker Desktop running):
 
@@ -71,28 +78,28 @@ First-time setup (needs Docker Desktop running):
 copy .env.example .env.local   # then edit SEED_ADMIN_PASSWORD
 docker compose up -d db        # local Postgres 17 (+ a separate test database)
 npm run db:migrate
-npm run db:seed-admin          # creates the first admin from .env.local
+npm run db:seed                # stations from site.ts + first admin from .env.local
 ```
 
 Tests:
 
 ```powershell
 npm test           # unit + integration (uses TEST_DATABASE_URL; wipes it)
-npm run test:e2e   # Playwright; stop any running `npm run dev` first
+npm run test:e2e   # Playwright (builds into .next-e2e, so it can run next to `npm run dev`)
 npm run typecheck
 ```
 
 Schema changes: edit `src/db/schema/*`, then `npm run db:generate` and commit the new file in `drizzle/`.
 Every new table needs `ENABLE ROW LEVEL SECURITY` (a test fails otherwise) so Supabase's public API can't read it.
 
-Code layout: `src/db` (schema, client), `src/server/identity` (accounts, sessions, lockout, consent, audit),
+Code layout: `src/db` (schema, client), `src/server/identity` (accounts, logins, lockout, consent, audit), `src/server/sessions` (stations, check-in/out, corrections, history),
 `src/lib/validation` (form rules), `src/app/(gamer)`, `src/app/staff`, `src/app/admin`, `tests/`, `e2e/`.
 
 ## Deploy
 
 1. Create a Supabase project (region: Mumbai). In **Connect**, copy the **Transaction pooler** URI (port 6543).
 2. Apply migrations once from your PC: `$env:DATABASE_URL="<that URI>"; npx drizzle-kit migrate`, then
-   `npm run db:seed-admin` the same way.
+   `npm run db:seed` the same way.
 3. In Vercel, set `DATABASE_URL` to the same URI (Production and Preview), then deploy.
 
 The app never uses Supabase's anon or service keys; all tables have row-level security on with no policies.

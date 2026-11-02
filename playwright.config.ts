@@ -6,8 +6,8 @@ config({ path: ".env.local", quiet: true });
 const PORT = 3200;
 
 /**
- * Runs against `next dev` on the TEST database (wiped and seeded by e2e/global-setup.ts).
- * Stop any other `npm run dev` first: two dev servers can't share the .next folder.
+ * Runs against `next dev` on the TEST database (wiped and seeded by e2e/global-setup.ts),
+ * building into .next-e2e so it doesn't clash with a running `npm run dev`.
  */
 export default defineConfig({
   testDir: "e2e",
@@ -27,6 +27,6 @@ export default defineConfig({
     url: `http://localhost:${PORT}/login`,
     timeout: 180_000,
     reuseExistingServer: false,
-    env: { DATABASE_URL: process.env.TEST_DATABASE_URL ?? "" },
+    env: { DATABASE_URL: process.env.TEST_DATABASE_URL ?? "", NEXT_DIST_DIR: ".next-e2e" },
   },
 });
