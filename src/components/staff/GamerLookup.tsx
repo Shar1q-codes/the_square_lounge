@@ -2,12 +2,14 @@
 
 import { useActionState } from "react";
 import {
+  adjustPointsAction,
   issueTemporaryPassword,
   lookupGamers,
+  type AdjustState,
+  type LookupResult,
   type LookupState,
   type TempPasswordState,
 } from "@/app/staff/(portal)/gamers/actions";
-import type { GamerSummary } from "@/server/identity/gamers";
 import { FormMessage, TextField } from "@/components/account/fields";
 import { SubmitButton } from "@/components/account/SubmitButton";
 import { Card } from "@/components/ui/Card";
@@ -39,15 +41,34 @@ function TempPassword({ gamerId }: { gamerId: string }) {
   );
 }
 
-function GamerCard({ gamer }: { gamer: GamerSummary }) {
+function AdjustPoints({ gamerId }: { gamerId: string }) {
+  const [state, action] = useActionState(adjustPointsAction, {} as AdjustState);
+  const e = state.errors ?? {};
+  return (
+    <form action={action} noValidate className="grid gap-3 border-t border-border pt-4 sm:grid-cols-[8rem_1fr_auto] sm:items-end">
+      <input type="hidden" name="gamerId" value={gamerId} />
+      <TextField name="points" label="Points (+/−)" inputMode="numeric" placeholder="50 or -50" error={e.points} />
+      <TextField name="reason" label="Reason" placeholder="Birthday gift" error={e.reason} />
+      <SubmitButton variant="secondary" size="sm" pendingLabel="Saving…">
+        Adjust points
+      </SubmitButton>
+      <div className="sm:col-span-3">
+        <FormMessage error={e.form} notice={state.notice} />
+      </div>
+    </form>
+  );
+}
+
+function GamerCard({ gamer, canAdjust }: { gamer: LookupResult; canAdjust: boolean }) {
   return (
     <Card className="grid gap-4 p-5">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <p className="font-display text-lg font-semibold">{gamer.fullName}</p>
         <p className="font-mono tracking-[0.12em] text-gold-soft">{gamer.memberCode}</p>
       </div>
-      <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm sm:grid-cols-4">
+      <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm sm:grid-cols-5">
         {[
+          ["Points", String(gamer.balance)],
           ["Mobile", gamer.phone ?? "—"],
           ["Age", gamer.ageBand],
           ["Area", gamer.area],
@@ -60,11 +81,12 @@ function GamerCard({ gamer }: { gamer: GamerSummary }) {
         ))}
       </dl>
       <TempPassword gamerId={gamer.id} />
+      {canAdjust && <AdjustPoints gamerId={gamer.id} />}
     </Card>
   );
 }
 
-export function GamerLookup() {
+export function GamerLookup({ canAdjust }: { canAdjust: boolean }) {
   const [state, action] = useActionState(lookupGamers, {} as LookupState);
 
   return (
@@ -88,7 +110,7 @@ export function GamerLookup() {
       {state.results && state.results.length === 0 && (
         <FormMessage error={`No gamer found for "${state.query}". Check for typos; partial matches aren't searched.`} />
       )}
-      {state.results?.map((gamer) => <GamerCard key={gamer.id} gamer={gamer} />)}
+      {state.results?.map((gamer) => <GamerCard key={gamer.id} gamer={gamer} canAdjust={canAdjust} />)}
     </div>
   );
 }

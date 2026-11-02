@@ -1,9 +1,10 @@
 import "server-only";
 import { randomInt } from "node:crypto";
-import { and, count, desc, eq, inArray, isNull, lte, sql } from "drizzle-orm";
-import { db, schema } from "@/db";
+import { and, asc, count, desc, eq, gt, inArray, isNull, lte, sql } from "drizzle-orm";
+import { db, schema, type Executor } from "@/db";
 import { loyalty } from "@/config/loyalty";
-import { VOUCHER_ALPHABET, VOUCHER_LENGTH } from "@/lib/loyalty";
+import { normaliseVoucherCode, VOUCHER_ALPHABET, VOUCHER_LENGTH } from "@/lib/loyalty";
+import { writeAudit } from "@/server/identity/audit";
 import { isUniqueViolation } from "@/server/identity/gamers";
 import { addLedgerEntry, balanceOf } from "./ledger";
 
@@ -153,4 +154,88 @@ export async function vouchersFor(gamerId: string): Promise<MemberVoucher[]> {
     .innerJoin(schema.offers, eq(schema.offers.id, schema.vouchers.offerId))
     .where(eq(schema.vouchers.gamerId, gamerId))
     .orderBy(desc(schema.vouchers.createdAt));
+}
+
+export type CounterVoucher = {
+  id: string;
+  code: string;
+  status: MemberVoucher["status"];
+  offerTitle: string;
+  pointsSpent: number;
+  gamerName: string | null;
+  memberCode: string;
+  expiresAt: Date;
+  usedAt: Date | null;
+};
+
+/** For the counter: a voucher by its (loosely typed) code, with whose it is. Expires overdue ones first. */
+export async function findVoucherForCounter(rawCode: string): Promise<CounterVoucher | null> {
+  const code = normaliseVoucherCode(rawCode);
+  if (!code) return null;
+  await expireOverdueVouchers();
+  const [row] = await db
+    .select({
+      id: schema.vouchers.id,
+      code: schema.vouchers.code,
+      status: schema.vouchers.status,
+      offerTitle: schema.offers.title,
+      pointsSpent: schema.vouchers.pointsSpent,
+      gamerName: schema.gamers.fullName,
+      memberCode: schema.gamers.memberCode,
+      expiresAt: schema.vouchers.expiresAt,
+      usedAt: schema.vouchers.usedAt,
+    })
+    .from(schema.vouchers)
+    .innerJoin(schema.offers, eq(schema.offers.id, schema.vouchers.offerId))
+    .innerJoin(schema.gamers, eq(schema.gamers.id, schema.vouchers.gamerId))
+    .where(eq(schema.vouchers.code, code));
+  return row ?? null;
+}
+
+/** Staff hand over the reward: marks an active, unexpired voucher used. */
+export async function redeemVoucher(
+  staffId: string,
+  voucherId: string,
+): Promise<{ ok: true } | { ok: false; status: MemberVoucher["status"] | "not_found" }> {
+  await expireOverdueVouchers();
+  return db.transaction(async (tx) => {
+    const [used] = await tx
+      .update(schema.vouchers)
+      .set({ status: "used", usedAt: sql`now()`, usedBy: staffId, updatedAt: sql`now()` })
+      .where(and(eq(schema.vouchers.id, voucherId), eq(schema.vouchers.status, "active"), gt(schema.vouchers.expiresAt, sql`now()`)))
+      .returning({ id: schema.vouchers.id, code: schema.vouchers.code });
+    if (!used) {
+      const [current] = await tx.select({ status: schema.vouchers.status }).from(schema.vouchers).where(eq(schema.vouchers.id, voucherId));
+      return { ok: false, status: current?.status ?? "not_found" } as const;
+    }
+    await writeAudit({ actorStaffId: staffId, action: "voucher.redeem", targetType: "voucher", targetId: voucherId, details: { code: used.code } }, tx);
+    return { ok: true } as const;
+  });
+}
+
+/** Account deletion: unused vouchers can't be used any more (the points go with the account). */
+export async function cancelAllVouchers(tx: Executor, gamerId: string) {
+  await tx
+    .update(schema.vouchers)
+    .set({ status: "cancelled", updatedAt: sql`now()` })
+    .where(and(eq(schema.vouchers.gamerId, gamerId), eq(schema.vouchers.status, "active")));
+}
+
+/** "Download my data" section. */
+export async function vouchersForExport(gamerId: string) {
+  const rows = await db
+    .select({
+      code: schema.vouchers.code,
+      offer: schema.offers.title,
+      status: schema.vouchers.status,
+      pointsSpent: schema.vouchers.pointsSpent,
+      claimedAt: schema.vouchers.createdAt,
+      expiresAt: schema.vouchers.expiresAt,
+      usedAt: schema.vouchers.usedAt,
+    })
+    .from(schema.vouchers)
+    .innerJoin(schema.offers, eq(schema.offers.id, schema.vouchers.offerId))
+    .where(eq(schema.vouchers.gamerId, gamerId))
+    .orderBy(asc(schema.vouchers.createdAt));
+  return rows;
 }

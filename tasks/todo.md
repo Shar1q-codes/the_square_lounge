@@ -23,11 +23,11 @@ Every task also clears `npm test`, `npm run lint`, `npm run typecheck`. One comm
 - [x] `/account/vouchers` with code + QR, cancel and refund; `/account/points` history; balance on `/account`
 
 ## Task 5: Counter, expiry, adjustments
-- [ ] `/staff/vouchers` check and mark used (once), audited
-- [ ] Expiry refunds (lazy + `/api/cron/expire-vouchers` with `CRON_SECRET`, `vercel.json`)
-- [ ] Admin points adjustment on `/staff/gamers`; staff see balance; export includes ledger and vouchers; deletion cancels vouchers
+- [x] `/staff/vouchers` check and mark used (once), audited
+- [x] Expiry refunds (lazy + `/api/cron/expire-vouchers` with `CRON_SECRET`, `vercel.json`)
+- [x] Admin points adjustment on `/staff/gamers`; staff see balance; export includes ledger and vouchers; deletion cancels vouchers
 
-### Checkpoint B
+### Checkpoint B ✅ (browser: admin adds offer → check-out earns points → admin bonus → member claims → counter redeems once; cron returns 401 without secret)
 
 ## Task 6: E2E and gate
 - [ ] Offer → earn → claim → redeem in Playwright; README; full gate
