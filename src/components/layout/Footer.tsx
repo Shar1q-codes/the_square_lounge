@@ -63,6 +63,16 @@ export function Footer() {
                 Book a Station
               </a>
             </li>
+            <li>
+              <a href="/join" className="text-sm text-muted transition-colors hover:text-gold">
+                Join rewards
+              </a>
+            </li>
+            <li>
+              <a href="/privacy" className="text-sm text-muted transition-colors hover:text-gold">
+                Privacy
+              </a>
+            </li>
           </ul>
         </nav>
 

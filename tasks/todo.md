@@ -110,11 +110,11 @@ Each task must also clear the project bar: `npm test`, `npm run lint`, `npm run 
 
 ## Task 11: Navbar links and e2e
 **Acceptance criteria:**
-- [ ] Navbar shows "Join" / "Log in" (or "My account" when logged in) without changing other sections
-- [ ] Playwright: sign up → logout → login → delete; admin creates staff → staff looks up gamer
+- [x] Navbar shows "Log in" (desktop) and "Join rewards" / "Log in" (mobile menu); /login forwards signed-in gamers to /account, so the homepage stays static
+- [x] Playwright: sign up → logout → login → delete; admin creates staff → staff looks up gamer
 **Verification:** `npm run test:e2e`, `npm run build`
 **Dependencies:** Tasks 7, 10
 **Files:** `src/components/layout/Navbar.tsx`, `playwright.config.ts`, `e2e/identity.spec.ts`
 **Scope:** S
 
-### Checkpoint C: Complete
+### Checkpoint C: Complete ✅ (111 unit/integration + 5 e2e tests, lint, typecheck, build)
