@@ -69,15 +69,15 @@ Each task must also clear the project bar: `npm test`, `npm run lint`, `npm run 
 
 ## Task 7: Privacy notice and privacy controls
 **Acceptance criteria:**
-- [ ] `/privacy` shows the notice and its version constant
-- [ ] Marketing toggle appends a consent row each time
-- [ ] Export returns JSON with profile and consents; delete (with password) scrubs personal fields, keeps area/pincode, revokes sessions, and frees the email
+- [x] `/privacy` shows the notice and its version constant
+- [x] Marketing toggle appends a consent row each time
+- [x] Export returns JSON with profile and consents; delete (with password) scrubs personal fields, keeps area/pincode, revokes sessions, and frees the email
 **Verification:** `npm test -- tests/integration/identity/privacy`
 **Dependencies:** Task 6
 **Files:** `src/app/(public)/privacy/page.tsx`, `src/app/(gamer)/account/privacy/{page,actions}.tsx`, `src/app/(gamer)/account/privacy/export/route.ts`, `src/server/identity/consent.ts`
 **Scope:** M
 
-### Checkpoint B: Gamer flows
+### Checkpoint B: Gamer flows ✅ (browser: sign up → log out → wrong/right login → edit → marketing toggle → export → delete)
 
 ## Task 8: Staff login and first-admin seed
 **Acceptance criteria:**

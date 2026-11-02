@@ -32,10 +32,10 @@ See [todo.md](todo.md) for acceptance criteria per task.
 - [x] Task 4: Gamer sign-up (`/join`)
 - [x] Task 5: Gamer login and logout (`/login`)
 - [x] Task 6: Account page: profile, member QR, password change (`/account`)
-- [ ] Task 7: Privacy notice, consent toggle, data export, account deletion
+- [x] Task 7: Privacy notice, consent toggle, data export, account deletion
 
 ### Checkpoint B: Gamer flows
-- [ ] Sign up → log out → log in → edit → delete works in the browser
+- [x] Sign up → log out → log in → edit → delete works in the browser
 
 ### Phase 3: Staff and admin
 - [ ] Task 8: Staff login and first-admin seed script
