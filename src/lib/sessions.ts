@@ -1,5 +1,7 @@
 /** Pure helpers for play sessions, safe to use in client components. */
 
+export const PAYMENT_METHODS = ["cash", "upi", "card", "other"] as const;
+
 export const VOID_WINDOW_MS = 15 * 60 * 1000;
 export const LONG_SESSION_MS = 12 * 60 * 60 * 1000;
 export const MAX_CORRECTED_MS = 24 * 60 * 60 * 1000;

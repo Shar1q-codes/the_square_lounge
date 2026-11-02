@@ -3,8 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useActionState, useCallback, useEffect, useState } from "react";
 import { checkOutAction, voidAction, type RowActionState } from "@/app/staff/(portal)/actions";
-import { canVoid, formatDuration, istTime, minutesBetween, needsAttention } from "@/lib/sessions";
-import { PAYMENT_METHODS } from "@/lib/validation/sessions";
+import { canVoid, formatDuration, istTime, minutesBetween, needsAttention, PAYMENT_METHODS } from "@/lib/sessions";
 import type { BoardPlayer, BoardStation } from "@/server/sessions/board";
 import { control, FormMessage } from "@/components/account/fields";
 import { SubmitButton } from "@/components/account/SubmitButton";
@@ -120,10 +119,12 @@ function StationCard({ station, now, notify }: { station: BoardStation; now: Dat
   const full = count >= station.maxCheckIns;
 
   return (
-    <Card className="flex flex-col p-5">
+    <Card as="section" aria-labelledby={`station-${station.id}`} className="flex flex-col p-5">
       <div className="mb-2 flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <h3 className="font-display text-lg font-semibold">{station.name}</h3>
+          <h3 id={`station-${station.id}`} className="font-display text-lg font-semibold">
+            {station.name}
+          </h3>
           <ConsoleBadge console={station.console} />
         </div>
         <p className={cn("text-sm tabular-nums", full ? "text-gold-soft" : "text-muted")} aria-label={`${count} of ${station.maxCheckIns} players`}>

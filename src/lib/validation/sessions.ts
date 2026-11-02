@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { MAX_CORRECTED_MS, parseIstInput, parseRupees } from "@/lib/sessions";
+import { MAX_CORRECTED_MS, PAYMENT_METHODS, parseIstInput, parseRupees } from "@/lib/sessions";
 
-export const PAYMENT_METHODS = ["cash", "upi", "card", "other"] as const;
+export { PAYMENT_METHODS };
 
 const stationIdField = z.coerce.number({ error: "Pick a station." }).int().positive("Pick a station.");
 
