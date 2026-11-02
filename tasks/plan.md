@@ -29,7 +29,7 @@ See [todo.md](todo.md) for acceptance criteria per task.
 - [x] `npm test`, `npm run lint`, `npm run typecheck`, `npm run build` pass; migrations apply to a clean DB
 
 ### Phase 2: Gamer flows
-- [ ] Task 4: Gamer sign-up (`/join`)
+- [x] Task 4: Gamer sign-up (`/join`)
 - [ ] Task 5: Gamer login and logout (`/login`)
 - [ ] Task 6: Account page: profile, member QR, password change (`/account`)
 - [ ] Task 7: Privacy notice, consent toggle, data export, account deletion

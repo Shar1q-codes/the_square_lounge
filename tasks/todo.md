@@ -39,9 +39,9 @@ Each task must also clear the project bar: `npm test`, `npm run lint`, `npm run 
 
 ## Task 4: Gamer sign-up (`/join`)
 **Acceptance criteria:**
-- [ ] Valid form creates gamer + `service` consent (+ `marketing`, `guardian` when applicable) in one transaction and logs the gamer in
-- [ ] Duplicate email (any case) shows the "already has an account" message and creates nothing
-- [ ] Form works at 375px wide with no horizontal scroll
+- [x] Valid form creates gamer + `service` consent (+ `marketing`, `guardian` when applicable) in one transaction and logs the gamer in
+- [x] Duplicate email (any case) shows the "already has an account" message and creates nothing
+- [x] Form works at 375px wide with no horizontal scroll
 **Verification:** `npm test -- tests/integration/identity/signup`; manual check in browser
 **Dependencies:** Task 3
 **Files:** `src/server/identity/gamers.ts`, `src/app/(gamer)/join/{page,actions}.tsx`, `src/components/account/SignUpForm.tsx`, `src/app/(gamer)/layout.tsx`
