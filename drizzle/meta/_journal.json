@@ -15,6 +15,20 @@
       "when": 1793647021366,
       "tag": "0001_enable_rls",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793649067817,
+      "tag": "0002_play_sessions",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1793649070711,
+      "tag": "0003_play_sessions_rls",
+      "breakpoints": true
     }
   ]
 }

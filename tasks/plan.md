@@ -20,7 +20,7 @@ Staff check members in and out of stations from a live board; each check-out rec
 See [todo.md](todo.md).
 
 ### Phase 1: Foundation
-- [ ] Task 1: Schema, migration (RLS), `maxCheckIns`, `db:seed`
+- [x] Task 1: Schema, migration (RLS), `maxCheckIns`, `db:seed`
 - [ ] Task 2: Pure helpers and validation (minutes, rupees→paise, void window, zod)
 
 ### Checkpoint A

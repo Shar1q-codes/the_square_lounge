@@ -5,6 +5,15 @@ import { db } from "@/db";
 type TableRow = { table_name: string; rls: boolean };
 
 describe("database schema", () => {
+  it("creates the play-sessions tables", async () => {
+    const rows = await db.execute<TableRow>(sql`
+      select c.relname as table_name, c.relrowsecurity as rls
+      from pg_class c join pg_namespace n on n.oid = c.relnamespace
+      where n.nspname = 'public' and c.relkind = 'r'`);
+
+    expect(rows.map((r) => r.table_name)).toEqual(expect.arrayContaining(["stations", "play_sessions", "payments"]));
+  });
+
   it("creates the identity tables", async () => {
     const rows = await db.execute<TableRow>(sql`
       select c.relname as table_name, c.relrowsecurity as rls

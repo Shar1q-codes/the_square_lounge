@@ -3,9 +3,9 @@
 Every task also clears: `npm test`, `npm run lint`, `npm run typecheck` pass. One commit per task.
 
 ## Task 1: Schema, migration, seed
-- [ ] `stations`, `play_sessions`, `payments` with the spec's constraints (partial unique open-per-gamer, ended/status check, ended > started, amount ≥ 0)
-- [ ] RLS enabled on all three (existing RLS test passes)
-- [ ] `site.ts` stations get optional `maxCheckIns` (default 8); `npm run db:seed` upserts stations and the first admin; re-running changes nothing
+- [x] `stations`, `play_sessions`, `payments` with the spec's constraints (partial unique open-per-gamer, ended/status check, ended > started, amount ≥ 0)
+- [x] RLS enabled on all three (existing RLS test passes)
+- [x] `site.ts` stations get optional `maxCheckIns` (default 8); `npm run db:seed` upserts stations and the first admin; re-running changes nothing
 **Files:** `src/db/schema/sessions.ts`, `src/db/schema/index.ts`, `drizzle/0002_*`, `drizzle/0003_*`, `src/config/site.ts`, `scripts/seed.ts`, `package.json` · **Scope:** M
 
 ## Task 2: Pure helpers and validation
