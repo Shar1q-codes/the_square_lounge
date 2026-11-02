@@ -2,6 +2,7 @@ import "server-only";
 import { asc, eq } from "drizzle-orm";
 import { db, schema } from "@/db";
 import { PRIVACY_NOTICE_VERSION } from "@/config/privacy";
+import { sessionsForExport } from "@/server/sessions/history";
 import { writeAudit } from "./audit";
 import { verifyPassword } from "./password";
 
@@ -16,7 +17,7 @@ export async function setMarketingConsent(gamerId: string, granted: boolean) {
   });
 }
 
-/** Everything we hold about a gamer, for "Download my data". Later modules add their own sections. */
+/** Everything we hold about a gamer, for "Download my data". Each module adds its own section. */
 export async function exportGamerData(gamerId: string) {
   const [gamer] = await db.select().from(schema.gamers).where(eq(schema.gamers.id, gamerId));
   const consents = await db
@@ -32,7 +33,7 @@ export async function exportGamerData(gamerId: string) {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { passwordHash, ...profile } = gamer;
-  return { exportedAt: new Date().toISOString(), profile, consents };
+  return { exportedAt: new Date().toISOString(), profile, consents, sessions: await sessionsForExport(gamerId) };
 }
 
 /**

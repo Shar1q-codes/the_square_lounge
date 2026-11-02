@@ -4,9 +4,11 @@ import { PageTitle } from "@/components/account/AccountShell";
 import { MemberCard } from "@/components/account/MemberCard";
 import { PasswordForm } from "@/components/account/PasswordForm";
 import { ProfileForm } from "@/components/account/ProfileForm";
+import { NowPlaying, RecentVisits } from "@/components/account/Visits";
 import { Button } from "@/components/ui/Button";
 import { requireGamer } from "@/server/identity/currentUser";
 import { memberQrSvg } from "@/server/identity/gamers";
+import { currentSession, recentVisits } from "@/server/sessions/history";
 import { logOut } from "../login/actions";
 
 export const metadata: Metadata = { title: "My account | The Square Lounge" };
@@ -16,18 +18,24 @@ const formatDate = (d: Date) =>
 
 export default async function AccountPage() {
   const gamer = await requireGamer();
-  const qrSvg = await memberQrSvg(gamer.memberCode);
+  const [qrSvg, playing, visits] = await Promise.all([
+    memberQrSvg(gamer.memberCode),
+    currentSession(gamer.id),
+    recentVisits(gamer.id),
+  ]);
   const firstName = gamer.fullName?.split(" ")[0] ?? "there";
 
   return (
     <div className="grid gap-6">
       <PageTitle eyebrow="My account" title={`Hi, ${firstName}`} />
+      {playing && <NowPlaying stationName={playing.stationName} startedAt={playing.startedAt} />}
       <MemberCard
         name={gamer.fullName ?? ""}
         memberCode={gamer.memberCode}
         qrSvg={qrSvg}
         memberSince={formatDate(gamer.createdAt)}
       />
+      <RecentVisits visits={visits} />
       <ProfileForm
         initial={{
           fullName: gamer.fullName ?? "",

@@ -16,8 +16,14 @@ export type Station = {
   /** e.g. '55" 4K HDR' */
   screen: string;
   features: string[];
-  /** Max players this station supports at once */
+  /** Max players this station supports at once (shown on the website) */
   maxPlayers: number;
+  /**
+   * How many members staff can check in at once (counter app, not shown on the website).
+   * Party games like WWE 2K can take 6–8 players; lower it if a station has fewer controllers.
+   * Re-run `npm run db:seed` after changing.
+   */
+  maxCheckIns: number;
 };
 
 export type PricingTier = {
@@ -152,6 +158,7 @@ export const site = {
       screen: 'TODO: 55" 4K HDR',
       features: ["DualSense controllers", "Recliner seating", "Surround headset"],
       maxPlayers: 4,
+      maxCheckIns: 8,
     },
     {
       id: 2,
@@ -160,6 +167,7 @@ export const site = {
       screen: 'TODO: 55" 4K HDR',
       features: ["DualSense controllers", "Recliner seating", "Surround headset"],
       maxPlayers: 4,
+      maxCheckIns: 8,
     },
     {
       id: 3,
@@ -168,6 +176,7 @@ export const site = {
       screen: 'TODO: 65" 4K HDR',
       features: ["DualSense controllers", "Couch for 4", "Racing-ready setup"],
       maxPlayers: 4,
+      maxCheckIns: 8,
     },
     {
       id: 4,
@@ -176,6 +185,7 @@ export const site = {
       screen: 'TODO: 50" Full HD',
       features: ["DualShock controllers", "Premium seating", "Huge back catalogue"],
       maxPlayers: 4,
+      maxCheckIns: 8,
     },
     {
       id: 5,
@@ -184,6 +194,7 @@ export const site = {
       screen: 'TODO: 50" Full HD',
       features: ["DualShock controllers", "Premium seating", "Great for co-op"],
       maxPlayers: 4,
+      maxCheckIns: 8,
     },
   ] satisfies Station[],
 

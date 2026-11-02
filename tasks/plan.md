@@ -1,62 +1,59 @@
-# Implementation Plan: `identity` module
+# Implementation Plan: `play-sessions` module
 
-Spec: [SPEC-identity.md](../SPEC-identity.md) · Map: [CAPABILITY-MAP.md](../CAPABILITY-MAP.md)
+Spec: [SPEC-play-sessions.md](../SPEC-play-sessions.md) · Map: [CAPABILITY-MAP.md](../CAPABILITY-MAP.md) · Previous module: [identity](identity/plan.md)
 
 ## Overview
 
-Add gamer accounts (email + password, mobile number as contact only), staff/admin logins, consent records and staff management to the existing Next.js marketing site, backed by Supabase Postgres through Drizzle. The marketing pages stay untouched apart from Join/Login links in the navbar.
+Staff check members in and out of stations from a live board; each check-out records a payment; mistakes are voided (staff, 15 min) or corrected (admin, audited); gamers see "Now playing" and recent visits. Built on branch `feat/play-sessions`, stacked on `feat/identity`.
 
 ## Architecture Decisions
 
-- **App-owned auth, not Supabase Auth.** scrypt password hashes and opaque session tokens (SHA-256 hashed in `auth_sessions`). Keeps all access server-side and lets RLS stay "deny all".
-- **One Drizzle client, server-only.** `src/db/index.ts` imports `server-only`; postgres.js with `prepare: false` so it works through Supabase's transaction pooler.
-- **RLS enabled on every table with no policies**, done in a hand-written migration after the generated one, so Supabase's public Data API exposes nothing.
-- **Domain code in `src/server/identity/` returns result objects;** server actions (`actions.ts` beside each page) validate with shared zod schemas and call the domain code. Pages never query the DB directly.
-- **Route protection in server layouts** (`requireGamer()`, `requireStaff(role)`), and every server action re-checks its role. No DB calls in middleware.
-- **Gamer pages use a plain layout** (no Lenis / 3D) so they stay light on phones, reusing `components/ui` (Button, Card, Container) and the existing design tokens.
-- **Tests:** Vitest unit tests for pure helpers; Vitest integration tests run against a real Postgres (`TEST_DATABASE_URL`), migrated once and truncated between tests; Playwright e2e against the dev server.
+- **Database clock for all times** (`now()` in SQL), so counter devices with wrong clocks can't skew durations. Domain functions still accept `now` for tests where the rule is time-based (void window), comparing against DB-stored times.
+- **One open session per gamer** enforced by a partial unique index; **station capacity** enforced inside a transaction holding `SELECT … FOR UPDATE` on the station row.
+- **Check-out returns closed sessions** (`closeSessions()`), the hook `loyalty` will use to award points in the same transaction.
+- **Stations live in the DB, seeded from `site.ts`** (`npm run db:seed`, upsert by id). New optional `maxCheckIns` per station, default 8, separate from the marketing `maxPlayers`.
+- **Board freshness:** server-rendered board + client `router.refresh()` every 30 s; per-player timers tick client-side from `startedAt`.
+- **Money in paise** (`integer`), parsed from rupee input by a pure helper.
 
 ## Task List
 
-See [todo.md](todo.md) for acceptance criteria per task.
+See [todo.md](todo.md).
 
 ### Phase 1: Foundation
-- [x] Task 1: Tooling, database and test harness
-- [x] Task 2: Pure identity helpers (email, phone, password, member code, zod schemas)
-- [x] Task 3: Login sessions, lockout and role guards
+- [x] Task 1: Schema, migration (RLS), `maxCheckIns`, `db:seed`
+- [x] Task 2: Pure helpers and validation (minutes, rupees→paise, void window, zod)
 
-### Checkpoint A: Foundation
-- [x] `npm test`, `npm run lint`, `npm run typecheck`, `npm run build` pass; migrations apply to a clean DB
+### Checkpoint A
+- [x] Tests, lint, typecheck, build pass; fresh DB migrates with RLS on all 9 tables
 
-### Phase 2: Gamer flows
-- [x] Task 4: Gamer sign-up (`/join`)
-- [x] Task 5: Gamer login and logout (`/login`)
-- [x] Task 6: Account page: profile, member QR, password change (`/account`)
-- [x] Task 7: Privacy notice, consent toggle, data export, account deletion
+### Phase 2: Counter flows
+- [x] Task 3: Check-in domain (refusals, capacity lock, concurrency)
+- [x] Task 4: Check-out (single / station), payments, void, `closeSessions()`
+- [x] Task 5: Station board UI: check-in, check-out, void, scan button
 
-### Checkpoint B: Gamer flows
-- [x] Sign up → log out → log in → edit → delete works in the browser
+### Checkpoint B
+- [x] Browser: check in 2 members → live timers → check out station with payment
 
-### Phase 3: Staff and admin
-- [x] Task 8: Staff login and first-admin seed script
-- [x] Task 9: Gamer lookup and temporary password reset (`/staff/gamers`)
-- [x] Task 10: Staff management (`/admin/staff`)
-- [x] Task 11: Navbar links and Playwright e2e for the whole module
+### Phase 3: Admin and gamer views
+- [x] Task 6: Admin corrections (`/admin/sessions`)
+- [x] Task 7: Gamer "Now playing", recent visits, export includes sessions
+- [x] Task 8: E2E and full gate
 
-### Checkpoint C: Complete
-- [x] All 10 spec acceptance criteria covered by tests; full command set green; human review
+### Checkpoint C
+- [x] All 10 acceptance criteria covered; full command set green
 
 ## Risks and Mitigations
 
 | Risk | Impact | Mitigation |
 |------|--------|------------|
-| Supabase pooler rejects prepared statements | High | `prepare: false` in the postgres.js client; documented in `.env.example` |
-| Leaked anon key exposes data via Data API | High | RLS on, no policies; migration test asserts `relrowsecurity` on every table |
-| Session fixation / cookie theft | Med | New token on every login, httpOnly+secure+sameSite=lax, server-side revoke on logout, deactivate and delete |
-| Brute-force on login | Med | 5 failures / 15 min lockout per identifier, generic error message |
-| Docker not available on a dev machine | Low | Any Postgres 15+ works via `DATABASE_URL`; a Supabase branch DB also works |
+| Two counters fill the last seat at once | Med | Row lock on station + integration test running both in parallel |
+| Forgotten check-outs inflate durations/points | Med | "Needs attention" flag after 12 h, admin correction, loyalty cap |
+| Device clock drift | Low | DB `now()` for start/end |
+| Board polling load | Low | 30 s refresh, one indexed query for open sessions |
 
-## Open Questions
+## Notes for `loyalty`
 
-- Privacy-notice contact email (uses `site.contact.email` placeholder until filled in).
-- Inactive-account anonymisation period (proposed 3 years; not built in this module).
+- Award points from `closeSessions()`'s returned sessions, inside its transaction.
+- Admin corrections (`correctSession`) can also close a session or change its length without a check-out:
+  loyalty must award or adjust points there too, or those sessions earn nothing.
+- Voided sessions never earn points.

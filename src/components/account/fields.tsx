@@ -1,4 +1,4 @@
-import type { InputHTMLAttributes, ReactNode, SelectHTMLAttributes } from "react";
+import type { InputHTMLAttributes, ReactNode, Ref, SelectHTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 
 export const control =
@@ -32,6 +32,7 @@ const describedBy = (id: string, error?: string, hint?: string) =>
   error ? `${id}-error` : hint ? `${id}-hint` : undefined;
 
 type TextFieldProps = InputHTMLAttributes<HTMLInputElement> & {
+  ref?: Ref<HTMLInputElement>;
   name: string;
   label: string;
   error?: string;

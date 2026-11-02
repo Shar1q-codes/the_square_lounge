@@ -1,120 +1,54 @@
-# Tasks: `identity` module
+# Tasks: `play-sessions` module
 
-Each task must also clear the project bar: `npm test`, `npm run lint`, `npm run typecheck` pass.
+Every task also clears: `npm test`, `npm run lint`, `npm run typecheck` pass. One commit per task.
 
-## Task 1: Tooling, database and test harness
-**Description:** Add dependencies, local Postgres, Drizzle config, the identity schema, migrations (including RLS), the server-only DB client, Vitest config and an integration-test helper.
-**Acceptance criteria:**
-- [x] `docker compose up -d db` then `npm run db:migrate` creates all six tables on a clean DB
-- [x] Every table has row-level security enabled (integration test checks `pg_class.relrowsecurity`)
-- [x] `.env.example` documents every variable; `.env*` stays git-ignored
-**Verification:** `npm test`, `npm run typecheck`, `npm run build`
-**Dependencies:** None
-**Files:** `package.json`, `docker-compose.yml`, `drizzle.config.ts`, `src/db/index.ts`, `src/db/schema/identity.ts`, `drizzle/*`, `vitest.config.ts`, `tests/integration/db.ts`, `.env.example`
-**Scope:** M
+## Task 1: Schema, migration, seed
+- [x] `stations`, `play_sessions`, `payments` with the spec's constraints (partial unique open-per-gamer, ended/status check, ended > started, amount ≥ 0)
+- [x] RLS enabled on all three (existing RLS test passes)
+- [x] `site.ts` stations get optional `maxCheckIns` (default 8); `npm run db:seed` upserts stations and the first admin; re-running changes nothing
+**Files:** `src/db/schema/sessions.ts`, `src/db/schema/index.ts`, `drizzle/0002_*`, `drizzle/0003_*`, `src/config/site.ts`, `scripts/seed.ts`, `package.json` · **Scope:** M
 
-## Task 2: Pure identity helpers
-**Description:** Email and Indian-mobile normalisation, scrypt hash/verify, member-code generation, and shared zod schemas for sign-up, profile and staff forms.
-**Acceptance criteria:**
-- [x] `+91 98765 43210`, `09876543210`, `9876543210` all normalise to `+919876543210`; `5876543210` is rejected
-- [x] Sign-up schema rejects under-13s, requires guardian consent under 18, rejects pincodes starting with 0
-- [x] Password hashes verify, wrong passwords don't, and hashes differ for the same password
-**Verification:** `npm test -- tests/unit/identity`
-**Dependencies:** Task 1
-**Files:** `src/server/identity/{email,phone,password,memberCode}.ts`, `src/lib/validation/identity.ts`, `tests/unit/identity/*`
-**Scope:** M
+## Task 2: Pure helpers and validation
+- [x] `minutesBetween` gives whole minutes, never negative
+- [x] `parseRupees`: "150" → 15000, "150.50" → 15050, "" → null, "-5"/"abc"/"1.234" rejected
+- [x] `canVoid` true up to and including 15 min, false after; zod schemas for check-in, check-out, void, correction
+**Files:** `src/lib/sessions.ts`, `src/lib/validation/sessions.ts`, `tests/unit/sessions/*` · **Scope:** S
 
-## Task 3: Login sessions, lockout and role guards
-**Description:** Create/read/revoke sessions with hashed tokens in cookies, failed-login lockout, and `requireGamer` / `requireStaff(role)` guards.
-**Acceptance criteria:**
-- [x] Expired, revoked or deactivated-staff sessions resolve to no user
-- [x] 5 failures in 15 minutes locks the identifier; older failures don't count
-- [x] Guards redirect to the right login page for the wrong or missing role
-**Verification:** `npm test -- tests/integration/identity/session`
-**Dependencies:** Task 2
-**Files:** `src/server/identity/{session,lockout,guards,audit}.ts`, `tests/integration/identity/session.test.ts`
-**Scope:** M
+### Checkpoint A ✅ (148 tests, build clean, fresh DB: 9/9 tables with RLS)
 
-### Checkpoint A: Foundation ✅ (66 tests, build clean, fresh DB migrates with RLS on all 6 tables)
+## Task 3: Check-in
+- [x] Refuses: already playing (with station + time), station full, station inactive, deleted/unknown gamer
+- [x] An 8-seat station takes 8 and refuses the 9th; parallel check-ins for the last seat → exactly one wins
+- [x] Audit `session.check_in`
+**Files:** `src/server/sessions/checkIn.ts`, `tests/support/db.ts`, `tests/integration/sessions/checkIn.test.ts` · **Scope:** M
 
-## Task 4: Gamer sign-up (`/join`)
-**Acceptance criteria:**
-- [x] Valid form creates gamer + `service` consent (+ `marketing`, `guardian` when applicable) in one transaction and logs the gamer in
-- [x] Duplicate email (any case) shows the "already has an account" message and creates nothing
-- [x] Form works at 375px wide with no horizontal scroll
-**Verification:** `npm test -- tests/integration/identity/signup`; manual check in browser
-**Dependencies:** Task 3
-**Files:** `src/server/identity/gamers.ts`, `src/app/(gamer)/join/{page,actions}.tsx`, `src/components/account/SignUpForm.tsx`, `src/app/(gamer)/layout.tsx`
-**Scope:** M
+## Task 4: Check-out, payments, void
+- [x] Single and whole-station check-out end with one shared payment (amount/method optional) and return closed sessions with minutes
+- [x] Void with reason within 15 min; refused after; voided never reopens
+- [x] Audits `session.check_out`, `session.void`
+**Files:** `src/server/sessions/checkOut.ts`, `src/server/sessions/void.ts`, `tests/integration/sessions/checkOut.test.ts` · **Scope:** M
 
-## Task 5: Gamer login and logout (`/login`)
-**Acceptance criteria:**
-- [x] Correct email + password logs in; wrong details show one generic message
-- [x] Locked identifier is refused with a "try again in 15 minutes" message
-- [x] Logout revokes the session row and clears the cookie
-**Verification:** `npm test -- tests/integration/identity/login`
-**Dependencies:** Task 4
-**Files:** `src/app/(gamer)/login/{page,actions}.tsx`, `src/components/account/LoginForm.tsx`, `src/server/identity/gamers.ts`
-**Scope:** S
+## Task 5: Station board UI
+- [x] `/staff` shows each active station: players now / limit, names, codes, live minute timers, "Needs attention" after 12 h; refreshes every 30 s
+- [x] Check-in dialog (code/email/mobile, scan button where supported), check-out (one / station, amount, method), void
+- [x] 375 px wide with a full 8-player station: no sideways scroll
+**Files:** `src/server/sessions/board.ts`, `src/app/staff/(portal)/{page,actions}.tsx`, `src/components/staff/{StationBoard,CheckInForm,CheckOutForm,ScanButton}.tsx` · **Scope:** M
 
-## Task 6: Account page (`/account`)
-**Acceptance criteria:**
-- [x] Shows name, member code and a QR SVG encoding the member code
-- [x] Profile edits validate; changing email to one already used is refused
-- [x] Password change requires the current password
-**Verification:** `npm test -- tests/integration/identity/profile`; manual check
-**Dependencies:** Task 5
-**Files:** `src/app/(gamer)/account/{page,actions}.tsx`, `src/components/account/{ProfileForm,MemberCard,PasswordForm}.tsx`
-**Scope:** M
+### Checkpoint B ✅ (browser: loose code check-in, shared-mobile choice, already-playing refusal, whole-station check-out ₹300 UPI, 8/8 station at 375px)
 
-## Task 7: Privacy notice and privacy controls
-**Acceptance criteria:**
-- [x] `/privacy` shows the notice and its version constant
-- [x] Marketing toggle appends a consent row each time
-- [x] Export returns JSON with profile and consents; delete (with password) scrubs personal fields, keeps area/pincode, revokes sessions, and frees the email
-**Verification:** `npm test -- tests/integration/identity/privacy`
-**Dependencies:** Task 6
-**Files:** `src/app/(public)/privacy/page.tsx`, `src/app/(gamer)/account/privacy/{page,actions}.tsx`, `src/app/(gamer)/account/privacy/export/route.ts`, `src/server/identity/consent.ts`
-**Scope:** M
+## Task 6: Admin corrections
+- [x] `/admin/sessions` lists open / needs-attention / last 7 days
+- [x] Correction: end > start, not future, ≤ 24 h, reason required; audit has before/after
+**Files:** `src/server/sessions/corrections.ts`, `src/app/admin/sessions/{page,actions}.tsx`, `src/components/staff/SessionCorrection.tsx`, `tests/integration/sessions/corrections.test.ts` · **Scope:** M
 
-### Checkpoint B: Gamer flows ✅ (browser: sign up → log out → wrong/right login → edit → marketing toggle → export → delete)
+## Task 7: Gamer view and export
+- [x] `/account` shows Now playing and last 20 closed visits (no amounts)
+- [x] Export includes sessions; voided and other gamers' sessions excluded from history
+**Files:** `src/server/sessions/history.ts`, `src/server/identity/consent.ts`, `src/components/account/{NowPlaying,RecentVisits}.tsx`, `src/app/(gamer)/account/page.tsx`, `tests/integration/sessions/history.test.ts` · **Scope:** M
 
-## Task 8: Staff login and first-admin seed
-**Acceptance criteria:**
-- [x] `npm run db:seed-admin` creates the admin once and is a no-op on re-run
-- [x] Staff login uses the same lockout; deactivated staff can't log in
-**Verification:** `npm test -- tests/integration/identity/staff`
-**Dependencies:** Task 3
-**Files:** `scripts/seed-admin.ts`, `src/server/identity/staff.ts`, `src/app/staff/login/{page,actions}.tsx`, `src/app/staff/layout.tsx`
-**Scope:** M
+## Task 8: E2E and gate
+- [x] Staff checks in two members at one station → board shows both → checks out station with ₹300 UPI → gamer sees the visit
+- [x] `npm test`, `npm run test:e2e`, lint, typecheck, build all pass
+**Files:** `e2e/sessions.spec.ts`, `e2e/helpers.ts`, `README.md` · **Scope:** S
 
-## Task 9: Gamer lookup and temporary password (`/staff/gamers`)
-**Acceptance criteria:**
-- [x] Exact search by member code, email or mobile; shared mobile returns several gamers
-- [x] Staff can set a temporary password; gamer's existing sessions are revoked
-- [x] Each lookup and reset writes an audit row
-**Verification:** `npm test -- tests/integration/identity/lookup`
-**Dependencies:** Task 8
-**Files:** `src/app/staff/gamers/{page,actions}.tsx`, `src/server/identity/gamers.ts`
-**Scope:** S
-
-## Task 10: Staff management (`/admin/staff`)
-**Acceptance criteria:**
-- [x] Admin can create, deactivate/reactivate and reset staff; staff role gets redirected
-- [x] Admin cannot deactivate themselves
-- [x] All changes write audit rows
-**Verification:** `npm test -- tests/integration/identity/staff`
-**Dependencies:** Task 8
-**Files:** `src/app/admin/layout.tsx`, `src/app/admin/staff/{page,actions}.tsx`, `src/server/identity/staff.ts`
-**Scope:** M
-
-## Task 11: Navbar links and e2e
-**Acceptance criteria:**
-- [x] Navbar shows "Log in" (desktop) and "Join rewards" / "Log in" (mobile menu); /login forwards signed-in gamers to /account, so the homepage stays static
-- [x] Playwright: sign up → logout → login → delete; admin creates staff → staff looks up gamer
-**Verification:** `npm run test:e2e`, `npm run build`
-**Dependencies:** Tasks 7, 10
-**Files:** `src/components/layout/Navbar.tsx`, `playwright.config.ts`, `e2e/identity.spec.ts`
-**Scope:** S
-
-### Checkpoint C: Complete ✅ (111 unit/integration + 5 e2e tests, lint, typecheck, build)
+### Checkpoint C ✅ (176 unit/integration + 6 e2e tests, lint, typecheck, build)
