@@ -99,7 +99,7 @@ export const site = {
   description:
     "A premium PlayStation gaming lounge in Malakpet, Hyderabad. Five private stations — PS5 and PS4 — big screens, premium seating and a chill, after-dark ambience.",
   /** Production URL — used for canonical links, OG images and JSON-LD */
-  url: "https://thesquarelounge.vercel.app", // TODO: replace with real domain
+  url: "https://thesquarelounge.vercel.app", // TODO: replace with the real Netlify or custom domain
   locale: "en_IN",
 
   address: {

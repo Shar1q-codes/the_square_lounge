@@ -16,7 +16,7 @@ Each module gets its own spec (`SPEC-identity.md`, `SPEC-play-sessions.md`, and 
 ## Assumptions (correct any of these before module specs are written)
 
 1. **Same repo, same app.** The backend lives in this Next.js project (route handlers and server actions). No separate API server.
-2. **Database:** Supabase (Postgres) with Drizzle ORM, accessed only from the server. Plain Docker Postgres (same major version) locally and in tests. Hosting stays on Vercel. *(Approved 2026-11-03: Supabase chosen.)*
+2. **Database:** Supabase (Postgres) with Drizzle ORM, accessed only from the server. Plain Docker Postgres (same major version) locally and in tests. Hosting is on Netlify. *(Approved 2026-11-03: Supabase chosen; owner confirmed Netlify, not Vercel.)*
 3. **Gamer login:** gamers create accounts and log in on the website with email + password. A mobile number is collected at sign-up as contact info only (never used to log in, no SMS). Points balance, history and shop redemptions are all on the website. *(Changed 2026-11-03 at the owner's request.)*
 4. **Staff and admin login:** username + password, two roles: `staff` (check-in/out, fulfil vouchers) and `admin` (everything, including the dashboard, offers and points adjustments).
 5. **Check-in is done by staff at the counter**, by searching the gamer's member code, email or mobile number, or scanning a QR code on the gamer's profile. Gamers cannot start or end their own sessions, which prevents points farming.

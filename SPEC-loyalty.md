@@ -43,7 +43,7 @@ Reward members for time played and bring them back: every finished session earns
 5. **Claim:** confirm → points taken and voucher created in one transaction, with the member's row locked so two quick taps can't overspend. Refused with a clear message if: not enough points, offer out of stock, ended, inactive, or the member's limit for this offer is reached. Stock counts every voucher except cancelled and expired ones.
 6. **My vouchers** at `/account/vouchers`: active vouchers with code, QR, offer and expiry date; used/expired/cancelled ones listed below. "Cancel and refund" on active vouchers.
 7. **Redeem at the counter** at `/staff/vouchers`: staff type or scan a voucher code and see the offer, the member's name and member code, status and expiry, then "Mark as used". Used, expired or cancelled vouchers are shown clearly and can't be used. Audit `voucher.redeem`.
-8. **Expiry:** vouchers past their expiry date become expired with a refund entry. This runs before any voucher is shown or redeemed, and also once a day from a protected cron endpoint (`/api/cron/expire-vouchers`, Vercel Cron, secret in `CRON_SECRET`), so refunds happen even if nobody looks.
+8. **Expiry:** vouchers past their expiry date become expired with a refund entry. This runs before any voucher is shown or redeemed, and also once a day from a protected cron endpoint (`/api/cron/expire-vouchers`, called by a Netlify Scheduled Function, secret in `CRON_SECRET`), so refunds happen even if nobody looks.
 9. **Admin offers** at `/admin/offers`: list, create, edit and deactivate offers. Offers with vouchers can't be deleted, only deactivated. Audit `offer.create`, `offer.update`.
 10. **Admin adjustment:** on `/staff/gamers` an admin can add or remove points (whole number, non-zero, at most ±10,000) with a required reason. Staff (non-admin) see the balance only. Audit `points.adjust`.
 11. **Data export and deletion:** "Download my data" adds the ledger and vouchers. Deleting an account cancels active vouchers.
@@ -70,11 +70,11 @@ The balance is `sum(delta)` over the member's ledger rows; no stored balance col
 
 ## Tech Stack
 
-No new dependencies. QR codes reuse `qrcode`. Daily expiry uses a Vercel Cron entry in `vercel.json` (free plan: once a day).
+No new dependencies. QR codes reuse `qrcode`. Daily expiry uses a Netlify Scheduled Function in `netlify/functions/` (changed from Vercel Cron: the site is hosted on Netlify).
 
 ## Commands
 
-As before, with a new environment variable `CRON_SECRET` (any long random string; Vercel sends it as a bearer token to cron routes).
+As before, with a new environment variable `CRON_SECRET` (any long random string; the scheduled function sends it as a bearer token).
 
 ## Project Structure
 
@@ -92,7 +92,7 @@ src/app/(gamer)/account/vouchers/    my vouchers
 src/app/staff/(portal)/vouchers/     counter redeem
 src/app/admin/offers/                offer admin
 src/app/api/cron/expire-vouchers/route.ts
-vercel.json                          daily cron
+netlify/functions/expire-vouchers.ts daily scheduled function
 tests/unit/loyalty/  tests/integration/loyalty/  e2e/loyalty.spec.ts
 ```
 
