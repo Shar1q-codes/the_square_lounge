@@ -32,6 +32,14 @@ export async function insertGamer(overrides: Partial<typeof schema.gamers.$infer
   return gamer;
 }
 
+export async function insertStation(overrides: Partial<typeof schema.stations.$inferInsert> = {}) {
+  const [station] = await db
+    .insert(schema.stations)
+    .values({ id: Math.floor(Math.random() * 1e6) + 100, name: "Test Station", console: "PS5", maxCheckIns: 8, ...overrides })
+    .returning();
+  return station;
+}
+
 export async function insertStaff(overrides: Partial<typeof schema.staff.$inferInsert> = {}) {
   const [member] = await db
     .insert(schema.staff)

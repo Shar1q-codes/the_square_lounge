@@ -17,9 +17,9 @@ Every task also clears: `npm test`, `npm run lint`, `npm run typecheck` pass. On
 ### Checkpoint A ✅ (148 tests, build clean, fresh DB: 9/9 tables with RLS)
 
 ## Task 3: Check-in
-- [ ] Refuses: already playing (with station + time), station full, station inactive, deleted/unknown gamer
-- [ ] An 8-seat station takes 8 and refuses the 9th; parallel check-ins for the last seat → exactly one wins
-- [ ] Audit `session.check_in`
+- [x] Refuses: already playing (with station + time), station full, station inactive, deleted/unknown gamer
+- [x] An 8-seat station takes 8 and refuses the 9th; parallel check-ins for the last seat → exactly one wins
+- [x] Audit `session.check_in`
 **Files:** `src/server/sessions/checkIn.ts`, `tests/support/db.ts`, `tests/integration/sessions/checkIn.test.ts` · **Scope:** M
 
 ## Task 4: Check-out, payments, void

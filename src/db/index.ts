@@ -4,6 +4,8 @@ import postgres from "postgres";
 import * as schema from "./schema";
 
 export type Database = PostgresJsDatabase<typeof schema>;
+/** The pool or an open transaction: lets helpers like writeAudit join the caller's transaction. */
+export type Executor = Database | Parameters<Parameters<Database["transaction"]>[0]>[0];
 
 // Reuse one pool across hot reloads in development.
 const globalForDb = globalThis as unknown as { squareLoungeDb?: Database };

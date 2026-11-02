@@ -27,7 +27,7 @@ See [todo.md](todo.md).
 - [x] Tests, lint, typecheck, build pass; fresh DB migrates with RLS on all 9 tables
 
 ### Phase 2: Counter flows
-- [ ] Task 3: Check-in domain (refusals, capacity lock, concurrency)
+- [x] Task 3: Check-in domain (refusals, capacity lock, concurrency)
 - [ ] Task 4: Check-out (single / station), payments, void, `closeSessions()`
 - [ ] Task 5: Station board UI: check-in, check-out, void, scan button
 

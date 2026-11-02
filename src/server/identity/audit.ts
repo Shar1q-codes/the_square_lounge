@@ -1,5 +1,5 @@
 import "server-only";
-import { db, schema } from "@/db";
+import { db, schema, type Executor } from "@/db";
 
 type AuditEntry = {
   actorStaffId?: string;
@@ -11,8 +11,8 @@ type AuditEntry = {
   details?: Record<string, unknown>;
 };
 
-export async function writeAudit(entry: AuditEntry) {
-  await db.insert(schema.auditLog).values({
+export async function writeAudit(entry: AuditEntry, executor: Executor = db) {
+  await executor.insert(schema.auditLog).values({
     actorStaffId: entry.actorStaffId ?? null,
     actorGamerId: entry.actorGamerId ?? null,
     action: entry.action,
