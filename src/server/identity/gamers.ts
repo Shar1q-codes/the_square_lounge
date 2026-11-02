@@ -1,13 +1,15 @@
 import "server-only";
 import { and, eq, isNull } from "drizzle-orm";
+import QRCode from "qrcode";
 import { db, schema } from "@/db";
 import type { Gamer } from "@/db/schema";
 import { PRIVACY_NOTICE_VERSION } from "@/config/privacy";
-import type { SignUpInput } from "@/lib/validation/identity";
+import { mayBeMinor, type ProfileInput, type SignUpInput } from "@/lib/validation/identity";
 import { normaliseEmail } from "./email";
 import { isLockedOut, recordLoginAttempt } from "./lockout";
 import { generateMemberCode } from "./memberCode";
 import { hashPassword, verifyPassword } from "./password";
+import { revokeGamerSessions } from "./session";
 
 export type LoginResult = { ok: true; gamerId: string } | { ok: false; reason: "invalid" | "locked" };
 
@@ -91,4 +93,55 @@ export async function registerGamer(input: SignUpInput): Promise<RegisterResult>
     }
   }
   throw new Error("Could not generate a unique member code");
+}
+
+export type ProfileResult = { ok: true } | { ok: false; reason: "email_taken" | "guardian_needed" };
+
+/** Saves profile edits. A birth year that makes the gamer a possible minor needs guardian consent on file. */
+export async function updateGamerProfile(gamerId: string, input: ProfileInput, currentYear: number): Promise<ProfileResult> {
+  if (mayBeMinor(input.birthYear, currentYear)) {
+    const [guardian] = await db
+      .select({ id: schema.consents.id })
+      .from(schema.consents)
+      .where(and(eq(schema.consents.gamerId, gamerId), eq(schema.consents.purpose, "guardian"), eq(schema.consents.granted, true)))
+      .limit(1);
+    if (!guardian) return { ok: false, reason: "guardian_needed" };
+  }
+
+  try {
+    await db
+      .update(schema.gamers)
+      .set({ ...input, updatedAt: new Date() })
+      .where(and(eq(schema.gamers.id, gamerId), isNull(schema.gamers.deletedAt)));
+    return { ok: true };
+  } catch (error) {
+    if (isUniqueViolation(error, "gamers_email_unique")) return { ok: false, reason: "email_taken" };
+    throw error;
+  }
+}
+
+/** Changes the password and signs out every session; the caller starts a fresh one. */
+export async function changeGamerPassword(
+  gamerId: string,
+  currentPassword: string,
+  newPassword: string,
+): Promise<{ ok: true } | { ok: false; reason: "wrong_password" }> {
+  const [gamer] = await db
+    .select({ passwordHash: schema.gamers.passwordHash })
+    .from(schema.gamers)
+    .where(eq(schema.gamers.id, gamerId))
+    .limit(1);
+  if (!(await verifyPassword(currentPassword, gamer?.passwordHash))) return { ok: false, reason: "wrong_password" };
+
+  await db
+    .update(schema.gamers)
+    .set({ passwordHash: await hashPassword(newPassword), updatedAt: new Date() })
+    .where(eq(schema.gamers.id, gamerId));
+  await revokeGamerSessions(gamerId);
+  return { ok: true };
+}
+
+/** QR code staff scan at check-in. */
+export function memberQrSvg(memberCode: string): Promise<string> {
+  return QRCode.toString(memberCode, { type: "svg", margin: 1, errorCorrectionLevel: "M", color: { dark: "#07070a", light: "#f5f5f7" } });
 }

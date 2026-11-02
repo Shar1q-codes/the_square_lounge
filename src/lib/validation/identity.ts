@@ -35,11 +35,14 @@ const profileFields = (currentYear: number) => ({
   fullName: z.string().trim().min(2, "Enter your name.").max(80),
   email: emailField,
   phone: phoneField,
-  birthYear: z.coerce
-    .number({ error: "Enter your birth year." })
-    .int()
-    .min(currentYear - 100, "Enter a real birth year.")
-    .max(currentYear - MIN_AGE, `You need to be at least ${MIN_AGE} to join.`),
+  birthYear: z.preprocess(
+    (v) => (v === "" ? undefined : v),
+    z.coerce
+      .number({ error: "Enter your birth year." })
+      .int("Enter your birth year.")
+      .min(currentYear - 100, "Enter a real birth year.")
+      .max(currentYear - MIN_AGE, `You need to be at least ${MIN_AGE} to join.`),
+  ),
   gender: optional(z.enum(GENDERS)),
   area: z.string().trim().min(2, "Enter your area, e.g. Malakpet.").max(60),
   pincode: z.string().trim().regex(/^[1-9]\d{5}$/, "Enter a 6-digit pincode."),

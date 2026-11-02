@@ -59,9 +59,9 @@ Each task must also clear the project bar: `npm test`, `npm run lint`, `npm run 
 
 ## Task 6: Account page (`/account`)
 **Acceptance criteria:**
-- [ ] Shows name, member code and a QR SVG encoding the member code
-- [ ] Profile edits validate; changing email to one already used is refused
-- [ ] Password change requires the current password
+- [x] Shows name, member code and a QR SVG encoding the member code
+- [x] Profile edits validate; changing email to one already used is refused
+- [x] Password change requires the current password
 **Verification:** `npm test -- tests/integration/identity/profile`; manual check
 **Dependencies:** Task 5
 **Files:** `src/app/(gamer)/account/{page,actions}.tsx`, `src/components/account/{ProfileForm,MemberCard,PasswordForm}.tsx`

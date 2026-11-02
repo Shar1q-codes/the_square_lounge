@@ -31,7 +31,7 @@ See [todo.md](todo.md) for acceptance criteria per task.
 ### Phase 2: Gamer flows
 - [x] Task 4: Gamer sign-up (`/join`)
 - [x] Task 5: Gamer login and logout (`/login`)
-- [ ] Task 6: Account page: profile, member QR, password change (`/account`)
+- [x] Task 6: Account page: profile, member QR, password change (`/account`)
 - [ ] Task 7: Privacy notice, consent toggle, data export, account deletion
 
 ### Checkpoint B: Gamer flows
