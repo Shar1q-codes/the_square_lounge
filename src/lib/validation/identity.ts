@@ -1,13 +1,14 @@
 import { z } from "zod";
 import { normaliseEmail } from "@/server/identity/email";
 import { normalisePhone } from "@/server/identity/phone";
+import { MIN_AGE, mayBeMinor } from "@/lib/age";
+
+export { mayBeMinor };
 
 export const GENDERS = ["male", "female", "other", "prefer_not"] as const;
 export const REFERRAL_SOURCES = ["instagram", "google", "friend", "walk_in", "whatsapp", "other"] as const;
 export const STAFF_ROLES = ["staff", "admin"] as const;
 
-export const MIN_AGE = 13;
-export const ADULT_AGE = 18;
 
 /** HTML checkboxes send "on" when ticked and nothing when not. */
 const checkbox = z.preprocess((v) => v === "on" || v === "true" || v === true, z.boolean());
@@ -59,12 +60,6 @@ const profileFields = (currentYear: number) => ({
         .map((g) => g.slice(0, 60)),
     ),
 });
-
-/**
- * Only the birth year is known, so age is approximate: someone born in `currentYear - 18`
- * may still be 17, so they are asked for guardian consent too (DPDP: under-18s need it).
- */
-export const mayBeMinor = (birthYear: number, currentYear: number) => currentYear - birthYear <= ADULT_AGE;
 
 export const signUpSchema = (currentYear: number) =>
   z

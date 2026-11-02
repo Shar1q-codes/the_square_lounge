@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useActionState, useState } from "react";
 import { signUp } from "@/app/(gamer)/join/actions";
 import { emptyFormState } from "@/lib/forms";
-import { mayBeMinor } from "@/lib/validation/identity";
+import { mayBeMinor } from "@/lib/age";
 import { Card } from "@/components/ui/Card";
 import { CheckboxField, FormMessage, SelectField, TextField } from "./fields";
 import { genderOptions, referralOptions } from "./profileOptions";
