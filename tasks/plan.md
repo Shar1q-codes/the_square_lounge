@@ -36,7 +36,7 @@ See [todo.md](todo.md).
 
 ### Phase 3: Admin and gamer views
 - [x] Task 6: Admin corrections (`/admin/sessions`)
-- [ ] Task 7: Gamer "Now playing", recent visits, export includes sessions
+- [x] Task 7: Gamer "Now playing", recent visits, export includes sessions
 - [ ] Task 8: E2E and full gate
 
 ### Checkpoint C

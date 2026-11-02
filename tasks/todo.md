@@ -42,8 +42,8 @@ Every task also clears: `npm test`, `npm run lint`, `npm run typecheck` pass. On
 **Files:** `src/server/sessions/corrections.ts`, `src/app/admin/sessions/{page,actions}.tsx`, `src/components/staff/SessionCorrection.tsx`, `tests/integration/sessions/corrections.test.ts` · **Scope:** M
 
 ## Task 7: Gamer view and export
-- [ ] `/account` shows Now playing and last 20 closed visits (no amounts)
-- [ ] Export includes sessions; voided and other gamers' sessions excluded from history
+- [x] `/account` shows Now playing and last 20 closed visits (no amounts)
+- [x] Export includes sessions; voided and other gamers' sessions excluded from history
 **Files:** `src/server/sessions/history.ts`, `src/server/identity/consent.ts`, `src/components/account/{NowPlaying,RecentVisits}.tsx`, `src/app/(gamer)/account/page.tsx`, `tests/integration/sessions/history.test.ts` · **Scope:** M
 
 ## Task 8: E2E and gate
