@@ -69,6 +69,11 @@ export function Footer() {
               </a>
             </li>
             <li>
+              <a href="/shop" className="text-sm text-muted transition-colors hover:text-gold">
+                Points shop
+              </a>
+            </li>
+            <li>
               <a href="/privacy" className="text-sm text-muted transition-colors hover:text-gold">
                 Privacy
               </a>

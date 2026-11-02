@@ -14,9 +14,14 @@ export default async function GamerLayout({ children }: { children: ReactNode })
     <AccountShell
       nav={
         gamer ? (
-          <Link href="/account" className={linkClass}>
-            My account
-          </Link>
+          <>
+            <Link href="/shop" className={linkClass}>
+              Shop
+            </Link>
+            <Link href="/account" className={linkClass}>
+              My account
+            </Link>
+          </>
         ) : (
           <>
             <Link href="/login" className={linkClass}>

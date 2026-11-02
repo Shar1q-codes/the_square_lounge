@@ -25,7 +25,7 @@ See [todo.md](todo.md).
 
 ### Phase 2
 - [x] Task 3: Offers domain and `/admin/offers`
-- [ ] Task 4: Shop, claims, vouchers, points page, balance on account
+- [x] Task 4: Shop, claims, vouchers, points page, balance on account
 - [ ] Task 5: Counter redeem, expiry (lazy + cron), admin adjustments, export/deletion
 
 ### Checkpoint B

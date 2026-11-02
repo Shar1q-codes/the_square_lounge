@@ -6,8 +6,10 @@ import { PasswordForm } from "@/components/account/PasswordForm";
 import { ProfileForm } from "@/components/account/ProfileForm";
 import { NowPlaying, RecentVisits } from "@/components/account/Visits";
 import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
 import { requireGamer } from "@/server/identity/currentUser";
 import { memberQrSvg } from "@/server/identity/gamers";
+import { balanceOf } from "@/server/loyalty/ledger";
 import { currentSession, recentVisits } from "@/server/sessions/history";
 import { logOut } from "../login/actions";
 
@@ -18,10 +20,11 @@ const formatDate = (d: Date) =>
 
 export default async function AccountPage() {
   const gamer = await requireGamer();
-  const [qrSvg, playing, visits] = await Promise.all([
+  const [qrSvg, playing, visits, balance] = await Promise.all([
     memberQrSvg(gamer.memberCode),
     currentSession(gamer.id),
     recentVisits(gamer.id),
+    balanceOf(gamer.id),
   ]);
   const firstName = gamer.fullName?.split(" ")[0] ?? "there";
 
@@ -35,6 +38,23 @@ export default async function AccountPage() {
         qrSvg={qrSvg}
         memberSince={formatDate(gamer.createdAt)}
       />
+      <Card className="flex flex-wrap items-center justify-between gap-4 p-5 sm:p-6">
+        <p>
+          <span className="font-display text-3xl font-semibold text-gold-soft">{balance}</span>{" "}
+          <span className="text-muted">points</span>
+        </p>
+        <div className="flex flex-wrap gap-2">
+          <Button href="/shop" size="sm">
+            Points shop
+          </Button>
+          <Button href="/account/vouchers" size="sm" variant="secondary">
+            My vouchers
+          </Button>
+          <Button href="/account/points" size="sm" variant="ghost">
+            History
+          </Button>
+        </div>
+      </Card>
       <RecentVisits visits={visits} />
       <ProfileForm
         initial={{

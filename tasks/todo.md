@@ -19,8 +19,8 @@ Every task also clears `npm test`, `npm run lint`, `npm run typecheck`. One comm
 - [x] `listShopOffers` returns only active, in-date, in-stock offers
 
 ## Task 4: Shop, claims, vouchers
-- [ ] `/shop` public list; claim when logged in; refusals: points, stock, dates, inactive, member limit; parallel claims can't oversell
-- [ ] `/account/vouchers` with code + QR, cancel and refund; `/account/points` history; balance on `/account`
+- [x] `/shop` public list; claim when logged in; refusals: points, stock, dates, inactive, member limit; parallel claims can't oversell
+- [x] `/account/vouchers` with code + QR, cancel and refund; `/account/points` history; balance on `/account`
 
 ## Task 5: Counter, expiry, adjustments
 - [ ] `/staff/vouchers` check and mark used (once), audited
