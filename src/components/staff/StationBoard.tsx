@@ -52,19 +52,24 @@ function ResultLine({ state }: { state: RowActionState }) {
 
 type Notify = (message: string) => void;
 
-/** Reports a successful action up to the board: the row it came from may vanish on refresh. */
-function useNotifyOnSuccess(state: RowActionState, notify: Notify) {
-  useEffect(() => {
-    if (state.ok && state.message) notify(state.message);
-  }, [state, notify]);
+type RowAction = (prev: RowActionState, formData: FormData) => Promise<RowActionState>;
+
+/**
+ * Reports success to the board as soon as the action returns: the row it came from is removed by
+ * the same update (the player is no longer playing), so it can't show the message itself.
+ */
+function withNotify(action: RowAction, notify: Notify): RowAction {
+  return async (prev, formData) => {
+    const result = await action(prev, formData);
+    if (result.ok && result.message) notify(result.message);
+    return result;
+  };
 }
 
 function PlayerRow({ player, now, notify }: { player: BoardPlayer; now: Date; notify: Notify }) {
   const [panel, setPanel] = useState<"none" | "out" | "void">("none");
-  const [outState, checkOut] = useActionState(checkOutAction, {} as RowActionState);
-  const [voidState, cancel] = useActionState(voidAction, {} as RowActionState);
-  useNotifyOnSuccess(outState, notify);
-  useNotifyOnSuccess(voidState, notify);
+  const [outState, checkOut] = useActionState(withNotify(checkOutAction, notify), {} as RowActionState);
+  const [voidState, cancel] = useActionState(withNotify(voidAction, notify), {} as RowActionState);
   const minutes = minutesBetween(player.startedAt, now);
   const flagged = needsAttention(player.startedAt, now);
 
@@ -113,8 +118,7 @@ function PlayerRow({ player, now, notify }: { player: BoardPlayer; now: Date; no
 
 function StationCard({ station, now, notify }: { station: BoardStation; now: Date; notify: Notify }) {
   const [open, setOpen] = useState(false);
-  const [state, checkOutAll] = useActionState(checkOutAction, {} as RowActionState);
-  useNotifyOnSuccess(state, notify);
+  const [state, checkOutAll] = useActionState(withNotify(checkOutAction, notify), {} as RowActionState);
   const count = station.players.length;
   const full = count >= station.maxCheckIns;
 
