@@ -28,7 +28,7 @@ See [todo.md](todo.md).
 
 ### Phase 2: Counter flows
 - [x] Task 3: Check-in domain (refusals, capacity lock, concurrency)
-- [ ] Task 4: Check-out (single / station), payments, void, `closeSessions()`
+- [x] Task 4: Check-out (single / station), payments, void, `closeSessions()`
 - [ ] Task 5: Station board UI: check-in, check-out, void, scan button
 
 ### Checkpoint B

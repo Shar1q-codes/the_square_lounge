@@ -23,9 +23,9 @@ Every task also clears: `npm test`, `npm run lint`, `npm run typecheck` pass. On
 **Files:** `src/server/sessions/checkIn.ts`, `tests/support/db.ts`, `tests/integration/sessions/checkIn.test.ts` · **Scope:** M
 
 ## Task 4: Check-out, payments, void
-- [ ] Single and whole-station check-out end with one shared payment (amount/method optional) and return closed sessions with minutes
-- [ ] Void with reason within 15 min; refused after; voided never reopens
-- [ ] Audits `session.check_out`, `session.void`
+- [x] Single and whole-station check-out end with one shared payment (amount/method optional) and return closed sessions with minutes
+- [x] Void with reason within 15 min; refused after; voided never reopens
+- [x] Audits `session.check_out`, `session.void`
 **Files:** `src/server/sessions/checkOut.ts`, `src/server/sessions/void.ts`, `tests/integration/sessions/checkOut.test.ts` · **Scope:** M
 
 ## Task 5: Station board UI
