@@ -100,9 +100,9 @@ Each task must also clear the project bar: `npm test`, `npm run lint`, `npm run 
 
 ## Task 10: Staff management (`/admin/staff`)
 **Acceptance criteria:**
-- [ ] Admin can create, deactivate/reactivate and reset staff; staff role gets redirected
-- [ ] Admin cannot deactivate themselves
-- [ ] All changes write audit rows
+- [x] Admin can create, deactivate/reactivate and reset staff; staff role gets redirected
+- [x] Admin cannot deactivate themselves
+- [x] All changes write audit rows
 **Verification:** `npm test -- tests/integration/identity/staff`
 **Dependencies:** Task 8
 **Files:** `src/app/admin/layout.tsx`, `src/app/admin/staff/{page,actions}.tsx`, `src/server/identity/staff.ts`
