@@ -16,9 +16,9 @@ Every task also clears `npm test`, `npm run lint`, `npm run typecheck`. One comm
 - [x] Station visits, hours, revenue, utilisation (an hour with 2 players counts once)
 
 ## Task 4: People and loyalty
-- [ ] Top-10 areas/pincodes + Other; age band, gender, sign-up source with returning share
-- [ ] Top members; win-back (2+ visits, none in 15 days; deleted excluded; opted-in flag)
-- [ ] Loyalty: earned, spent, outstanding, vouchers by status, top offers
+- [x] Top-10 areas/pincodes + Other; age band, gender, sign-up source with returning share
+- [x] Top members; win-back (2+ visits, none in 15 days; deleted excluded; opted-in flag)
+- [x] Loyalty: earned, spent, outstanding, vouchers by status, top offers
 
 ## Task 5: Dashboard
 - [ ] `/admin/analytics` admin-only, range picker in URL, all sections, works at 375 px
