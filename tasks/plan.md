@@ -17,7 +17,7 @@ Approved 2026-11-03 with the spec's defaults (same rate for PS5 and PS4, no pre-
 See [todo.md](todo.md).
 
 ### Phase 1
-- [ ] Task 1: Config, schema, migration (RLS), pure helpers
+- [x] Task 1: Config, schema, migration (RLS), pure helpers
 - [ ] Task 2: Ledger and awarding (check-out, corrections)
 
 ### Checkpoint A

@@ -3,9 +3,9 @@
 Every task also clears `npm test`, `npm run lint`, `npm run typecheck`. One commit per task.
 
 ## Task 1: Config, schema, helpers
-- [ ] `src/config/loyalty.ts` (10 pts/h PS5 and PS4, 720-min cap, 30-day vouchers)
-- [ ] `offers`, `vouchers`, `points_ledger` with constraints and the one-award-per-session index; RLS on
-- [ ] `pointsFor` and voucher-code helpers with unit tests
+- [x] `src/config/loyalty.ts` (10 pts/h PS5 and PS4, 720-min cap, 30-day vouchers)
+- [x] `offers`, `vouchers`, `points_ledger` with constraints and the one-award-per-session index; RLS on
+- [x] `pointsFor` and voucher-code helpers with unit tests
 
 ## Task 2: Ledger and awarding
 - [ ] `addLedgerEntry`, `balanceOf`, `ledgerFor`
