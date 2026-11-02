@@ -1,6 +1,6 @@
 import { timingSafeEqual } from "node:crypto";
 
-/** Vercel Cron sends `Authorization: Bearer <CRON_SECRET>`. No secret configured means no access. */
+/** The scheduled function sends `Authorization: Bearer <CRON_SECRET>`. No secret configured means no access. */
 export function isCronAuthorized(header: string | null, secret: string | undefined): boolean {
   if (!secret || !header) return false;
   const expected = Buffer.from(`Bearer ${secret}`);

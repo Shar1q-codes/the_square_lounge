@@ -1,0 +1,11 @@
+# Netlify detects Next.js and uses its Next.js runtime automatically; this file only pins the basics.
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# Scheduled functions (daily voucher expiry) live here.
+[functions]
+  directory = "netlify/functions"

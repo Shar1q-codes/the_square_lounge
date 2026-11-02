@@ -106,13 +106,22 @@ Every new table needs `ENABLE ROW LEVEL SECURITY` (a test fails otherwise) so Su
 Code layout: `src/db` (schema, client), `src/server/identity` (accounts, logins, lockout, consent, audit), `src/server/sessions` (stations, check-in/out, corrections, history), `src/server/loyalty` (ledger, awards, offers, vouchers), `src/server/analytics` (dashboard queries, CSV),
 `src/lib/validation` (form rules), `src/app/(gamer)`, `src/app/staff`, `src/app/admin`, `tests/`, `e2e/`.
 
-## Deploy
+## Deploy (Netlify + Supabase)
 
 1. Create a Supabase project (region: Mumbai). In **Connect**, copy the **Transaction pooler** URI (port 6543).
 2. Apply migrations once from your PC: `$env:DATABASE_URL="<that URI>"; npx drizzle-kit migrate`, then
    `npm run db:seed` the same way.
-3. In Vercel, set `DATABASE_URL` to the same URI (Production and Preview) and `CRON_SECRET` to a long random
-   string, then deploy. `vercel.json` runs `/api/cron/expire-vouchers` daily at 2:00 am IST to refund expired vouchers
-   (vouchers also expire whenever someone views or redeems them, so this is a safety net).
+3. On Netlify (the site is already linked to this GitHub repo): **Site configuration → Environment variables**, add
+   - `DATABASE_URL` = the same pooler URI
+   - `CRON_SECRET` = a long random string (e.g. from a password manager)
+
+   then **Deploys → Trigger deploy**. Netlify picks up Next.js automatically; `netlify.toml` pins the build command
+   and Node 22.
+4. Set `site.url` in `src/config/site.ts` to the real address (your Netlify domain or custom domain). It feeds
+   canonical links, the sitemap and share images.
+
+Daily voucher expiry: `netlify/functions/expire-vouchers.ts` is a Netlify Scheduled Function that calls
+`/api/cron/expire-vouchers` at 2:00 am IST with `CRON_SECRET`. It shows under **Logs → Functions** in Netlify.
+Vouchers also expire whenever someone views or redeems them, so this is a safety net.
 
 The app never uses Supabase's anon or service keys; all tables have row-level security on with no policies.
