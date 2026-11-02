@@ -8,11 +8,11 @@ Every task also clears `npm test`, `npm run lint`, `npm run typecheck`. One comm
 - [x] `pointsFor` and voucher-code helpers with unit tests
 
 ## Task 2: Ledger and awarding
-- [ ] `addLedgerEntry`, `balanceOf`, `ledgerFor`
-- [ ] Check-out awards points to every member checked out (same transaction); voided earns nothing; under 6 min writes nothing
-- [ ] Corrections write the difference as a correction entry; no double award
+- [x] `addLedgerEntry`, `balanceOf`, `ledgerFor`
+- [x] Check-out awards points to every member checked out (same transaction); voided earns nothing; under 6 min writes nothing
+- [x] Corrections write the difference as a correction entry; no double award
 
-### Checkpoint A
+### Checkpoint A ✅ (204 tests, build clean, fresh DB 12/12 tables with RLS)
 
 ## Task 3: Offers and `/admin/offers`
 - [ ] Create, edit, deactivate (no delete once vouchers exist), audited

@@ -18,10 +18,10 @@ See [todo.md](todo.md).
 
 ### Phase 1
 - [x] Task 1: Config, schema, migration (RLS), pure helpers
-- [ ] Task 2: Ledger and awarding (check-out, corrections)
+- [x] Task 2: Ledger and awarding (check-out, corrections)
 
 ### Checkpoint A
-- [ ] Tests/lint/typecheck/build pass; fresh DB has RLS on all 12 tables
+- [x] Tests/lint/typecheck/build pass; fresh DB has RLS on all 12 tables
 
 ### Phase 2
 - [ ] Task 3: Offers domain and `/admin/offers`
