@@ -5,7 +5,7 @@ import { writeAudit } from "@/server/identity/audit";
 import { isUniqueViolation } from "@/server/identity/gamers";
 
 export type CheckInResult =
-  | { ok: true; sessionId: string }
+  | { ok: true; sessionId: string; fullName: string | null }
   | { ok: false; reason: "already_playing"; stationName: string; startedAt: Date }
   | { ok: false; reason: "station_full" | "station_inactive" | "gamer_not_found" };
 
@@ -21,7 +21,7 @@ export async function checkIn(staffId: string, gamerId: string, stationId: numbe
       if (!station?.active) return { ok: false, reason: "station_inactive" } as const;
 
       const [gamer] = await tx
-        .select({ id: schema.gamers.id })
+        .select({ id: schema.gamers.id, fullName: schema.gamers.fullName })
         .from(schema.gamers)
         .where(and(eq(schema.gamers.id, gamerId), isNull(schema.gamers.deletedAt)));
       if (!gamer) return { ok: false, reason: "gamer_not_found" } as const;
@@ -47,7 +47,7 @@ export async function checkIn(staffId: string, gamerId: string, stationId: numbe
         { actorStaffId: staffId, action: "session.check_in", targetType: "play_session", targetId: session.id, details: { stationId } },
         tx,
       );
-      return { ok: true, sessionId: session.id } as const;
+      return { ok: true, sessionId: session.id, fullName: gamer.fullName } as const;
     });
   } catch (error) {
     // The same gamer checked in at two stations at the same moment: the unique index caught it.

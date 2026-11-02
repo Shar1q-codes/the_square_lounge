@@ -10,7 +10,7 @@ export default async function AdminStaffPage() {
   const admin = await requireStaff("admin");
   const rows = await listStaff();
   return (
-    <div className="grid gap-6">
+    <div className="mx-auto grid max-w-2xl gap-6">
       <PageTitle eyebrow="Admin" title="Staff accounts">
         Deactivating someone logs them out everywhere straight away.
       </PageTitle>

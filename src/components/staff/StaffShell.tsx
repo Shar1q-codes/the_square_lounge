@@ -10,8 +10,12 @@ const linkClass = "rounded-full px-3 py-2 text-muted transition-colors hover:tex
 export function StaffShell({ member, children }: { member: Staff; children: ReactNode }) {
   return (
     <AccountShell
+      wide
       nav={
         <>
+          <Link href="/staff" className={linkClass}>
+            Board
+          </Link>
           <Link href="/staff/gamers" className={linkClass}>
             Gamers
           </Link>

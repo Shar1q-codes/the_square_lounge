@@ -29,12 +29,12 @@ Every task also clears: `npm test`, `npm run lint`, `npm run typecheck` pass. On
 **Files:** `src/server/sessions/checkOut.ts`, `src/server/sessions/void.ts`, `tests/integration/sessions/checkOut.test.ts` · **Scope:** M
 
 ## Task 5: Station board UI
-- [ ] `/staff` shows each active station: players now / limit, names, codes, live minute timers, "Needs attention" after 12 h; refreshes every 30 s
-- [ ] Check-in dialog (code/email/mobile, scan button where supported), check-out (one / station, amount, method), void
-- [ ] 375 px wide with a full 8-player station: no sideways scroll
+- [x] `/staff` shows each active station: players now / limit, names, codes, live minute timers, "Needs attention" after 12 h; refreshes every 30 s
+- [x] Check-in dialog (code/email/mobile, scan button where supported), check-out (one / station, amount, method), void
+- [x] 375 px wide with a full 8-player station: no sideways scroll
 **Files:** `src/server/sessions/board.ts`, `src/app/staff/(portal)/{page,actions}.tsx`, `src/components/staff/{StationBoard,CheckInForm,CheckOutForm,ScanButton}.tsx` · **Scope:** M
 
-### Checkpoint B
+### Checkpoint B ✅ (browser: loose code check-in, shared-mobile choice, already-playing refusal, whole-station check-out ₹300 UPI, 8/8 station at 375px)
 
 ## Task 6: Admin corrections
 - [ ] `/admin/sessions` lists open / needs-attention / last 7 days

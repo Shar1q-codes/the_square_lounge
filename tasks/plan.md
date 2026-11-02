@@ -29,10 +29,10 @@ See [todo.md](todo.md).
 ### Phase 2: Counter flows
 - [x] Task 3: Check-in domain (refusals, capacity lock, concurrency)
 - [x] Task 4: Check-out (single / station), payments, void, `closeSessions()`
-- [ ] Task 5: Station board UI: check-in, check-out, void, scan button
+- [x] Task 5: Station board UI: check-in, check-out, void, scan button
 
 ### Checkpoint B
-- [ ] Browser: check in 2 members → live timers → check out station with payment
+- [x] Browser: check in 2 members → live timers → check out station with payment
 
 ### Phase 3: Admin and gamer views
 - [ ] Task 6: Admin corrections (`/admin/sessions`)
