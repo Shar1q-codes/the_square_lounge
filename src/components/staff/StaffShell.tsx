@@ -1,0 +1,34 @@
+import Link from "next/link";
+import type { ReactNode } from "react";
+import type { Staff } from "@/db/schema";
+import { staffLogOut } from "@/app/staff/login/actions";
+import { AccountShell } from "@/components/account/AccountShell";
+
+const linkClass = "rounded-full px-3 py-2 text-muted transition-colors hover:text-fg";
+
+/** Shell for the counter and admin pages, with role-aware navigation. */
+export function StaffShell({ member, children }: { member: Staff; children: ReactNode }) {
+  return (
+    <AccountShell
+      nav={
+        <>
+          <Link href="/staff/gamers" className={linkClass}>
+            Gamers
+          </Link>
+          {member.role === "admin" && (
+            <Link href="/admin/staff" className={linkClass}>
+              Staff
+            </Link>
+          )}
+          <form action={staffLogOut}>
+            <button type="submit" className={linkClass}>
+              Log out
+            </button>
+          </form>
+        </>
+      }
+    >
+      {children}
+    </AccountShell>
+  );
+}

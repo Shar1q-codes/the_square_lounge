@@ -38,7 +38,7 @@ See [todo.md](todo.md) for acceptance criteria per task.
 - [x] Sign up → log out → log in → edit → delete works in the browser
 
 ### Phase 3: Staff and admin
-- [ ] Task 8: Staff login and first-admin seed script
+- [x] Task 8: Staff login and first-admin seed script
 - [ ] Task 9: Gamer lookup and temporary password reset (`/staff/gamers`)
 - [ ] Task 10: Staff management (`/admin/staff`)
 - [ ] Task 11: Navbar links and Playwright e2e for the whole module

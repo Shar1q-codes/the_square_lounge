@@ -81,8 +81,8 @@ Each task must also clear the project bar: `npm test`, `npm run lint`, `npm run 
 
 ## Task 8: Staff login and first-admin seed
 **Acceptance criteria:**
-- [ ] `npm run db:seed-admin` creates the admin once and is a no-op on re-run
-- [ ] Staff login uses the same lockout; deactivated staff can't log in
+- [x] `npm run db:seed-admin` creates the admin once and is a no-op on re-run
+- [x] Staff login uses the same lockout; deactivated staff can't log in
 **Verification:** `npm test -- tests/integration/identity/staff`
 **Dependencies:** Task 3
 **Files:** `scripts/seed-admin.ts`, `src/server/identity/staff.ts`, `src/app/staff/login/{page,actions}.tsx`, `src/app/staff/layout.tsx`
