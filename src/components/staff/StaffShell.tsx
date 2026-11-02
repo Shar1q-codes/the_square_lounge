@@ -24,6 +24,9 @@ export function StaffShell({ member, children }: { member: Staff; children: Reac
               <Link href="/admin/sessions" className={linkClass}>
                 Sessions
               </Link>
+              <Link href="/admin/offers" className={linkClass}>
+                Offers
+              </Link>
               <Link href="/admin/staff" className={linkClass}>
                 Staff
               </Link>

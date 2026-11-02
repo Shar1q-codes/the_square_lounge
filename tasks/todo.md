@@ -15,8 +15,8 @@ Every task also clears `npm test`, `npm run lint`, `npm run typecheck`. One comm
 ### Checkpoint A ✅ (204 tests, build clean, fresh DB 12/12 tables with RLS)
 
 ## Task 3: Offers and `/admin/offers`
-- [ ] Create, edit, deactivate (no delete once vouchers exist), audited
-- [ ] `listShopOffers` returns only active, in-date, in-stock offers
+- [x] Create, edit, hide (no delete in v1, so claimed vouchers always keep their offer), audited
+- [x] `listShopOffers` returns only active, in-date, in-stock offers
 
 ## Task 4: Shop, claims, vouchers
 - [ ] `/shop` public list; claim when logged in; refusals: points, stock, dates, inactive, member limit; parallel claims can't oversell

@@ -24,7 +24,7 @@ See [todo.md](todo.md).
 - [x] Tests/lint/typecheck/build pass; fresh DB has RLS on all 12 tables
 
 ### Phase 2
-- [ ] Task 3: Offers domain and `/admin/offers`
+- [x] Task 3: Offers domain and `/admin/offers`
 - [ ] Task 4: Shop, claims, vouchers, points page, balance on account
 - [ ] Task 5: Counter redeem, expiry (lazy + cron), admin adjustments, export/deletion
 
