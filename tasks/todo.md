@@ -24,5 +24,7 @@ Every task also clears `npm test`, `npm run lint`, `npm run typecheck`. One comm
 - [x] `/admin/analytics` admin-only, range picker in URL, all sections, works at 375 px
 
 ## Task 6: Downloads and gate
-- [ ] CSV per report, win-back CSV opted-in only, audited
-- [ ] E2E: admin views, switches range, downloads; staff redirected; full gate
+- [x] CSV per report, win-back CSV opted-in only, audited
+- [x] E2E: admin views, switches range, downloads; staff redirected; full gate
+
+### Final gate ✅ (295 unit/integration + 9 e2e tests, lint, typecheck, build; browser check desktop and 375 px)

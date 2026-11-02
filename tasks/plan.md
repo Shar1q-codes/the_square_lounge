@@ -22,8 +22,8 @@ See [todo.md](todo.md).
 - [x] Task 3: Heatmap and stations
 - [x] Task 4: Areas, audience, top members, win-back, loyalty summary
 - [x] Task 5: Dashboard page and charts
-- [ ] Task 6: CSV downloads, e2e, full gate
+- [x] Task 6: CSV downloads, e2e, full gate
 
 ### Checkpoints
 - [x] After Task 4: every query matches hand-computed numbers on the fixture
-- [ ] After Task 6: full gate green; browser check at 375 px and desktop
+- [x] After Task 6: full gate green; browser check at 375 px and desktop
