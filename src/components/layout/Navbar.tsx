@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from "react";
 import { site } from "@/config/site";
 import { cn } from "@/lib/utils";
@@ -113,6 +114,13 @@ export function Navbar() {
           </nav>
 
           <div className="flex items-center gap-2">
+            {/* /login sends members who are already signed in straight to their account. */}
+            <Link
+              href="/login"
+              className="hidden rounded-full px-3 py-2 text-sm text-muted transition-colors duration-300 hover:text-fg sm:inline-flex"
+            >
+              Log in
+            </Link>
             <Button href="#booking" size="sm" className="hidden sm:inline-flex">
               Book a Station
             </Button>
@@ -161,9 +169,19 @@ export function Navbar() {
               ))}
             </ul>
           </nav>
-          <Button href="#booking" size="lg" onClick={() => setMenu(false)} className="w-full">
-            Book a Station
-          </Button>
+          <div className="grid gap-3">
+            <div className="grid grid-cols-2 gap-3">
+              <Button href="/join" variant="secondary" size="lg" onClick={() => setMenu(false)}>
+                Join rewards
+              </Button>
+              <Button href="/login" variant="secondary" size="lg" onClick={() => setMenu(false)}>
+                Log in
+              </Button>
+            </div>
+            <Button href="#booking" size="lg" onClick={() => setMenu(false)} className="w-full">
+              Book a Station
+            </Button>
+          </div>
         </Container>
       </div>
     </div>

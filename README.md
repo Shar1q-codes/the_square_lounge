@@ -2,7 +2,8 @@
 
 Marketing site for The Square Lounge, a premium PlayStation lounge in Malakpet, Hyderabad.
 Built with Next.js 15 (App Router), React Three Fiber, GSAP + ScrollTrigger, Lenis and Tailwind CSS v4.
-It is a fully static site with no backend; bookings open a pre-filled WhatsApp message.
+Bookings open a pre-filled WhatsApp message. Member accounts (sign-up, login, profile, privacy controls)
+and the staff/admin counter pages run on Supabase Postgres through Drizzle; see "Member accounts" below.
 
 ## Run it (PowerShell)
 
@@ -45,7 +46,9 @@ src/
                 Dust, Lighting, Effects, CameraRig, SquareLoader
     ui/         Button, Card, Badge, SectionHeading, Reveal, SquareMark, SquareDivider, icons
   hooks/        useReducedMotion, useIsMobile, useMediaQuery
-  lib/          booking (validation + WhatsApp message), contact links, jsonld, gsap
+  lib/          booking (validation + WhatsApp message), contact links, jsonld, gsap, forms, validation/
+  db/           Drizzle schema and server-only client
+  server/       domain logic for member accounts (identity)
 ```
 
 ## 3D hero notes
@@ -57,6 +60,39 @@ src/
 - The dust is a custom shader on purpose: drei's `<Sparkles>` writes negative alpha, which shows up as dark
   squares inside the post-processing buffers.
 
+## Member accounts (backend)
+
+Spec and plan: `CAPABILITY-MAP.md`, `SPEC-identity.md`, `tasks/`. Pages: `/join`, `/login`, `/account`,
+`/account/privacy`, `/privacy`, `/staff/login`, `/staff/gamers`, `/admin/staff`.
+
+First-time setup (needs Docker Desktop running):
+
+```powershell
+copy .env.example .env.local   # then edit SEED_ADMIN_PASSWORD
+docker compose up -d db        # local Postgres 17 (+ a separate test database)
+npm run db:migrate
+npm run db:seed-admin          # creates the first admin from .env.local
+```
+
+Tests:
+
+```powershell
+npm test           # unit + integration (uses TEST_DATABASE_URL; wipes it)
+npm run test:e2e   # Playwright; stop any running `npm run dev` first
+npm run typecheck
+```
+
+Schema changes: edit `src/db/schema/*`, then `npm run db:generate` and commit the new file in `drizzle/`.
+Every new table needs `ENABLE ROW LEVEL SECURITY` (a test fails otherwise) so Supabase's public API can't read it.
+
+Code layout: `src/db` (schema, client), `src/server/identity` (accounts, sessions, lockout, consent, audit),
+`src/lib/validation` (form rules), `src/app/(gamer)`, `src/app/staff`, `src/app/admin`, `tests/`, `e2e/`.
+
 ## Deploy
 
-Push to GitHub and import the repo in Vercel; no environment variables are needed.
+1. Create a Supabase project (region: Mumbai). In **Connect**, copy the **Transaction pooler** URI (port 6543).
+2. Apply migrations once from your PC: `$env:DATABASE_URL="<that URI>"; npx drizzle-kit migrate`, then
+   `npm run db:seed-admin` the same way.
+3. In Vercel, set `DATABASE_URL` to the same URI (Production and Preview), then deploy.
+
+The app never uses Supabase's anon or service keys; all tables have row-level security on with no policies.
