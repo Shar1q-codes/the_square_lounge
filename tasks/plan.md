@@ -17,7 +17,7 @@ Approved 2026-11-03 (open 11:00–04:00 IST daily, lapsed = 15 days, no extra sc
 
 See [todo.md](todo.md).
 
-- [ ] Task 1: Pure helpers (range, % change, CSV, heat scale)
+- [x] Task 1: Pure helpers (range, % change, CSV, heat scale)
 - [ ] Task 2: Overview, trend, payments (+ seeded fixture)
 - [ ] Task 3: Heatmap and stations
 - [ ] Task 4: Areas, audience, top members, win-back, loyalty summary

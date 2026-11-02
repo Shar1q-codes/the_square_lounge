@@ -3,8 +3,8 @@
 Every task also clears `npm test`, `npm run lint`, `npm run typecheck`. One commit per task.
 
 ## Task 1: Pure helpers
-- [ ] `resolveRange` for 7/30/90/custom in business days, with previous period; bad input falls back to 7 days
-- [ ] `pctChange` (incl. from 0), `csvRow` (quotes, newlines, formula-safe), `heatLevel`
+- [x] `resolveRange` for 7/30/90/custom in business days, with previous period; bad input falls back to 7 days
+- [x] `pctChange` (incl. from 0), `csvRow` (quotes, newlines, formula-safe), `heatLevel`
 
 ## Task 2: Overview, trend, payments
 - [ ] Fixture with known sessions, payments, members (incl. voided, open, deleted, after-midnight)
