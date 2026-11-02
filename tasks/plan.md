@@ -23,10 +23,10 @@ See [todo.md](todo.md) for acceptance criteria per task.
 ### Phase 1: Foundation
 - [x] Task 1: Tooling, database and test harness
 - [x] Task 2: Pure identity helpers (email, phone, password, member code, zod schemas)
-- [ ] Task 3: Login sessions, lockout and role guards
+- [x] Task 3: Login sessions, lockout and role guards
 
 ### Checkpoint A: Foundation
-- [ ] `npm test`, `npm run lint`, `npm run typecheck`, `npm run build` pass; migrations apply to a clean DB
+- [x] `npm test`, `npm run lint`, `npm run typecheck`, `npm run build` pass; migrations apply to a clean DB
 
 ### Phase 2: Gamer flows
 - [ ] Task 4: Gamer sign-up (`/join`)

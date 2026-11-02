@@ -27,15 +27,15 @@ Each task must also clear the project bar: `npm test`, `npm run lint`, `npm run 
 ## Task 3: Login sessions, lockout and role guards
 **Description:** Create/read/revoke sessions with hashed tokens in cookies, failed-login lockout, and `requireGamer` / `requireStaff(role)` guards.
 **Acceptance criteria:**
-- [ ] Expired, revoked or deactivated-staff sessions resolve to no user
-- [ ] 5 failures in 15 minutes locks the identifier; older failures don't count
-- [ ] Guards redirect to the right login page for the wrong or missing role
+- [x] Expired, revoked or deactivated-staff sessions resolve to no user
+- [x] 5 failures in 15 minutes locks the identifier; older failures don't count
+- [x] Guards redirect to the right login page for the wrong or missing role
 **Verification:** `npm test -- tests/integration/identity/session`
 **Dependencies:** Task 2
 **Files:** `src/server/identity/{session,lockout,guards,audit}.ts`, `tests/integration/identity/session.test.ts`
 **Scope:** M
 
-### Checkpoint A: Foundation
+### Checkpoint A: Foundation ✅ (66 tests, build clean, fresh DB migrates with RLS on all 6 tables)
 
 ## Task 4: Gamer sign-up (`/join`)
 **Acceptance criteria:**
