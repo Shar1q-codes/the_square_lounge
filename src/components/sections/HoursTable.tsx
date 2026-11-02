@@ -2,7 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 import { site, type OpeningHours } from "@/config/site";
-import { toMinutes, venueNow } from "@/lib/booking";
+import { isOpenAt, venueNow } from "@/lib/booking";
 import { cn } from "@/lib/utils";
 
 const WEEKDAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"] as const;
@@ -24,11 +24,8 @@ function snapshot(): string {
   const day = WEEKDAYS[new Date(`${now.date}T00:00:00Z`).getUTCDay()];
   const rowIndex = hours.findIndex((r) => r.schemaDays.includes(day));
   if (rowIndex < 0) return `-1|closed`;
-  const row = hours[rowIndex];
-  const open = toMinutes(row.open);
-  let close = toMinutes(row.close);
-  if (close <= open) close += 1440;
-  return `${rowIndex}|${now.minutes >= open && now.minutes < close ? "open" : "closed"}`;
+  const time = `${String(Math.floor(now.minutes / 60)).padStart(2, "0")}:${String(now.minutes % 60).padStart(2, "0")}`;
+  return `${rowIndex}|${isOpenAt(now.date, time) ? "open" : "closed"}`;
 }
 
 const subscribe = (onChange: () => void) => {

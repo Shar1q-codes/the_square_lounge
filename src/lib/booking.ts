@@ -50,6 +50,28 @@ function openWindow(row: OpeningHours) {
   return { open, close };
 }
 
+/** The calendar day before a YYYY-MM-DD date. */
+const previousDate = (date: string) => new Date(Date.parse(`${date}T00:00:00Z`) - 86_400_000).toISOString().slice(0, 10);
+
+/**
+ * Whether the venue is open at a local date and time. Checks yesterday's window too: with a close
+ * after midnight (e.g. 11:00–04:00), 01:30 belongs to the previous day's opening.
+ */
+export function isOpenAt(date: string, time: string): boolean {
+  const minutes = toMinutes(time);
+  const today = hoursForDate(date);
+  if (today) {
+    const { open, close } = openWindow(today);
+    if (minutes >= open && minutes < close) return true;
+  }
+  const yesterday = hoursForDate(previousDate(date));
+  if (yesterday) {
+    const { close } = openWindow(yesterday);
+    if (minutes + 24 * 60 < close) return true;
+  }
+  return false;
+}
+
 /** Start times every 30 minutes, leaving room for at least a one-hour session. */
 export function timeSlots(date: string): string[] {
   const row = hoursForDate(date);

@@ -62,14 +62,19 @@ src/
 
 ## Member accounts (backend)
 
-Specs: `CAPABILITY-MAP.md`, `SPEC-identity.md`, `SPEC-play-sessions.md`, `SPEC-loyalty.md`; plans in `tasks/`.
+Specs: `CAPABILITY-MAP.md`, `SPEC-identity.md`, `SPEC-play-sessions.md`, `SPEC-loyalty.md`, `SPEC-analytics.md`;
+plans in `tasks/`.
 
 - Gamers: `/join`, `/login`, `/account` (member QR, points, now playing, recent visits), `/account/points`,
   `/account/vouchers`, `/account/privacy`, `/shop` (public points shop), `/privacy`
 - Counter: `/staff/login`, `/staff` (station board: check in/out, payments, cancel within 15 min),
   `/staff/gamers` (lookup, points balance), `/staff/vouchers` (redeem)
-- Admin: `/admin/sessions` (fix forgotten check-outs, audited), `/admin/offers`, `/admin/staff`; admins can also
-  adjust a member's points from `/staff/gamers`
+- Admin: `/admin/analytics` (dashboard + CSV downloads), `/admin/sessions` (fix forgotten check-outs, audited),
+  `/admin/offers`, `/admin/staff`; admins can also adjust a member's points from `/staff/gamers`
+
+Analytics count a "day" from 4 am to 4 am IST (the lounge is open 11 am–4 am), so late-night play belongs to the
+evening it started. The win-back list is members with 2+ visits and none in 15 days; its CSV only includes members
+who opted in to offers.
 
 Points rules (rate per console, 12-hour cap, voucher expiry) live in `src/config/loyalty.ts`. Points are added at
 check-out and recalculated when an admin corrects a session; every change is a row in `points_ledger`.
@@ -98,7 +103,7 @@ npm run typecheck
 Schema changes: edit `src/db/schema/*`, then `npm run db:generate` and commit the new file in `drizzle/`.
 Every new table needs `ENABLE ROW LEVEL SECURITY` (a test fails otherwise) so Supabase's public API can't read it.
 
-Code layout: `src/db` (schema, client), `src/server/identity` (accounts, logins, lockout, consent, audit), `src/server/sessions` (stations, check-in/out, corrections, history), `src/server/loyalty` (ledger, awards, offers, vouchers),
+Code layout: `src/db` (schema, client), `src/server/identity` (accounts, logins, lockout, consent, audit), `src/server/sessions` (stations, check-in/out, corrections, history), `src/server/loyalty` (ledger, awards, offers, vouchers), `src/server/analytics` (dashboard queries, CSV),
 `src/lib/validation` (form rules), `src/app/(gamer)`, `src/app/staff`, `src/app/admin`, `tests/`, `e2e/`.
 
 ## Deploy

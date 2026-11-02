@@ -137,18 +137,12 @@ export const site = {
 
   hours: [
     {
-      days: "Mon – Fri",
+      days: "Every day",
       open: "11:00",
-      close: "23:00",
-      schemaDays: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      close: "04:00", // closes after midnight, at 4 am the next morning
+      schemaDays: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
     },
-    {
-      days: "Sat – Sun",
-      open: "10:00",
-      close: "00:00",
-      schemaDays: ["Saturday", "Sunday"],
-    },
-  ] satisfies OpeningHours[], // TODO: confirm real opening hours
+  ] satisfies OpeningHours[], // Confirmed by the owner, 3 Nov 2026
 
   stations: [
     {
