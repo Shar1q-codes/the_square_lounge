@@ -12,8 +12,8 @@ Every task also clears `npm test`, `npm run lint`, `npm run typecheck`. One comm
 - [x] Daily trend fills empty days with 0; revenue by method incl. "not recorded"
 
 ## Task 3: Heatmap and stations
-- [ ] Heatmap averages members playing per weekday × hour (11:00 → 03:00)
-- [ ] Station visits, hours, revenue, utilisation (an hour with 2 players counts once)
+- [x] Heatmap averages members playing per weekday × hour (11:00 → 03:00)
+- [x] Station visits, hours, revenue, utilisation (an hour with 2 players counts once)
 
 ## Task 4: People and loyalty
 - [ ] Top-10 areas/pincodes + Other; age band, gender, sign-up source with returning share

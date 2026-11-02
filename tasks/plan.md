@@ -19,7 +19,7 @@ See [todo.md](todo.md).
 
 - [x] Task 1: Pure helpers (range, % change, CSV, heat scale)
 - [x] Task 2: Overview, trend, payments (+ seeded fixture)
-- [ ] Task 3: Heatmap and stations
+- [x] Task 3: Heatmap and stations
 - [ ] Task 4: Areas, audience, top members, win-back, loyalty summary
 - [ ] Task 5: Dashboard page and charts
 - [ ] Task 6: CSV downloads, e2e, full gate
