@@ -90,9 +90,9 @@ Each task must also clear the project bar: `npm test`, `npm run lint`, `npm run 
 
 ## Task 9: Gamer lookup and temporary password (`/staff/gamers`)
 **Acceptance criteria:**
-- [ ] Exact search by member code, email or mobile; shared mobile returns several gamers
-- [ ] Staff can set a temporary password; gamer's existing sessions are revoked
-- [ ] Each lookup and reset writes an audit row
+- [x] Exact search by member code, email or mobile; shared mobile returns several gamers
+- [x] Staff can set a temporary password; gamer's existing sessions are revoked
+- [x] Each lookup and reset writes an audit row
 **Verification:** `npm test -- tests/integration/identity/lookup`
 **Dependencies:** Task 8
 **Files:** `src/app/staff/gamers/{page,actions}.tsx`, `src/server/identity/gamers.ts`

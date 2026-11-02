@@ -2,13 +2,16 @@ import "server-only";
 import { and, eq, isNull } from "drizzle-orm";
 import QRCode from "qrcode";
 import { db, schema } from "@/db";
+import { venueYear } from "@/lib/forms";
 import type { Gamer } from "@/db/schema";
 import { PRIVACY_NOTICE_VERSION } from "@/config/privacy";
 import { mayBeMinor, type ProfileInput, type SignUpInput } from "@/lib/validation/identity";
+import { writeAudit } from "./audit";
 import { normaliseEmail } from "./email";
 import { isLockedOut, recordLoginAttempt } from "./lockout";
-import { generateMemberCode } from "./memberCode";
+import { generateMemberCode, normaliseMemberCode } from "./memberCode";
 import { hashPassword, verifyPassword } from "./password";
+import { normalisePhone } from "./phone";
 import { revokeGamerSessions } from "./session";
 
 export type LoginResult = { ok: true; gamerId: string } | { ok: false; reason: "invalid" | "locked" };
@@ -144,4 +147,75 @@ export async function changeGamerPassword(
 /** QR code staff scan at check-in. */
 export function memberQrSvg(memberCode: string): Promise<string> {
   return QRCode.toString(memberCode, { type: "svg", margin: 1, errorCorrectionLevel: "M", color: { dark: "#07070a", light: "#f5f5f7" } });
+}
+
+/** Coarse age group shown to staff instead of the birth year. */
+export function ageBand(birthYear: number | null, currentYear: number): string {
+  if (!birthYear) return "Unknown";
+  const age = currentYear - birthYear;
+  if (age < 18) return "13–17";
+  if (age < 25) return "18–24";
+  if (age < 35) return "25–34";
+  return "35+";
+}
+
+export type GamerSummary = {
+  id: string;
+  memberCode: string;
+  fullName: string | null;
+  phone: string | null;
+  ageBand: string;
+  area: string;
+  createdAt: Date;
+};
+
+/**
+ * Exact lookup for the counter: an email, a member code, or a mobile number (several gamers may
+ * share one). No partial or name search, so staff can't browse the member list. Audited.
+ */
+export async function findGamers(actorStaffId: string, rawQuery: string): Promise<GamerSummary[]> {
+  const query = rawQuery.trim();
+  const email = query.includes("@") ? normaliseEmail(query) : null;
+  const memberCode = email ? null : normaliseMemberCode(query);
+  const phone = email || memberCode ? null : normalisePhone(query);
+
+  const match = email
+    ? eq(schema.gamers.email, email)
+    : memberCode
+      ? eq(schema.gamers.memberCode, memberCode)
+      : phone
+        ? eq(schema.gamers.phone, phone)
+        : null;
+  const by = email ? "email" : memberCode ? "member_code" : phone ? "phone" : "invalid";
+
+  const rows = match
+    ? await db
+        .select()
+        .from(schema.gamers)
+        .where(and(match, isNull(schema.gamers.deletedAt)))
+        .limit(20)
+    : [];
+
+  await writeAudit({ actorStaffId, action: "gamer.lookup", targetType: "gamer", details: { by, results: rows.length } });
+
+  const year = venueYear();
+  return rows.map((g) => ({
+    id: g.id,
+    memberCode: g.memberCode,
+    fullName: g.fullName,
+    phone: g.phone,
+    ageBand: ageBand(g.birthYear, year),
+    area: g.area,
+    createdAt: g.createdAt,
+  }));
+}
+
+/** For a gamer who forgot their password: staff set a temporary one at the counter. */
+export async function setGamerTemporaryPassword(actorStaffId: string, gamerId: string, password: string) {
+  await db
+    .update(schema.gamers)
+    .set({ passwordHash: await hashPassword(password), updatedAt: new Date() })
+    .where(and(eq(schema.gamers.id, gamerId), isNull(schema.gamers.deletedAt)));
+  await revokeGamerSessions(gamerId);
+  await writeAudit({ actorStaffId, action: "gamer.temp_password", targetType: "gamer", targetId: gamerId });
 }

@@ -39,7 +39,7 @@ See [todo.md](todo.md) for acceptance criteria per task.
 
 ### Phase 3: Staff and admin
 - [x] Task 8: Staff login and first-admin seed script
-- [ ] Task 9: Gamer lookup and temporary password reset (`/staff/gamers`)
+- [x] Task 9: Gamer lookup and temporary password reset (`/staff/gamers`)
 - [ ] Task 10: Staff management (`/admin/staff`)
 - [ ] Task 11: Navbar links and Playwright e2e for the whole module
 
