@@ -2,6 +2,8 @@ import "server-only";
 import { asc, eq } from "drizzle-orm";
 import { db, schema } from "@/db";
 import { PRIVACY_NOTICE_VERSION } from "@/config/privacy";
+import { ledgerFor } from "@/server/loyalty/ledger";
+import { cancelAllVouchers, vouchersForExport } from "@/server/loyalty/vouchers";
 import { sessionsForExport } from "@/server/sessions/history";
 import { writeAudit } from "./audit";
 import { verifyPassword } from "./password";
@@ -33,7 +35,19 @@ export async function exportGamerData(gamerId: string) {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { passwordHash, ...profile } = gamer;
-  return { exportedAt: new Date().toISOString(), profile, consents, sessions: await sessionsForExport(gamerId) };
+  const [sessions, points, vouchers] = await Promise.all([
+    sessionsForExport(gamerId),
+    ledgerFor(gamerId, 10_000),
+    vouchersForExport(gamerId),
+  ]);
+  return {
+    exportedAt: new Date().toISOString(),
+    profile,
+    consents,
+    sessions,
+    points: points.map(({ delta, description, createdAt }) => ({ delta, description, at: createdAt })).reverse(),
+    vouchers,
+  };
 }
 
 /**
@@ -68,6 +82,7 @@ export async function deleteGamerAccount(
       })
       .where(eq(schema.gamers.id, gamerId));
     await tx.delete(schema.authSessions).where(eq(schema.authSessions.gamerId, gamerId));
+    await cancelAllVouchers(tx, gamerId);
   });
   await writeAudit({ actorGamerId: gamerId, action: "gamer.delete", targetType: "gamer", targetId: gamerId });
   return { ok: true };

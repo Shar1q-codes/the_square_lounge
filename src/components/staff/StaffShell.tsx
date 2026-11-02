@@ -19,10 +19,16 @@ export function StaffShell({ member, children }: { member: Staff; children: Reac
           <Link href="/staff/gamers" className={linkClass}>
             Gamers
           </Link>
+          <Link href="/staff/vouchers" className={linkClass}>
+            Vouchers
+          </Link>
           {member.role === "admin" && (
             <>
               <Link href="/admin/sessions" className={linkClass}>
                 Sessions
+              </Link>
+              <Link href="/admin/offers" className={linkClass}>
+                Offers
               </Link>
               <Link href="/admin/staff" className={linkClass}>
                 Staff

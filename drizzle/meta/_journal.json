@@ -29,6 +29,20 @@
       "when": 1793649070711,
       "tag": "0003_play_sessions_rls",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1793650881033,
+      "tag": "0004_loyalty",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1793650883934,
+      "tag": "0005_loyalty_rls",
+      "breakpoints": true
     }
   ]
 }

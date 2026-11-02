@@ -3,6 +3,7 @@ import { and, eq, inArray, sql } from "drizzle-orm";
 import { db, schema } from "@/db";
 import { canVoid, minutesBetween } from "@/lib/sessions";
 import { writeAudit } from "@/server/identity/audit";
+import { awardForSessions } from "@/server/loyalty/award";
 
 export type CheckOutTarget = { sessionId: string } | { stationId: number };
 export type PaymentInput = { amountPaise: number | null; method: "cash" | "upi" | "card" | "other" | null };
@@ -24,7 +25,7 @@ export type CloseResult =
 
 /**
  * Ends one session or every open session at a station, with one payment and the same end time
- * (the transaction's database clock), and returns the closed sessions.
+ * (the transaction's database clock), awards their points, and returns the closed sessions.
  */
 export async function closeSessions(staffId: string, target: CheckOutTarget, payment: PaymentInput): Promise<CloseResult> {
   return db.transaction(async (tx) => {
@@ -68,19 +69,18 @@ export async function closeSessions(staffId: string, target: CheckOutTarget, pay
       tx,
     );
 
-    return {
-      ok: true,
-      paymentId: created.id,
-      sessions: closed.map((s) => ({
-        id: s.id,
-        gamerId: s.gamerId,
-        stationId: s.stationId,
-        console: consoleOf.get(s.stationId)!,
-        startedAt: s.startedAt,
-        endedAt: s.endedAt!,
-        minutes: minutesBetween(s.startedAt, s.endedAt!),
-      })),
-    } as const;
+    const sessions: ClosedSession[] = closed.map((s) => ({
+      id: s.id,
+      gamerId: s.gamerId,
+      stationId: s.stationId,
+      console: consoleOf.get(s.stationId)!,
+      startedAt: s.startedAt,
+      endedAt: s.endedAt!,
+      minutes: minutesBetween(s.startedAt, s.endedAt!),
+    }));
+    await awardForSessions(tx, sessions);
+
+    return { ok: true, paymentId: created.id, sessions } as const;
   });
 }
 

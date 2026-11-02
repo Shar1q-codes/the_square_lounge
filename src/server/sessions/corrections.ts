@@ -3,6 +3,7 @@ import { and, desc, eq, gt, lt, sql, type SQL } from "drizzle-orm";
 import { db, schema } from "@/db";
 import { LONG_SESSION_MS } from "@/lib/sessions";
 import { writeAudit } from "@/server/identity/audit";
+import { reawardSession } from "@/server/loyalty/award";
 
 export type AdminFilter = "open" | "attention" | "recent";
 
@@ -75,6 +76,7 @@ export async function correctSession(adminId: string, input: CorrectionInput): P
         updatedAt: sql`now()`,
       })
       .where(eq(schema.playSessions.id, session.id));
+    await reawardSession(tx, session.id, adminId);
 
     await writeAudit(
       {

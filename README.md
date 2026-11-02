@@ -62,11 +62,17 @@ src/
 
 ## Member accounts (backend)
 
-Specs: `CAPABILITY-MAP.md`, `SPEC-identity.md`, `SPEC-play-sessions.md`; plans in `tasks/`.
+Specs: `CAPABILITY-MAP.md`, `SPEC-identity.md`, `SPEC-play-sessions.md`, `SPEC-loyalty.md`; plans in `tasks/`.
 
-- Gamers: `/join`, `/login`, `/account` (member QR, now playing, recent visits), `/account/privacy`, `/privacy`
-- Counter: `/staff/login`, `/staff` (station board: check in/out, payments, cancel within 15 min), `/staff/gamers`
-- Admin: `/admin/sessions` (fix forgotten check-outs, audited), `/admin/staff`
+- Gamers: `/join`, `/login`, `/account` (member QR, points, now playing, recent visits), `/account/points`,
+  `/account/vouchers`, `/account/privacy`, `/shop` (public points shop), `/privacy`
+- Counter: `/staff/login`, `/staff` (station board: check in/out, payments, cancel within 15 min),
+  `/staff/gamers` (lookup, points balance), `/staff/vouchers` (redeem)
+- Admin: `/admin/sessions` (fix forgotten check-outs, audited), `/admin/offers`, `/admin/staff`; admins can also
+  adjust a member's points from `/staff/gamers`
+
+Points rules (rate per console, 12-hour cap, voucher expiry) live in `src/config/loyalty.ts`. Points are added at
+check-out and recalculated when an admin corrects a session; every change is a row in `points_ledger`.
 
 Stations come from `site.stations` in `src/config/site.ts`. `maxCheckIns` is how many members staff can check
 in at once (default 8, for 6–8 player games); `maxPlayers` is only the number shown on the website.
@@ -92,7 +98,7 @@ npm run typecheck
 Schema changes: edit `src/db/schema/*`, then `npm run db:generate` and commit the new file in `drizzle/`.
 Every new table needs `ENABLE ROW LEVEL SECURITY` (a test fails otherwise) so Supabase's public API can't read it.
 
-Code layout: `src/db` (schema, client), `src/server/identity` (accounts, logins, lockout, consent, audit), `src/server/sessions` (stations, check-in/out, corrections, history),
+Code layout: `src/db` (schema, client), `src/server/identity` (accounts, logins, lockout, consent, audit), `src/server/sessions` (stations, check-in/out, corrections, history), `src/server/loyalty` (ledger, awards, offers, vouchers),
 `src/lib/validation` (form rules), `src/app/(gamer)`, `src/app/staff`, `src/app/admin`, `tests/`, `e2e/`.
 
 ## Deploy
@@ -100,6 +106,8 @@ Code layout: `src/db` (schema, client), `src/server/identity` (accounts, logins,
 1. Create a Supabase project (region: Mumbai). In **Connect**, copy the **Transaction pooler** URI (port 6543).
 2. Apply migrations once from your PC: `$env:DATABASE_URL="<that URI>"; npx drizzle-kit migrate`, then
    `npm run db:seed` the same way.
-3. In Vercel, set `DATABASE_URL` to the same URI (Production and Preview), then deploy.
+3. In Vercel, set `DATABASE_URL` to the same URI (Production and Preview) and `CRON_SECRET` to a long random
+   string, then deploy. `vercel.json` runs `/api/cron/expire-vouchers` daily at 2:00 am IST to refund expired vouchers
+   (vouchers also expire whenever someone views or redeems them, so this is a safety net).
 
 The app never uses Supabase's anon or service keys; all tables have row-level security on with no policies.
