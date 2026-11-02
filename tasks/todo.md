@@ -1,35 +1,28 @@
-# Tasks: `loyalty` module
+# Tasks: `analytics` module
 
 Every task also clears `npm test`, `npm run lint`, `npm run typecheck`. One commit per task.
 
-## Task 1: Config, schema, helpers
-- [x] `src/config/loyalty.ts` (10 pts/h PS5 and PS4, 720-min cap, 30-day vouchers)
-- [x] `offers`, `vouchers`, `points_ledger` with constraints and the one-award-per-session index; RLS on
-- [x] `pointsFor` and voucher-code helpers with unit tests
+## Task 1: Pure helpers
+- [ ] `resolveRange` for 7/30/90/custom in business days, with previous period; bad input falls back to 7 days
+- [ ] `pctChange` (incl. from 0), `csvRow` (quotes, newlines, formula-safe), `heatLevel`
 
-## Task 2: Ledger and awarding
-- [x] `addLedgerEntry`, `balanceOf`, `ledgerFor`
-- [x] Check-out awards points to every member checked out (same transaction); voided earns nothing; under 6 min writes nothing
-- [x] Corrections write the difference as a correction entry; no double award
+## Task 2: Overview, trend, payments
+- [ ] Fixture with known sessions, payments, members (incl. voided, open, deleted, after-midnight)
+- [ ] Headline numbers + previous period match hand-computed values; group payment split
+- [ ] Daily trend fills empty days with 0; revenue by method incl. "not recorded"
 
-### Checkpoint A ✅ (204 tests, build clean, fresh DB 12/12 tables with RLS)
+## Task 3: Heatmap and stations
+- [ ] Heatmap averages members playing per weekday × hour (11:00 → 03:00)
+- [ ] Station visits, hours, revenue, utilisation (an hour with 2 players counts once)
 
-## Task 3: Offers and `/admin/offers`
-- [x] Create, edit, hide (no delete in v1, so claimed vouchers always keep their offer), audited
-- [x] `listShopOffers` returns only active, in-date, in-stock offers
+## Task 4: People and loyalty
+- [ ] Top-10 areas/pincodes + Other; age band, gender, sign-up source with returning share
+- [ ] Top members; win-back (2+ visits, none in 15 days; deleted excluded; opted-in flag)
+- [ ] Loyalty: earned, spent, outstanding, vouchers by status, top offers
 
-## Task 4: Shop, claims, vouchers
-- [x] `/shop` public list; claim when logged in; refusals: points, stock, dates, inactive, member limit; parallel claims can't oversell
-- [x] `/account/vouchers` with code + QR, cancel and refund; `/account/points` history; balance on `/account`
+## Task 5: Dashboard
+- [ ] `/admin/analytics` admin-only, range picker in URL, all sections, works at 375 px
 
-## Task 5: Counter, expiry, adjustments
-- [x] `/staff/vouchers` check and mark used (once), audited
-- [x] Expiry refunds (lazy + `/api/cron/expire-vouchers` with `CRON_SECRET`, `vercel.json`)
-- [x] Admin points adjustment on `/staff/gamers`; staff see balance; export includes ledger and vouchers; deletion cancels vouchers
-
-### Checkpoint B ✅ (browser: admin adds offer → check-out earns points → admin bonus → member claims → counter redeems once; cron returns 401 without secret)
-
-## Task 6: E2E and gate
-- [x] Offer → earn → claim → redeem in Playwright; README; full gate
-
-### Checkpoint C ✅ (241 unit/integration + 7 e2e tests, lint, typecheck, build)
+## Task 6: Downloads and gate
+- [ ] CSV per report, win-back CSV opted-in only, audited
+- [ ] E2E: admin views, switches range, downloads; staff redirected; full gate
