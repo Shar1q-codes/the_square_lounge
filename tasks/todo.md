@@ -37,8 +37,8 @@ Every task also clears: `npm test`, `npm run lint`, `npm run typecheck` pass. On
 ### Checkpoint B ✅ (browser: loose code check-in, shared-mobile choice, already-playing refusal, whole-station check-out ₹300 UPI, 8/8 station at 375px)
 
 ## Task 6: Admin corrections
-- [ ] `/admin/sessions` lists open / needs-attention / last 7 days
-- [ ] Correction: end > start, not future, ≤ 24 h, reason required; audit has before/after
+- [x] `/admin/sessions` lists open / needs-attention / last 7 days
+- [x] Correction: end > start, not future, ≤ 24 h, reason required; audit has before/after
 **Files:** `src/server/sessions/corrections.ts`, `src/app/admin/sessions/{page,actions}.tsx`, `src/components/staff/SessionCorrection.tsx`, `tests/integration/sessions/corrections.test.ts` · **Scope:** M
 
 ## Task 7: Gamer view and export

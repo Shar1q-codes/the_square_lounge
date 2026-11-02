@@ -35,7 +35,7 @@ See [todo.md](todo.md).
 - [x] Browser: check in 2 members → live timers → check out station with payment
 
 ### Phase 3: Admin and gamer views
-- [ ] Task 6: Admin corrections (`/admin/sessions`)
+- [x] Task 6: Admin corrections (`/admin/sessions`)
 - [ ] Task 7: Gamer "Now playing", recent visits, export includes sessions
 - [ ] Task 8: E2E and full gate
 
