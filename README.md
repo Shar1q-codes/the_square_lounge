@@ -90,7 +90,31 @@ copy .env.example .env.local   # then edit SEED_ADMIN_PASSWORD
 docker compose up -d db        # local Postgres 17 (+ a separate test database)
 npm run db:migrate
 npm run db:seed                # stations from site.ts + first admin from .env.local
+npm run db:seed-demo           # optional: 40 demo members, 2 months of visits, offers (DEMO_PASSWORD)
 ```
+
+### Demo data
+
+`npm run db:seed-demo` fills a database with believable data so every page has something to show: ~40 members
+around Malakpet, two months of visits (busier evenings and weekends, groups, a few check-outs without an amount),
+points, 4 offers, vouchers, a few lapsed regulars for the win-back list, and members playing right now if the lounge
+is open. Log in as any member with an email ending `@demo.squarelounge.test` (e.g. `arjun.1@demo.squarelounge.test`)
+or as counter staff `demo.counter`, all with `DEMO_PASSWORD`. Re-running replaces it; `npm run db:clear-demo`
+removes it and never touches real members. **Clear it before launch** so it doesn't mix into real analytics.
+
+### Working with Supabase from this PC
+
+Add `SUPABASE_DB_URL` to `.env.local` (Supabase → **Connect** → **Session pooler**, port 5432, with the database
+password filled in; reset the password under **Project Settings → Database** if you don't have it). Then:
+
+```powershell
+npm run supabase:migrate       # apply new migrations to the live database (run after every schema change)
+npm run supabase:seed          # stations + first admin (refuses the example password)
+npm run supabase:seed-demo     # optional demo data on the live database
+npm run supabase:clear-demo    # remove demo data before launch
+```
+
+Each command prints which database it is about to change. Without `supabase:` they only touch your local database.
 
 Tests:
 
@@ -108,9 +132,9 @@ Code layout: `src/db` (schema, client), `src/server/identity` (accounts, logins,
 
 ## Deploy (Netlify + Supabase)
 
-1. Create a Supabase project (region: Mumbai). In **Connect**, copy the **Transaction pooler** URI (port 6543).
-2. Apply migrations once from your PC: `$env:DATABASE_URL="<that URI>"; npx drizzle-kit migrate`, then
-   `npm run db:seed` the same way.
+1. Create a Supabase project (region: South Asia (Mumbai), close to your members and fastest).
+2. From your PC, with `SUPABASE_DB_URL` in `.env.local` (see "Working with Supabase from this PC"):
+   `npm run supabase:migrate`, then `npm run supabase:seed`.
 3. On Netlify (the site is already linked to this GitHub repo): **Site configuration → Environment variables**, add
    - `DATABASE_URL` = the same pooler URI
    - `CRON_SECRET` = a long random string (e.g. from a password manager)
