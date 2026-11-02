@@ -7,9 +7,9 @@ Every task also clears `npm test`, `npm run lint`, `npm run typecheck`. One comm
 - [x] `pctChange` (incl. from 0), `csvRow` (quotes, newlines, formula-safe), `heatLevel`
 
 ## Task 2: Overview, trend, payments
-- [ ] Fixture with known sessions, payments, members (incl. voided, open, deleted, after-midnight)
-- [ ] Headline numbers + previous period match hand-computed values; group payment split
-- [ ] Daily trend fills empty days with 0; revenue by method incl. "not recorded"
+- [x] Fixture with known sessions, payments, members (incl. voided, open, deleted, after-midnight)
+- [x] Headline numbers + previous period match hand-computed values; group payment split
+- [x] Daily trend fills empty days with 0; revenue by method incl. "not recorded"
 
 ## Task 3: Heatmap and stations
 - [ ] Heatmap averages members playing per weekday × hour (11:00 → 03:00)
