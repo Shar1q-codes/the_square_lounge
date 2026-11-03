@@ -10,9 +10,14 @@ import { TslMonogram } from "@/components/brand/Logo";
 import { CloseIcon, MenuIcon } from "@/components/ui/icons";
 import { useLenis } from "./SmoothScroll";
 
+/** Section links ("#pricing") point back to the homepage from other pages. */
+export function navHref(href: string, home: boolean) {
+  return !home && href.startsWith("#") ? `/${href}` : href;
+}
+
 const FOCUSABLE = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
-export function Navbar() {
+export function Navbar({ home = true }: { home?: boolean }) {
   const lenis = useLenis();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -91,20 +96,24 @@ export function Navbar() {
         )}
       >
         <Container className="flex h-16 items-center justify-between gap-6 md:h-20">
-          <a href="#top" className="flex items-center gap-3" aria-label={`${site.name} — back to top`}>
+          <a
+            href={home ? "#top" : "/"}
+            className="flex shrink-0 items-center gap-3"
+            aria-label={home ? `${site.name} — back to top` : `${site.name} — home`}
+          >
             <TslMonogram glow className="h-9 md:h-10" />
-            <span className="font-display text-sm font-semibold uppercase tracking-[0.22em]">
+            <span className="whitespace-nowrap font-display text-sm font-semibold uppercase tracking-[0.22em] lg:hidden xl:inline">
               The Square<span className="text-gold"> Lounge</span>
             </span>
           </a>
 
           <nav aria-label="Primary" className="hidden lg:block">
-            <ul className="flex items-center gap-8">
+            <ul className="flex items-center gap-6 xl:gap-7">
               {site.nav.map((item) => (
                 <li key={item.href}>
                   <a
-                    href={item.href}
-                    className="text-sm text-muted transition-colors duration-300 hover:text-fg"
+                    href={navHref(item.href, home)}
+                    className="whitespace-nowrap text-sm text-muted transition-colors duration-300 hover:text-fg"
                   >
                     {item.label}
                   </a>
@@ -113,15 +122,15 @@ export function Navbar() {
             </ul>
           </nav>
 
-          <div className="flex items-center gap-2">
+          <div className="flex shrink-0 items-center gap-2">
             {/* /login sends members who are already signed in straight to their account. */}
             <Link
               href="/login"
-              className="hidden rounded-full px-3 py-2 text-sm text-muted transition-colors duration-300 hover:text-fg sm:inline-flex"
+              className="hidden whitespace-nowrap rounded-full px-3 py-2 text-sm text-muted transition-colors duration-300 hover:text-fg sm:inline-flex"
             >
               Log in
             </Link>
-            <Button href="#booking" size="sm" className="hidden sm:inline-flex">
+            <Button href={navHref("#booking", home)} size="sm" className="hidden whitespace-nowrap sm:inline-flex">
               Book a Station
             </Button>
             <button
@@ -156,7 +165,7 @@ export function Navbar() {
                 <li key={item.href} className="border-b border-border">
                   <a
                     ref={i === 0 ? firstLinkRef : undefined}
-                    href={item.href}
+                    href={navHref(item.href, home)}
                     onClick={() => setMenu(false)}
                     className="flex items-baseline gap-4 py-5 font-display text-3xl font-semibold tracking-tight transition-colors hover:text-gold"
                   >
@@ -178,7 +187,7 @@ export function Navbar() {
                 Log in
               </Button>
             </div>
-            <Button href="#booking" size="lg" onClick={() => setMenu(false)} className="w-full">
+            <Button href={navHref("#booking", home)} size="lg" onClick={() => setMenu(false)} className="w-full">
               Book a Station
             </Button>
           </div>

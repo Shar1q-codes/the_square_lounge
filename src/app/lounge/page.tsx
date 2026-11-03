@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { LoungeViewer } from "@/components/lounge/LoungeViewer";
+import { Navbar } from "@/components/layout/Navbar";
 
 export const metadata: Metadata = {
   title: "The Lounge in 3D | The Square Lounge",
@@ -10,10 +11,13 @@ export const metadata: Metadata = {
 
 export default function LoungePage() {
   return (
-    <main id="main">
-      <Suspense>
-        <LoungeViewer />
-      </Suspense>
-    </main>
+    <>
+      <Navbar home={false} />
+      <main id="main" className="pt-16 md:pt-20">
+        <Suspense>
+          <LoungeViewer />
+        </Suspense>
+      </main>
+    </>
   );
 }

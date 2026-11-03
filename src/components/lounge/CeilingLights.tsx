@@ -70,7 +70,8 @@ function downlightSpots(): [number, number, number][] {
 }
 
 /** Positions of the real light sources (fewer than the visible downlights, for speed). */
-const LAMPS: Vec2[] = [[2.5, 2.2], [2.5, 6.8], [7.5, 2.2], [7.5, 6.8], [12.5, 2.2], [12.5, 6.8]];
+/** Three warm fill lights stand in for the ~30 downlights (each light costs every pixel, so keep few). */
+const LAMPS: Vec2[] = [[2.8, 4.5], [7.5, 4.5], [12.2, 4.5]];
 
 export function CeilingLights({ motion }: { motion: boolean }) {
   const cyan = useMemo(() => new MeshBasicMaterial({ color: new Color(COLORS.ledCyan).multiplyScalar(3.2), toneMapped: false }), []);
@@ -113,7 +114,7 @@ export function CeilingLights({ motion }: { motion: boolean }) {
       {/* Real light: soft fill from above, warm-white lamps under the downlights, a tinted glow under the cove */}
       <hemisphereLight args={["#ffffff", "#c9d8da", 0.9]} />
       {LAMPS.map(([x, z]) => (
-        <pointLight key={`${x}-${z}`} position={[x, 1.9, z]} intensity={5} distance={8} decay={1.4} color="#fff3df" />
+        <pointLight key={`${x}-${z}`} position={[x, 1.9, z]} intensity={6} distance={10} decay={1.4} color="#fff3df" />
       ))}
       <pointLight ref={coveLight} position={[7.5, 2.3, 4.5]} intensity={6} distance={7} decay={1.4} />
     </group>

@@ -88,9 +88,9 @@ function Chair() {
 export function Cafe() {
   return (
     <group>
-      {CAFE_TABLES.map(([x, z], i) => (
+      {CAFE_TABLES.map(({ position: [x, z], laptop }) => (
         <group key={`${x}-${z}`} position={[x, 0, z]} rotation-y={Math.PI / 2}>
-          <Table withLaptop={i === 0} />
+          <Table withLaptop={laptop} />
           {[-0.3, 0.3].map((cx) => (
             <group key={cx}>
               <group position={[cx, 0, 0.62]} rotation-y={Math.PI}>

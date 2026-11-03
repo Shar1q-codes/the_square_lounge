@@ -5,12 +5,11 @@ import { DoubleSide, PlaneGeometry } from "three";
 import { MONOGRAM } from "@/components/brand/logoPaths";
 import {
   AC_UNITS,
-  BACK_DOOR_X,
+  BACK_DOOR_Z,
   BANNER,
   BIN,
   CCTV,
   COLORS,
-  COUNTER,
   CURTAINS,
   ENTRANCE_Z,
   FACING,
@@ -18,7 +17,7 @@ import {
   ROOM,
   type WallName,
 } from "@/config/lounge";
-import { bannerArt, marble, pleats, posterArt, stairwell } from "./textures";
+import { bannerArt, pleats, posterArt, stairwell } from "./textures";
 
 const { length: L, width: W, height: H } = ROOM;
 
@@ -128,7 +127,6 @@ function Cctv({ position }: { position: [number, number, number] }) {
 
 export function Details() {
   const stairs = useMemo(stairwell, []);
-  const stone = useMemo(marble, []);
   const banner = useMemo(() => bannerArt(MONOGRAM.d, [MONOGRAM.width, MONOGRAM.height]), []);
 
   return (
@@ -172,8 +170,8 @@ export function Details() {
         </mesh>
       </group>
 
-      {/* Wooden door on the right wall, by the curtains */}
-      <group position={[BACK_DOOR_X, 0, W - 0.012]} rotation-y={FACING.right}>
+      {/* Wooden door on the far wall, in the left corner by the curtains */}
+      <group position={[L - 0.012, 0, BACK_DOOR_Z]} rotation-y={FACING.back}>
         <mesh position-y={1.05}>
           <boxGeometry args={[0.95, 2.1, 0.04]} />
           <meshStandardMaterial color="#5a3a24" roughness={0.6} />
@@ -181,18 +179,6 @@ export function Details() {
         <mesh position={[0.36, 1.0, 0.03]}>
           <sphereGeometry args={[0.025, 12, 8]} />
           <meshStandardMaterial color="#c9a24f" metalness={1} roughness={0.25} />
-        </mesh>
-      </group>
-
-      {/* Reception counter by the entrance */}
-      <group position={[(COUNTER[0] + COUNTER[1]) / 2, 0, 0.32]}>
-        <mesh position-y={0.5}>
-          <boxGeometry args={[COUNTER[1] - COUNTER[0], 1.0, 0.55]} />
-          <meshStandardMaterial map={stone} roughness={0.3} />
-        </mesh>
-        <mesh position-y={1.02}>
-          <boxGeometry args={[COUNTER[1] - COUNTER[0] + 0.06, 0.04, 0.62]} />
-          <meshStandardMaterial color="#2b2b2e" roughness={0.3} metalness={0.2} />
         </mesh>
       </group>
 

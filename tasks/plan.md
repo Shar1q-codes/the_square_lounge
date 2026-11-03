@@ -22,8 +22,8 @@ Branch `feat/lounge-3d` from `main`.
       OG/Twitter images, manifest
 - [x] 2. Hero: extruded gold controller/burger logo instead of the cube
 - [x] 3. Room shell, floor, pillars, ceiling tray, LED strips, cove colour cycle, downlights, fans
-- [ ] 4. TVs + consoles + marble stands, sofas + cushions, bean bags, café tables + chairs, curtains, door, posters,
+- [x] 4. TVs + consoles + marble stands, sofas + cushions, bean bags, café tables + chairs, curtains, door, posters,
       banner, AC, CCTV, switchboards, bin, entrance glass
-- [ ] 5. `/lounge` page, nav/footer link, guided tour + 5 viewpoints, tap-a-TV card, phone landscape shell,
+- [x] 5. `/lounge` page, nav/footer link, guided tour + 5 viewpoints, tap-a-TV card, phone landscape shell,
       reduced-motion + no-WebGL fallbacks, adaptive quality; gallery photos
 - [ ] 6. Tests (unit for layout/orientation maths, e2e for nav, page, viewpoints, phone view), full gate, push

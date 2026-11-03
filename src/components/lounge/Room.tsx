@@ -1,8 +1,9 @@
 "use client";
 
 import { useMemo } from "react";
-import { MeshReflectorMaterial } from "@react-three/drei";
-import { Path, Shape, ShapeGeometry } from "three";
+import { Path, Shape, ShapeGeometry, type Texture } from "three";
+import { MeshStandardNodeMaterial } from "three/webgpu";
+import { reflector, texture } from "three/tsl";
 import { COLORS, PILLARS, ROOM, type Vec2 } from "@/config/lounge";
 import { ceilingGrid, floorTiles } from "./textures";
 
@@ -51,6 +52,29 @@ function Fascia({ x, z, y0, y1 }: { x: Vec2; z: Vec2; y0: number; y1: number }) 
   );
 }
 
+/**
+ * Glossy tiles that reflect the room (the lights and screens) at half resolution: three.js's
+ * WebGPU reflector node, which re-renders the scene from below the floor once per frame.
+ */
+function ReflectiveFloor({ tiles }: { tiles: Texture }) {
+  const { material, target } = useMemo(() => {
+    const reflection = reflector({ resolutionScale: 0.5 });
+    reflection.target.rotateX(-Math.PI / 2);
+    const m = new MeshStandardNodeMaterial({ roughness: 0.18, metalness: 0.05 });
+    m.colorNode = texture(tiles);
+    m.emissiveNode = reflection.mul(0.3);
+    return { material: m, target: reflection.target };
+  }, [tiles]);
+  return (
+    <>
+      <primitive object={target} position={[L / 2, 0, W / 2]} />
+      <mesh rotation-x={-Math.PI / 2} position={[L / 2, 0, W / 2]} material={material}>
+        <planeGeometry args={[L, W]} />
+      </mesh>
+    </>
+  );
+}
+
 /** Floor, walls, pillars and the stepped false ceiling (lights are in CeilingLights). */
 export function Room({ reflections }: { reflections: boolean }) {
   const tiles = useMemo(() => floorTiles(L, W, COLORS.floor, COLORS.grout), []);
@@ -62,25 +86,15 @@ export function Room({ reflections }: { reflections: boolean }) {
 
   return (
     <group>
-      {/* Floor */}
-      <mesh rotation-x={-Math.PI / 2} position={[L / 2, 0, W / 2]}>
-        <planeGeometry args={[L, W]} />
-        {reflections ? (
-          <MeshReflectorMaterial
-            map={tiles}
-            color="#ffffff"
-            roughness={0.12}
-            metalness={0}
-            mirror={0.35}
-            mixStrength={1.1}
-            blur={[500, 160]}
-            resolution={1024}
-            depthScale={0.4}
-          />
-        ) : (
-          <meshStandardMaterial map={tiles} roughness={0.12} metalness={0.05} />
-        )}
-      </mesh>
+      {/* Floor: reflections on capable devices, plain glossy tiles otherwise */}
+      {reflections ? (
+        <ReflectiveFloor tiles={tiles} />
+      ) : (
+        <mesh rotation-x={-Math.PI / 2} position={[L / 2, 0, W / 2]}>
+          <planeGeometry args={[L, W]} />
+          <meshStandardMaterial map={tiles} roughness={0.2} metalness={0.05} />
+        </mesh>
+      )}
 
       {/* Four walls (separate planes: a box would also cap the floor and ceiling) with a pale skirting */}
       {WALLS.map((w) => (

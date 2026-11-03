@@ -296,6 +296,7 @@ export const site = {
   },
 
   nav: [
+    { label: "The Lounge", href: "/lounge" },
     { label: "Stations", href: "#stations" },
     { label: "Experience", href: "#experience" },
     { label: "Games", href: "#games" },
