@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { CONTROLLER_BURGER, GRADIENTS, MONOGRAM, type LogoPath, type Tone } from "./logoPaths";
 
 type Props = {
+  /** Set the height (e.g. "h-9"); the width follows the logo's proportions. */
   className?: string;
   tone?: Tone;
   /** Soft gold glow behind the mark (for dark backgrounds). */
@@ -19,7 +20,7 @@ function Mark({ logo, className, tone = "gold", glow = false, title }: Props & {
       viewBox={`0 0 ${logo.width} ${logo.height}`}
       role={title ? "img" : undefined}
       aria-hidden={title ? undefined : true}
-      className={cn("h-auto w-auto", glow && "drop-shadow-[0_0_6px_rgb(212_178_106/0.5)]", className)}
+      className={cn("w-auto shrink-0", glow && "drop-shadow-[0_0_6px_rgb(212_178_106/0.5)]", className)}
     >
       {title && <title>{title}</title>}
       <defs>

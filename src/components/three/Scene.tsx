@@ -5,8 +5,8 @@ import { BG } from "./palette";
 import { CameraRig } from "./CameraRig";
 import { Dust } from "./Dust";
 import { Effects } from "./Effects";
+import { GoldLogo } from "./GoldLogo";
 import { Lighting } from "./Lighting";
-import { ObsidianCube } from "./ObsidianCube";
 import { ScreenOrbit } from "./ScreenOrbit";
 import { SquareFrame } from "./SquareFrame";
 
@@ -24,7 +24,7 @@ export function Scene({ mobile, effects, progress }: Props) {
       <Lighting />
 
       <group position-y={0.15}>
-        <ObsidianCube />
+        <GoldLogo mobile={mobile} />
         <SquareFrame />
         <ScreenOrbit />
       </group>

@@ -20,7 +20,7 @@ Branch `feat/lounge-3d` from `main`.
 
 - [x] 1. Logos traced; `TslMonogram` replaces `SquareMark` (navbar, footer, shells, loader); icon.svg, apple-icon,
       OG/Twitter images, manifest
-- [ ] 2. Hero: extruded gold controller/burger logo instead of the cube
+- [x] 2. Hero: extruded gold controller/burger logo instead of the cube
 - [ ] 3. Room shell, floor, pillars, ceiling tray, LED strips, cove colour cycle, downlights, fans
 - [ ] 4. TVs + consoles + marble stands, sofas + cushions, bean bags, café tables + chairs, curtains, door, posters,
       banner, AC, CCTV, switchboards, bin, entrance glass
