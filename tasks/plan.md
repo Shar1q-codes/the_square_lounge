@@ -18,7 +18,7 @@ Branch `feat/lounge-3d` from `main`.
 
 ## Phases (check-in screenshots after 2, 3 and 4)
 
-- [ ] 1. Logos traced; `TslMonogram` replaces `SquareMark` (navbar, footer, shells, loader); icon.svg, apple-icon,
+- [x] 1. Logos traced; `TslMonogram` replaces `SquareMark` (navbar, footer, shells, loader); icon.svg, apple-icon,
       OG/Twitter images, manifest
 - [ ] 2. Hero: extruded gold controller/burger logo instead of the cube
 - [ ] 3. Room shell, floor, pillars, ceiling tray, LED strips, cove colour cycle, downlights, fans

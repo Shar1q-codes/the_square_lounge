@@ -1,8 +1,9 @@
+import { CONTROLLER_BURGER } from "@/components/brand/logoPaths";
 import { cn } from "@/lib/utils";
 
 /**
- * Shown while the 3D scene loads: the square motif drawing its own outline,
- * sized and placed where the 3D frame will appear, so one hands over to the other.
+ * Shown while the 3D scene loads: the controller-and-burger logo drawing its own outline,
+ * sized and placed where the 3D logo will appear, so one hands over to the other.
  */
 export function SquareLoader({ visible }: { visible: boolean }) {
   return (
@@ -14,24 +15,17 @@ export function SquareLoader({ visible }: { visible: boolean }) {
     >
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_45%,rgb(212_178_106/0.12),transparent_55%)]" />
       <svg
-        viewBox="0 0 100 100"
+        viewBox={`0 0 ${CONTROLLER_BURGER.width} ${CONTROLLER_BURGER.height}`}
         fill="none"
-        className="size-[min(56vw,400px)] -translate-y-[4%] rotate-45 overflow-visible drop-shadow-[0_0_14px_rgb(212_178_106/0.55)]"
+        aria-hidden
+        className="w-[min(64vw,460px)] -translate-y-[4%] overflow-visible drop-shadow-[0_0_14px_rgb(212_178_106/0.55)]"
       >
-        <rect
-          x="2" y="2" width="96" height="96" rx="6"
+        <path
+          d={CONTROLLER_BURGER.d}
           pathLength={1}
           stroke="var(--color-gold)"
-          strokeWidth="0.8"
+          strokeWidth="6"
           className="square-draw"
-        />
-        <rect
-          x="34" y="34" width="32" height="32" rx="3"
-          pathLength={1}
-          stroke="var(--color-gold)"
-          strokeOpacity="0.6"
-          strokeWidth="0.6"
-          className="square-draw [animation-delay:0.35s]"
         />
       </svg>
     </div>

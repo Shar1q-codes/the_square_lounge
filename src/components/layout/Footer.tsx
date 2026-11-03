@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { site } from "@/config/site";
 import { instagramLink, telLink, whatsappLink } from "@/lib/contact";
 import { Container } from "@/components/ui/Container";
-import { SquareMark } from "@/components/ui/SquareMark";
+import { TslMonogram } from "@/components/brand/Logo";
 import { ChatIcon, InstagramIcon, PhoneIcon } from "@/components/ui/icons";
 
 function ContactItem({ href, icon, label }: { href?: string; icon: ReactNode; label: string }) {
@@ -37,7 +37,7 @@ export function Footer() {
       <Container className="grid gap-12 py-16 md:grid-cols-[1.6fr_1fr_1fr]">
         <div className="max-w-sm">
           <a href="#top" className="inline-flex items-center gap-3" aria-label={`${site.name} — back to top`}>
-            <SquareMark className="size-9" />
+            <TslMonogram glow className="h-11" />
             <span className="font-display text-base font-semibold uppercase tracking-[0.22em]">
               {site.name}
             </span>

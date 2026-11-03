@@ -1,9 +1,12 @@
 import { ImageResponse } from "next/og";
+import { logoDataUrl, MONOGRAM } from "@/components/brand/logoPaths";
 
 export const size = { width: 180, height: 180 };
 export const contentType = "image/png";
 
-/** iOS home-screen icon: the square mark on near-black. */
+const HEIGHT = 136;
+
+/** iOS home-screen icon: the gold TSL monogram on near-black. */
 export default function AppleIcon() {
   return new ImageResponse(
     (
@@ -17,20 +20,8 @@ export default function AppleIcon() {
           background: "radial-gradient(circle at 50% 40%, #1a1610 0%, #07070a 70%)",
         }}
       >
-        <div
-          style={{
-            width: 112,
-            height: 112,
-            borderRadius: 18,
-            border: "8px solid #d4b26a",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            boxShadow: "0 0 30px rgba(212,178,106,0.45)",
-          }}
-        >
-          <div style={{ width: 38, height: 38, borderRadius: 6, background: "#d4b26a" }} />
-        </div>
+        {/* eslint-disable-next-line @next/next/no-img-element -- next/og renders plain <img> */}
+        <img src={logoDataUrl(MONOGRAM)} height={HEIGHT} width={Math.round((HEIGHT * MONOGRAM.width) / MONOGRAM.height)} alt="" />
       </div>
     ),
     size,

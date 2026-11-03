@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { site } from "@/config/site";
 import { Container } from "@/components/ui/Container";
-import { SquareMark } from "@/components/ui/SquareMark";
+import { TslMonogram } from "@/components/brand/Logo";
 
 type Props = { children: ReactNode; nav?: ReactNode; wide?: boolean };
 
@@ -14,7 +14,7 @@ export function AccountShell({ children, nav, wide = false }: Props) {
         {/* Wraps the nav onto a second row on narrow phones (the staff nav has five links). */}
         <Container className="flex min-h-16 flex-wrap items-center justify-between gap-x-4 gap-y-1 py-2">
           <Link href="/" className="flex shrink-0 items-center gap-3" aria-label={`${site.name} home`}>
-            <SquareMark className="size-7" />
+            <TslMonogram className="h-8" />
             <span className="font-display text-xs font-semibold uppercase tracking-[0.22em] sm:text-sm">
               The Square<span className="text-gold"> Lounge</span>
             </span>

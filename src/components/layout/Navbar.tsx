@@ -6,7 +6,7 @@ import { site } from "@/config/site";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
-import { SquareMark } from "@/components/ui/SquareMark";
+import { TslMonogram } from "@/components/brand/Logo";
 import { CloseIcon, MenuIcon } from "@/components/ui/icons";
 import { useLenis } from "./SmoothScroll";
 
@@ -92,7 +92,7 @@ export function Navbar() {
       >
         <Container className="flex h-16 items-center justify-between gap-6 md:h-20">
           <a href="#top" className="flex items-center gap-3" aria-label={`${site.name} — back to top`}>
-            <SquareMark className="size-8" />
+            <TslMonogram glow className="h-9 md:h-10" />
             <span className="font-display text-sm font-semibold uppercase tracking-[0.22em]">
               The Square<span className="text-gold"> Lounge</span>
             </span>
