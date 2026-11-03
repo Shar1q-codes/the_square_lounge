@@ -114,3 +114,48 @@ export const VIEWPOINTS: Viewpoint[] = [
   { id: "sofas", label: "Sofas", position: [1.6, 1.45, 7.2], target: [7.4, 0.7, 4.0] },
   { id: "cafe", label: "Café corner", position: [10.0, 1.6, 3.4], target: [14.8, 1.2, 5.4] },
 ];
+
+/** Wall-mounted and standing details. Wall items: [along-the-wall position, height] on a named wall. */
+export type WallName = keyof typeof FACING;
+export type PosterSpot = { wall: WallName; along: number; y: number; style: number; size: [number, number] };
+
+export const POSTERS: PosterSpot[] = [
+  { wall: "left", along: 5.4, y: 2.15, style: 0, size: [0.6, 0.85] },
+  { wall: "left", along: 9.9, y: 2.15, style: 1, size: [0.6, 0.85] },
+  { wall: "left", along: 14.0, y: 2.15, style: 2, size: [0.6, 0.85] },
+  { wall: "right", along: 2.3, y: 2.15, style: 3, size: [0.6, 0.85] },
+  { wall: "right", along: 6.5, y: 2.2, style: 4, size: [0.6, 0.85] },
+  { wall: "right", along: 7.6, y: 2.2, style: 2, size: [0.6, 0.85] },
+  { wall: "right", along: 10.6, y: 2.2, style: 0, size: [0.7, 1.0] },
+  { wall: "front", along: 4.2, y: 2.1, style: 1, size: [0.55, 0.8] },
+  { wall: "front", along: 8.2, y: 2.1, style: 3, size: [0.55, 0.8] },
+];
+
+/** Maroon curtains over the windows on the far wall: [from, to] along the wall (z). */
+export const CURTAINS: Vec2[] = [
+  [2.8, 5.3],
+  [5.7, 8.4],
+];
+
+export const AC_UNITS: { wall: WallName; along: number }[] = [
+  { wall: "left", along: 10.6 },
+  { wall: "right", along: 5.5 },
+];
+
+export const CCTV: Vec3[] = [
+  [0.45, 3.2, 0.45],
+  [14.5, 3.2, 8.5],
+  [7.6, 3.2, 8.55],
+  [14.5, 3.2, 0.5],
+];
+
+/** Glass entrance door on the front wall (to the stairs), centred at this z. */
+export const ENTRANCE_Z = 1.35;
+/** Wooden door on the right wall near the curtains, centred at this x. */
+export const BACK_DOOR_X = 14.35;
+/** Reception counter along the left wall by the entrance: [from, to] along x. */
+export const COUNTER: Vec2 = [0.5, 2.3];
+/** The standing "EAT. PLAY. DOMINATE." banner. */
+export const BANNER = { position: [11.2, 8.45] as Vec2, rotation: -Math.PI * 0.76 }; // facing the room centre
+/** Teal dustbin. */
+export const BIN: Vec2 = [10.1, 6.35];

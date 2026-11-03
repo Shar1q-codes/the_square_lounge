@@ -71,9 +71,9 @@ export function Room({ reflections }: { reflections: boolean }) {
             color="#ffffff"
             roughness={0.12}
             metalness={0}
-            mirror={0.55}
-            mixStrength={1.6}
-            blur={[300, 80]}
+            mirror={0.35}
+            mixStrength={1.1}
+            blur={[500, 160]}
             resolution={1024}
             depthScale={0.4}
           />

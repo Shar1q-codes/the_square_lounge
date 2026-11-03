@@ -6,9 +6,13 @@ import { OrbitControls, PerformanceMonitor } from "@react-three/drei";
 import { Bloom, EffectComposer, Vignette } from "@react-three/postprocessing";
 import { ACESFilmicToneMapping } from "three";
 import { VIEWPOINTS } from "@/config/lounge";
+import { Cafe } from "./Cafe";
 import { CeilingLights } from "./CeilingLights";
+import { Details } from "./Details";
 import { Fans } from "./Fans";
 import { Room } from "./Room";
+import { Seating } from "./Seating";
+import { Stations } from "./Stations";
 
 type Props = {
   mobile: boolean;
@@ -39,6 +43,10 @@ export default function LoungeCanvas({ mobile, motion, initialView }: Props) {
         <Room reflections={quality === 2} />
         <CeilingLights motion={motion} />
         <Fans motion={motion} />
+        <Stations />
+        <Seating />
+        <Cafe />
+        <Details />
       </Suspense>
       <OrbitControls
         makeDefault
