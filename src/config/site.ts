@@ -34,6 +34,8 @@ export type PricingTier = {
   /** Unit shown after the price, e.g. "/ hour" */
   unit: string;
   description: string;
+  /** Per-hour price by number of players, shown instead of the single price when set. */
+  rates?: { players: string; price: string }[];
   features: string[];
   highlighted?: boolean;
 };
@@ -122,9 +124,9 @@ export const site = {
 
   contact: {
     /** Display format */
-    phone: "TODO: +91 XXXXX XXXXX",
+    phone: "+91 80082 65433",
     /** tel: format, digits with country code */
-    phoneHref: "TODO: +91XXXXXXXXXX",
+    phoneHref: "+918008265433",
     /** WhatsApp number — digits only, with country code, no + or spaces (e.g. 919876543210) */
     whatsapp: "TODO: 91XXXXXXXXXX",
     email: "TODO: hello@thesquarelounge.in",
@@ -149,7 +151,7 @@ export const site = {
       id: 1,
       name: "Station 01",
       console: "PS5",
-      screen: 'TODO: 55" 4K HDR',
+      screen: '55" screen',
       features: ["DualSense controllers", "Recliner seating", "Surround headset"],
       maxPlayers: 4,
       maxCheckIns: 8,
@@ -158,7 +160,7 @@ export const site = {
       id: 2,
       name: "Station 02",
       console: "PS5",
-      screen: 'TODO: 55" 4K HDR',
+      screen: '65" screen',
       features: ["DualSense controllers", "Recliner seating", "Surround headset"],
       maxPlayers: 4,
       maxCheckIns: 8,
@@ -167,7 +169,7 @@ export const site = {
       id: 3,
       name: "Station 03",
       console: "PS5",
-      screen: 'TODO: 65" 4K HDR',
+      screen: '55" screen',
       features: ["DualSense controllers", "Couch for 4", "Racing-ready setup"],
       maxPlayers: 4,
       maxCheckIns: 8,
@@ -176,7 +178,7 @@ export const site = {
       id: 4,
       name: "Station 04",
       console: "PS4",
-      screen: 'TODO: 50" Full HD',
+      screen: "Standard screen",
       features: ["DualShock controllers", "Premium seating", "Huge back catalogue"],
       maxPlayers: 4,
       maxCheckIns: 8,
@@ -185,43 +187,56 @@ export const site = {
       id: 5,
       name: "Station 05",
       console: "PS4",
-      screen: 'TODO: 50" Full HD',
+      screen: "Standard screen",
       features: ["DualShock controllers", "Premium seating", "Great for co-op"],
       maxPlayers: 4,
       maxCheckIns: 8,
     },
   ] satisfies Station[],
 
+  // From the lounge's price list (Nov 2026). Prices are per hour.
   pricing: [
     {
-      id: "ps4-hourly",
-      name: "PS4 Hour",
-      price: "TODO: ₹100",
+      id: "ps4",
+      name: "PS4",
+      price: "₹60",
       unit: "/ hour",
-      description: "Classic titles, comfy seats, zero fuss.",
-      features: ["Stations 04 – 05", "Up to 4 players", "Full game library"],
+      description: "Standard screen. Classic titles, comfy seats, zero fuss.",
+      rates: [
+        { players: "1 player", price: "₹60" },
+        { players: "2 players", price: "₹80" },
+      ],
+      features: ["Stations 04 – 05", "Full game library"],
     },
     {
-      id: "ps5-hourly",
-      name: "PS5 Hour",
-      price: "TODO: ₹150",
+      id: "ps5-55",
+      name: "PS5 · 55\" screen",
+      price: "₹70",
       unit: "/ hour",
-      description: "Next-gen visuals on our biggest screens.",
-      features: ["Stations 01 – 03", "Up to 4 players", "Latest releases", "4K HDR"],
+      description: "Next-gen visuals and the latest releases.",
+      rates: [
+        { players: "1 player", price: "₹70" },
+        { players: "2 players", price: "₹120" },
+      ],
+      features: ["Stations 01 and 03", "Latest releases"],
+    },
+    {
+      id: "ps5-65",
+      name: "PS5 · 65\" screen",
+      price: "₹80",
+      unit: "/ hour",
+      description: "Our biggest screen, for the full big-match feel.",
+      rates: [
+        { players: "1 player", price: "₹80" },
+        { players: "2 players", price: "₹140" },
+      ],
+      features: ["Station 02", "Latest releases"],
       highlighted: true,
-    },
-    {
-      id: "squad-pack",
-      name: "Squad Pack",
-      price: "TODO: ₹499",
-      unit: "/ 3 hours",
-      description: "Lock in a PS5 station for the whole squad.",
-      features: ["Any PS5 station", "Up to 4 players", "Complimentary drinks"],
     },
     {
       id: "party",
       name: "Lounge Party",
-      price: "TODO: On request",
+      price: "On request",
       unit: "",
       description: "Take over the entire lounge — all 5 stations.",
       features: ["Birthdays & corporate", "Tournament setup", "Custom packages"],
@@ -229,7 +244,7 @@ export const site = {
   ] satisfies PricingTier[],
 
   pricingNote:
-    "Group, tournament and party bookings available — message us on WhatsApp for custom packages.",
+    "Prices are per hour unless specified. Group, tournament and party bookings available — message us on WhatsApp for custom packages.",
 
   gameCategories: ["Sports", "Racing", "Action", "Fighting", "Co-op"] satisfies GameCategory[],
 
@@ -301,6 +316,7 @@ export const site = {
     { label: "Experience", href: "#experience" },
     { label: "Games", href: "#games" },
     { label: "Pricing", href: "#pricing" },
+    { label: "Café", href: "#cafe" },
     { label: "Gallery", href: "#gallery" },
     { label: "Location", href: "#location" },
   ],

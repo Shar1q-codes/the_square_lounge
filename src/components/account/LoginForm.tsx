@@ -8,7 +8,7 @@ import { Card } from "@/components/ui/Card";
 import { FormMessage, TextField } from "./fields";
 import { SubmitButton } from "./SubmitButton";
 
-export function LoginForm() {
+export function LoginForm({ next = "/account" }: { next?: string }) {
   const [state, action] = useActionState(logIn, emptyFormState);
   const v = state.values ?? {};
   const e = state.errors ?? {};
@@ -16,6 +16,7 @@ export function LoginForm() {
   return (
     <Card className="p-5 sm:p-8">
       <form action={action} noValidate className="grid gap-5">
+        <input type="hidden" name="next" value={next} />
         <FormMessage error={e.form} />
         <TextField name="email" label="Email" type="email" autoComplete="email" required defaultValue={v.email} error={e.email} />
         <TextField name="password" label="Password" type="password" autoComplete="current-password" required error={e.password} />

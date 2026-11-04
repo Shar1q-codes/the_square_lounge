@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import type { Staff } from "@/db/schema";
 import { staffLogOut } from "@/app/staff/login/actions";
 import { AccountShell } from "@/components/account/AccountShell";
+import { OrderAlerts } from "./OrderAlerts";
 
 const linkClass = "rounded-full px-3 py-2 text-muted transition-colors hover:text-fg";
 
@@ -16,6 +17,7 @@ export function StaffShell({ member, children }: { member: Staff; children: Reac
           <Link href="/staff" className={linkClass}>
             Board
           </Link>
+          <OrderAlerts className={linkClass} />
           <Link href="/staff/gamers" className={linkClass}>
             Gamers
           </Link>

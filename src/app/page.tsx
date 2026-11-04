@@ -2,6 +2,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
 import { PlaceholderNotice } from "@/components/layout/PlaceholderNotice";
 import { Booking } from "@/components/sections/Booking";
+import { CafeMenu } from "@/components/sections/CafeMenu";
 import { Experience } from "@/components/sections/Experience";
 import { Gallery } from "@/components/sections/Gallery";
 import { Games } from "@/components/sections/Games";
@@ -29,6 +30,8 @@ export default function Home() {
         <Games />
         <SquareDivider />
         <Pricing />
+        <SquareDivider />
+        <CafeMenu />
         <SquareDivider />
         <Gallery />
         <SquareDivider />

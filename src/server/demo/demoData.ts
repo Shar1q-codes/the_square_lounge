@@ -305,6 +305,8 @@ export async function clearDemo(): Promise<void> {
 
     await tx.execute(sql`delete from points_ledger where gamer_id in ${demoGamers}`);
     await tx.execute(sql`delete from vouchers where gamer_id in ${demoGamers}`);
+    // Orders go before sessions (they point at them); their items go with them.
+    await tx.execute(sql`delete from cafe_orders where gamer_id in ${demoGamers}`);
     await tx.execute(sql`delete from play_sessions where gamer_id in ${demoGamers}`);
     await tx.execute(sql`delete from payments p where p.recorded_by in ${demoStaff}
       and not exists (select 1 from play_sessions s where s.payment_id = p.id)`);
@@ -319,6 +321,7 @@ export async function clearDemo(): Promise<void> {
         or exists (select 1 from payments where recorded_by in ${demoStaff})
         or exists (select 1 from offers where created_by in ${demoStaff})
         or exists (select 1 from vouchers where used_by in ${demoStaff})
+        or exists (select 1 from cafe_orders where handled_by in ${demoStaff})
         or exists (select 1 from points_ledger where actor_staff_id in ${demoStaff}) as "used"`);
     if (inUse?.used) {
       await tx.execute(sql`delete from auth_sessions where staff_id in ${demoStaff}`);

@@ -21,3 +21,11 @@ export function refillValues(formData: FormData, secrets: string[] = []): Record
 export function venueYear(now = new Date()): number {
   return Number(new Intl.DateTimeFormat("en-IN", { timeZone: "Asia/Kolkata", year: "numeric" }).format(now));
 }
+
+/** Pages a login may send the gamer back to. Anything else goes to the account page. */
+const RETURN_PAGES = ["/order", "/shop", "/account"];
+
+/** Where to go after logging in: the requested page only if it is one of ours. */
+export function afterLogin(next: unknown): string {
+  return typeof next === "string" && RETURN_PAGES.includes(next) ? next : "/account";
+}

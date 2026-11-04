@@ -4,6 +4,7 @@ import { db, schema } from "@/db";
 import { PRIVACY_NOTICE_VERSION } from "@/config/privacy";
 import { ledgerFor } from "@/server/loyalty/ledger";
 import { cancelAllVouchers, vouchersForExport } from "@/server/loyalty/vouchers";
+import { ordersForExport } from "@/server/orders/orders";
 import { sessionsForExport } from "@/server/sessions/history";
 import { writeAudit } from "./audit";
 import { verifyPassword } from "./password";
@@ -35,10 +36,11 @@ export async function exportGamerData(gamerId: string) {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { passwordHash, ...profile } = gamer;
-  const [sessions, points, vouchers] = await Promise.all([
+  const [sessions, points, vouchers, cafeOrders] = await Promise.all([
     sessionsForExport(gamerId),
     ledgerFor(gamerId, 10_000),
     vouchersForExport(gamerId),
+    ordersForExport(gamerId),
   ]);
   return {
     exportedAt: new Date().toISOString(),
@@ -47,6 +49,7 @@ export async function exportGamerData(gamerId: string) {
     sessions,
     points: points.map(({ delta, description, createdAt }) => ({ delta, description, at: createdAt })).reverse(),
     vouchers,
+    cafeOrders,
   };
 }
 

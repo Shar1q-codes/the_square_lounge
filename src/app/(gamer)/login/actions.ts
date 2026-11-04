@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { fieldErrors, gamerLoginSchema } from "@/lib/validation/identity";
-import { refillValues, type FormState } from "@/lib/forms";
+import { afterLogin, refillValues, type FormState } from "@/lib/forms";
 import { endGamerSession, startGamerSession } from "@/server/identity/currentUser";
 import { verifyGamerLogin } from "@/server/identity/gamers";
 
@@ -21,7 +21,7 @@ export async function logIn(_prev: FormState, formData: FormData): Promise<FormS
   }
 
   await startGamerSession(result.gamerId);
-  redirect("/account");
+  redirect(afterLogin(formData.get("next")));
 }
 
 export async function logOut() {

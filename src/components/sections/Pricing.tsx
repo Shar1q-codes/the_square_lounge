@@ -17,7 +17,7 @@ export function Pricing() {
           sectionId="pricing"
           eyebrow="Pricing"
           title="Simple, hourly pricing."
-          description="No memberships, no hidden extras. Pay for the time you play."
+          description="No memberships, no hidden extras. Pay for the time you play, by screen and number of players."
           align="center"
         />
       </Reveal>
@@ -45,12 +45,28 @@ export function Pricing() {
                 {tier.name}
               </h3>
               <p className="mt-2 text-sm text-muted">{tier.description}</p>
-              <p className="mt-6 flex items-baseline gap-2">
-                <span className={cn("font-display text-4xl font-semibold tracking-tight", highlighted && "text-gold-soft")}>
-                  {display(tier.price)}
-                </span>
-                {tier.unit && <span className="text-sm text-muted">{tier.unit}</span>}
-              </p>
+              {"rates" in tier && tier.rates ? (
+                <dl className="mt-6 grid gap-2">
+                  {tier.rates.map((rate) => (
+                    <div key={rate.players} className="flex items-baseline justify-between gap-3">
+                      <dt className="text-sm text-muted">{rate.players}</dt>
+                      <dd className="flex items-baseline gap-1.5">
+                        <span className={cn("font-display text-3xl font-semibold tracking-tight", highlighted && "text-gold-soft")}>
+                          {display(rate.price)}
+                        </span>
+                        <span className="text-xs text-muted">{tier.unit}</span>
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              ) : (
+                <p className="mt-6 flex items-baseline gap-2">
+                  <span className={cn("font-display text-4xl font-semibold tracking-tight", highlighted && "text-gold-soft")}>
+                    {display(tier.price)}
+                  </span>
+                  {tier.unit && <span className="text-sm text-muted">{tier.unit}</span>}
+                </p>
+              )}
               <ul className="mt-6 flex flex-1 flex-col gap-3 border-t border-border pt-6 text-sm">
                 {tier.features.map((f) => (
                   <li key={f} className="flex items-start gap-3 text-muted">
