@@ -83,6 +83,9 @@ export function BookingForm() {
       setErrors((err) => ({ ...err, stationId: undefined }));
     };
     window.addEventListener(SELECT_STATION_EVENT, onSelect);
+    // ...and so does "Book this station" on /lounge, through /?station=N#booking.
+    const fromLink = new URLSearchParams(window.location.search).get("station");
+    if (fromLink && findStation(fromLink)) setForm((f) => ({ ...f, stationId: fromLink }));
     return () => window.removeEventListener(SELECT_STATION_EVENT, onSelect);
   }, []);
 

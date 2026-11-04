@@ -1,13 +1,14 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { ImageResponse } from "next/og";
+import { logoDataUrl, MONOGRAM } from "@/components/brand/logoPaths";
 import { site } from "@/config/site";
 
 export const alt = `${site.name}: ${site.tagline}`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-/** Social share card, generated at build time: the glowing square beside the wordmark. */
+/** Social share card, generated at build time: the gold TSL monogram beside the wordmark. */
 export default async function OpengraphImage() {
   const ps5 = site.stations.filter((s) => s.console === "PS5").length;
   const ps4 = site.stations.length - ps5;
@@ -30,22 +31,9 @@ export default async function OpengraphImage() {
           color: "#f5f5f7",
         }}
       >
-        <div style={{ display: "flex", width: 300, height: 300, alignItems: "center", justifyContent: "center" }}>
-          <div
-            style={{
-              width: 210,
-              height: 210,
-              transform: "rotate(45deg)",
-              borderRadius: 22,
-              border: "5px solid #e6cf9a",
-              boxShadow: "0 0 50px rgba(212,178,106,0.75), inset 0 0 40px rgba(212,178,106,0.3)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <div style={{ width: 70, height: 70, borderRadius: 8, background: "#d4b26a" }} />
-          </div>
+        <div style={{ display: "flex", width: 300, height: 380, alignItems: "center", justifyContent: "center" }}>
+          {/* eslint-disable-next-line @next/next/no-img-element -- next/og renders plain <img> */}
+          <img src={logoDataUrl(MONOGRAM)} width={280} height={Math.round((280 * MONOGRAM.height) / MONOGRAM.width)} alt="" />
         </div>
         <div style={{ display: "flex", flexDirection: "column" }}>
           <div style={{ fontSize: 24, letterSpacing: 8, color: "#d4b26a", textTransform: "uppercase" }}>

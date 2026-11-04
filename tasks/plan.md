@@ -1,29 +1,29 @@
-# Implementation Plan: `analytics` module
+# Implementation Plan: The Lounge in 3D + brand logos
 
-Spec: [SPEC-analytics.md](../SPEC-analytics.md) · Map: [CAPABILITY-MAP.md](../CAPABILITY-MAP.md) · Previous: [loyalty](loyalty/plan.md)
-
-Approved 2026-11-03 (open 11:00–04:00 IST daily, lapsed = 15 days, no extra scope). Branch `feat/analytics`, stacked on `feat/loyalty`.
+Spec: [SPEC-lounge-3d.md](../SPEC-lounge-3d.md). Approved 2026-11-04 with default answers: estimated room size,
+model what the photos show (~8 screens), stylised poster art, and the 4 room photos go into the gallery.
+Branch `feat/lounge-3d` from `main`.
 
 ## Architecture Decisions
 
-- **Business day = IST shifted back 4 hours.** One SQL expression (`bday`) used by every query, so a 01:30 visit is the previous evening.
-- **Range resolution in one pure function** (`resolveRange`): presets 7/30/90 days or custom dates → `[from, to)` timestamps for business-day boundaries, plus the previous period of the same length.
-- **One query per section** in `src/server/analytics/`, each returning plain rows; the page runs them in parallel.
-- **Revenue share:** payment amount ÷ number of sessions on that payment, computed in a CTE.
-- **Charts are hand-built SVG/CSS** following the dataviz skill (loaded before the UI task).
-- **CSV:** one route `/admin/analytics/export/[report]`, formula-safe escaping, audited.
+- **Logos traced once to SVG** (potrace, outside the repo) and committed as React components + `public/brand/*.svg`.
+  One vertical gold gradient per logo reproduces the originals.
+- **Hero logo** = the traced controller/burger path → `SVGLoader` shapes → `ExtrudeGeometry` with bevel, gold
+  `MeshPhysicalMaterial`; replaces `ObsidianCube` only, so the hero's pause/quality logic is untouched.
+- **Lounge model is data + code:** `src/config/lounge.ts` holds dimensions and every item's position; components in
+  `src/components/lounge/` build geometry procedurally (rounded boxes, instancing, canvas-drawn textures). No model files.
+- **Phone landscape:** a shell that, in portrait, renders the canvas container rotated 90° at viewport size swapped,
+  and maps pointer input through the same rotation; Android fullscreen + `screen.orientation.lock("landscape")` when allowed.
+- **Lazy:** `/lounge` loads the canvas with `next/dynamic` (`ssr: false`); nothing 3D is added to other pages.
 
-## Task List
+## Phases (check-in screenshots after 2, 3 and 4)
 
-See [todo.md](todo.md).
-
-- [x] Task 1: Pure helpers (range, % change, CSV, heat scale)
-- [x] Task 2: Overview, trend, payments (+ seeded fixture)
-- [x] Task 3: Heatmap and stations
-- [x] Task 4: Areas, audience, top members, win-back, loyalty summary
-- [x] Task 5: Dashboard page and charts
-- [x] Task 6: CSV downloads, e2e, full gate
-
-### Checkpoints
-- [x] After Task 4: every query matches hand-computed numbers on the fixture
-- [x] After Task 6: full gate green; browser check at 375 px and desktop
+- [x] 1. Logos traced; `TslMonogram` replaces `SquareMark` (navbar, footer, shells, loader); icon.svg, apple-icon,
+      OG/Twitter images, manifest
+- [x] 2. Hero: extruded gold controller/burger logo instead of the cube
+- [x] 3. Room shell, floor, pillars, ceiling tray, LED strips, cove colour cycle, downlights, fans
+- [x] 4. TVs + consoles + marble stands, sofas + cushions, bean bags, café tables + chairs, curtains, door, posters,
+      banner, AC, CCTV, switchboards, bin, entrance glass
+- [x] 5. `/lounge` page, nav/footer link, guided tour + 5 viewpoints, tap-a-TV card, phone landscape shell,
+      reduced-motion + no-WebGL fallbacks, adaptive quality; gallery photos
+- [x] 6. Tests (unit for layout/orientation maths, e2e for nav, page, viewpoints, phone view), full gate, push
