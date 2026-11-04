@@ -113,11 +113,12 @@ export function WalkControls({ view, motion, input, onInteract }: Props) {
         pinch = next;
         return;
       }
-      // Drag the view like a photo sphere: a drag across the canvas height turns about one field of view.
+      // Sideways drags turn like a photo sphere; up and down tilt the camera the way the finger goes
+      // (drag down, look down). A drag across the canvas height turns about one field of view.
       const perPixel = MathUtils.degToRad(camera.fov) / canvas.clientHeight;
       const a = angles.current;
       a.yaw += (now.x - last.x) * perPixel;
-      a.pitch = MathUtils.clamp(a.pitch + (now.y - last.y) * perPixel, -MAX_PITCH, MAX_PITCH);
+      a.pitch = MathUtils.clamp(a.pitch - (now.y - last.y) * perPixel, -MAX_PITCH, MAX_PITCH);
     };
     const up = (e: PointerEvent) => {
       pointers.delete(e.pointerId);
