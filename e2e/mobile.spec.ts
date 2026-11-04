@@ -25,4 +25,8 @@ test("the 3D lounge shows sideways, full-screen, on a phone held upright", async
   expect(overflow).toBeLessThanOrEqual(0);
   await expect(page.getByRole("button", { name: "Full screen" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Exit" })).toBeVisible();
+  // The walk arrows sit inside the sideways view.
+  const pad = page.getByRole("group", { name: "Walk" });
+  await expect(pad.getByRole("button", { name: "Walk forward" })).toBeInViewport();
+  await expect(pad.getByRole("button", { name: "Turn right" })).toBeInViewport();
 });

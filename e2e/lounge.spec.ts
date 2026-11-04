@@ -21,7 +21,7 @@ test("viewpoint buttons switch the view and stop the tour", async ({ page }) => 
   await viewpoints.getByRole("button", { name: "Café corner" }).click();
   await expect(viewpoints.getByRole("button", { name: "Café corner" })).toHaveAttribute("aria-pressed", "true");
   await expect(viewpoints.getByRole("button", { name: "Overview" })).toHaveAttribute("aria-pressed", "false");
-  await expect(page.getByText("Drag to look around")).toBeVisible();
+  await expect(page.getByText(/Drag to look/)).toBeVisible();
 });
 
 test("a ?view= link opens at that viewpoint", async ({ page }) => {
@@ -29,4 +29,13 @@ test("a ?view= link opens at that viewpoint", async ({ page }) => {
   await expect(
     page.getByRole("navigation", { name: "Viewpoints" }).getByRole("button", { name: "PS5 wall" }),
   ).toHaveAttribute("aria-pressed", "true");
+});
+
+test("the walk arrows take over from the tour", async ({ page }) => {
+  await page.goto("/lounge");
+  await expect(page.getByText("Guided tour")).toBeVisible();
+  const forward = page.getByRole("group", { name: "Walk" }).getByRole("button", { name: "Walk forward" });
+  await forward.dispatchEvent("pointerdown", { pointerId: 1 });
+  await expect(page.getByText(/Drag to look/)).toBeVisible();
+  await forward.dispatchEvent("pointerup", { pointerId: 1 });
 });

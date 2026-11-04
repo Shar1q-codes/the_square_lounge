@@ -45,6 +45,8 @@ function StationUnit({ station, onSelect }: StationProps) {
   const stone = useMemo(marble, []);
   const select = (e: ThreeEvent<MouseEvent>) => {
     e.stopPropagation();
+    // A drag that ends on a TV is looking around, not a tap.
+    if (e.delta > 6) return;
     onSelect?.(station);
   };
 

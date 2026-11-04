@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { FACING, ROOM, STATIONS, VIEWPOINTS } from "@/config/lounge";
+import { FACING, PILLARS, ROOM, STATIONS, VIEWPOINTS } from "@/config/lounge";
 import { site } from "@/config/site";
-import { clampToRoom, easeInOut, stationCard, toLandscape } from "@/lib/lounge";
+import { angleBetween, clampToRoom, easeInOut, lookAngles, stationCard, toLandscape, walk } from "@/lib/lounge";
 import { navHref } from "@/lib/utils";
 
 describe("toLandscape", () => {
@@ -39,6 +39,42 @@ describe("clampToRoom", () => {
     expect(y).toBeLessThan(ROOM.height);
     expect(z).toBeLessThan(ROOM.width);
     expect(clampToRoom([30, -2, -3])[1]).toBeGreaterThan(0);
+  });
+
+  it("pushes the camera out of a pillar", () => {
+    const [px, pz] = PILLARS[0];
+    const [x, , z] = clampToRoom([px + 0.1, 1.6, pz + 0.02]);
+    expect(Math.max(Math.abs(x - px), Math.abs(z - pz))).toBeGreaterThan(0.5);
+  });
+});
+
+describe("walking", () => {
+  it("looks along -z at yaw 0 and turns left as yaw grows", () => {
+    expect(lookAngles([5, 1.6, 5], [5, 1.6, 1]).yaw).toBeCloseTo(0);
+    expect(lookAngles([5, 1.6, 5], [1, 1.6, 5]).yaw).toBeCloseTo(Math.PI / 2);
+    expect(lookAngles([5, 1.6, 5], [5, 3, 1]).pitch).toBeGreaterThan(0);
+  });
+
+  it("walks the way the camera faces, at the same height", () => {
+    const yaw = lookAngles([5, 1.6, 4], [9, 1.6, 4]).yaw;
+    const [x, y, z] = walk([5, 1.6, 4], yaw, 1, 0);
+    expect(x).toBeCloseTo(6);
+    expect(y).toBe(1.6);
+    expect(z).toBeCloseTo(4);
+  });
+
+  it("slides along a wall instead of going through it", () => {
+    // Facing the left wall at an angle: the camera stops at the wall but keeps moving along it.
+    const yaw = lookAngles([5, 1.6, 1], [6, 1.6, 0]).yaw;
+    let pos = walk([5, 1.6, 1], yaw, 3, 0);
+    pos = walk(pos, yaw, 1, 0);
+    expect(pos[2]).toBeGreaterThan(0);
+    expect(pos[0]).toBeGreaterThan(6.5);
+  });
+
+  it("turns the short way round", () => {
+    expect(angleBetween(3, -3)).toBeCloseTo(2 * Math.PI - 6);
+    expect(angleBetween(0, 1)).toBeCloseTo(1);
   });
 });
 

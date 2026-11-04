@@ -1,8 +1,8 @@
 "use client";
 
-import { Suspense, useRef, useState } from "react";
+import { Suspense, useRef, useState, type RefObject } from "react";
 import { Canvas, events as pointerEvents, type RootState } from "@react-three/fiber";
-import { OrbitControls, PerformanceMonitor } from "@react-three/drei";
+import { PerformanceMonitor } from "@react-three/drei";
 import { ACESFilmicToneMapping } from "three";
 import { WebGPURenderer } from "three/webgpu";
 import { VIEWPOINTS, type Station } from "@/config/lounge";
@@ -14,7 +14,7 @@ import { Fans } from "./Fans";
 import { Room } from "./Room";
 import { Seating } from "./Seating";
 import { Stations } from "./Stations";
-import { Tour } from "./Tour";
+import { WalkControls, type MoveInput } from "./WalkControls";
 
 type Props = {
   mobile: boolean;
@@ -24,6 +24,8 @@ type Props = {
   motion: boolean;
   /** True inside the rotated phone shell: pointer events arrive already in the canvas's own frame. */
   rotated: boolean;
+  /** The on-screen walk arrows. */
+  input: RefObject<MoveInput>;
   onInteract: () => void;
   onSelectStation: (station: Station) => void;
 };
@@ -39,12 +41,11 @@ function computePointer(event: MouseEvent, state: RootState, rotated: boolean) {
   state.raycaster.setFromCamera(state.pointer, state.camera);
 }
 
-
 /**
  * The 3D lounge. Loaded with next/dynamic (ssr: false) from LoungeViewer, only on /lounge.
  * Quality steps down on slow devices: floor reflections go first, then bloom. Phones start without reflections.
  */
-export default function LoungeCanvas({ mobile, motion, view, rotated, onInteract, onSelectStation }: Props) {
+export default function LoungeCanvas({ mobile, motion, view, rotated, input, onInteract, onSelectStation }: Props) {
   const start = VIEWPOINTS.find((v) => v.id === view) ?? VIEWPOINTS[0];
   // The event manager is created once, so it reads the current rotation through a ref.
   const rotatedRef = useRef(rotated);
@@ -78,17 +79,7 @@ export default function LoungeCanvas({ mobile, motion, view, rotated, onInteract
         <Cafe />
         <Details />
       </Suspense>
-      <OrbitControls
-        makeDefault
-        target={start.target}
-        enablePan={false}
-        minDistance={0.6}
-        maxDistance={16}
-        maxPolarAngle={Math.PI * 0.62}
-        minPolarAngle={Math.PI * 0.18}
-        enableDamping
-      />
-      <Tour view={view} motion={motion} onInteract={onInteract} />
+      <WalkControls view={view} motion={motion} input={input} onInteract={onInteract} />
       {quality > 0 && <Effects />}
     </Canvas>
   );

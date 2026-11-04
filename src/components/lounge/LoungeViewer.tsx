@@ -2,15 +2,16 @@
 
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type RefObject } from "react";
 import { useSearchParams } from "next/navigation";
 import { VIEWPOINTS, type Station } from "@/config/lounge";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { stationCard } from "@/lib/lounge";
 import { cn } from "@/lib/utils";
-import { CloseIcon } from "@/components/ui/icons";
+import { ChevronLeftIcon, ChevronRightIcon, CloseIcon } from "@/components/ui/icons";
 import { LandscapeShell } from "./LandscapeShell";
+import type { MoveInput } from "./WalkControls";
 
 const LoungeCanvas = dynamic(() => import("./LoungeCanvas"), { ssr: false });
 
@@ -59,6 +60,7 @@ export function LoungeViewer() {
   const [view, setView] = useState(VIEWPOINTS.some((v) => v.id === requested) ? requested! : VIEWPOINTS[0].id);
   const [touring, setTouring] = useState(!requested);
   const [selected, setSelected] = useState<Station | null>(null);
+  const input = useRef<MoveInput>({ forward: 0, turn: 0 });
 
   // Guided tour: step through the viewpoints until the visitor takes over (never with reduced motion).
   useEffect(() => {
@@ -87,6 +89,7 @@ export function LoungeViewer() {
           motion={!reducedMotion}
           view={view}
           rotated={rotated}
+          input={input}
           onInteract={stopTour}
           onSelectStation={setSelected}
         />
@@ -98,7 +101,11 @@ export function LoungeViewer() {
             The <span className="text-gold">Lounge</span>
           </h1>
           <p className="mt-0.5 text-xs text-muted">
-            {touring && !reducedMotion ? "Guided tour — drag to take over" : "Drag to look around · tap a TV"}
+            {touring && !reducedMotion
+              ? "Guided tour — drag to take over"
+              : mobile
+                ? "Drag to look · arrows to walk · tap a TV"
+                : "Drag to look · W A S D or scroll to walk · click a TV"}
           </p>
         </div>
         {rotated && (
@@ -140,6 +147,8 @@ export function LoungeViewer() {
         </ul>
       </nav>
 
+      <WalkPad input={input} />
+
       {card && (
         <div
           role="dialog"
@@ -174,6 +183,56 @@ export function LoungeViewer() {
         </p>
       )}
     </LandscapeShell>
+  );
+}
+
+const PAD = [
+  { label: "Walk forward", forward: 1, turn: 0, area: "col-start-2 row-start-1", icon: <ChevronRightIcon className="size-5 -rotate-90" /> },
+  { label: "Turn left", forward: 0, turn: -1, area: "col-start-1 row-start-2", icon: <ChevronLeftIcon className="size-5" /> },
+  { label: "Turn right", forward: 0, turn: 1, area: "col-start-3 row-start-2", icon: <ChevronRightIcon className="size-5" /> },
+  { label: "Walk back", forward: -1, turn: 0, area: "col-start-2 row-start-2", icon: <ChevronRightIcon className="size-5 rotate-90" /> },
+] as const;
+
+/** Hold-to-move arrows: walk forward and back, turn on the spot. */
+function WalkPad({ input }: { input: RefObject<MoveInput> }) {
+  const release = () => {
+    input.current.forward = 0;
+    input.current.turn = 0;
+  };
+  return (
+    <div
+      role="group"
+      aria-label="Walk"
+      className="absolute bottom-16 left-3 grid select-none grid-cols-[repeat(3,2.75rem)] grid-rows-[repeat(2,2.75rem)] gap-1 md:bottom-20 md:left-5"
+    >
+      {PAD.map((b) => (
+        <button
+          key={b.label}
+          type="button"
+          aria-label={b.label}
+          className={cn(
+            b.area,
+            "inline-flex touch-none items-center justify-center rounded-xl border border-white/15 bg-black/55 text-fg backdrop-blur-md active:bg-gold active:text-bg",
+          )}
+          onPointerDown={(e) => {
+            // Keep the arrow held if the finger slides off it.
+            try {
+              e.currentTarget.setPointerCapture(e.pointerId);
+            } catch {
+              // Not capturable: letting go off the button still ends the move via pointercancel.
+            }
+            input.current.forward = b.forward;
+            input.current.turn = b.turn;
+          }}
+          onPointerUp={release}
+          onPointerCancel={release}
+          onLostPointerCapture={release}
+          onContextMenu={(e) => e.preventDefault()}
+        >
+          {b.icon}
+        </button>
+      ))}
+    </div>
   );
 }
 

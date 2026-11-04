@@ -1,5 +1,5 @@
 import { site } from "@/config/site";
-import { ROOM, type Station, type Vec3 } from "@/config/lounge";
+import { PILLARS, ROOM, type Station, type Vec3 } from "@/config/lounge";
 
 type Box = { top: number; right: number };
 
@@ -15,14 +15,53 @@ export function toLandscape(clientX: number, clientY: number, box: Box): { x: nu
 /** How close the camera may come to the walls, floor and ceiling (metres). */
 const MARGIN = { wall: 0.35, floor: 0.4, ceiling: 0.3 };
 
-/** Keeps a camera position inside the room, so zooming or dragging never goes through a wall. */
+/** Half the width of a pillar plus the wall margin: how close the camera may come to a pillar's centre. */
+const PILLAR_REACH = 0.225 + MARGIN.wall;
+
+/**
+ * Keeps a camera position inside the room and out of the pillars. Each axis is held on its own, so
+ * walking into a wall or pillar slides along it instead of stopping dead.
+ */
 export function clampToRoom([x, y, z]: Vec3): Vec3 {
   const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
-  return [
-    clamp(x, MARGIN.wall, ROOM.length - MARGIN.wall),
-    clamp(y, MARGIN.floor, ROOM.height - MARGIN.ceiling),
-    clamp(z, MARGIN.wall, ROOM.width - MARGIN.wall),
-  ];
+  let cx = clamp(x, MARGIN.wall, ROOM.length - MARGIN.wall);
+  let cz = clamp(z, MARGIN.wall, ROOM.width - MARGIN.wall);
+  for (const [px, pz] of PILLARS) {
+    const dx = cx - px;
+    const dz = cz - pz;
+    if (Math.abs(dx) >= PILLAR_REACH || Math.abs(dz) >= PILLAR_REACH) continue;
+    // Inside: push out through the nearest face.
+    if (PILLAR_REACH - Math.abs(dx) < PILLAR_REACH - Math.abs(dz)) cx = px + Math.sign(dx || 1) * PILLAR_REACH;
+    else cz = pz + Math.sign(dz || 1) * PILLAR_REACH;
+  }
+  return [cx, clamp(y, MARGIN.floor, ROOM.height - MARGIN.ceiling), cz];
+}
+
+/** How far the view may tilt up or down (radians). */
+export const MAX_PITCH = 1.25;
+
+/**
+ * Turn (yaw, around y) and tilt (pitch) that look from one point at another. Yaw 0 looks along -z,
+ * and grows turning left, as three.js cameras do with rotation order "YXZ".
+ */
+export function lookAngles(from: Vec3, to: Vec3): { yaw: number; pitch: number } {
+  const dx = to[0] - from[0];
+  const dy = to[1] - from[1];
+  const dz = to[2] - from[2];
+  const pitch = Math.atan2(dy, Math.hypot(dx, dz));
+  return { yaw: Math.atan2(-dx, -dz), pitch: Math.max(-MAX_PITCH, Math.min(MAX_PITCH, pitch)) };
+}
+
+/** A step along the floor: `forward` metres the way the camera faces, `right` metres to its right. */
+export function walk([x, y, z]: Vec3, yaw: number, forward: number, right: number): Vec3 {
+  const sin = Math.sin(yaw);
+  const cos = Math.cos(yaw);
+  return clampToRoom([x - sin * forward + cos * right, y, z - cos * forward - sin * right]);
+}
+
+/** The shortest way round from one angle to another, so a glide never spins the long way. */
+export function angleBetween(from: number, to: number): number {
+  return Math.atan2(Math.sin(to - from), Math.cos(to - from));
 }
 
 /** Easing for camera moves between viewpoints (smooth start and stop). */
