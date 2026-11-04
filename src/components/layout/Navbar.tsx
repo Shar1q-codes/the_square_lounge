@@ -87,7 +87,8 @@ export function Navbar({ home = true }: { home?: boolean }) {
       <header
         className={cn(
           "fixed inset-x-0 top-0 z-50 border-b transition-[background-color,border-color,backdrop-filter] duration-500 ease-premium",
-          solid ? "border-border bg-bg/70 backdrop-blur-xl" : "border-transparent bg-transparent",
+          // Frosted glass only from md up: backdrop blur is costly on small phones.
+          solid ? "border-border bg-bg/95 md:bg-bg/70 md:backdrop-blur-xl" : "border-transparent bg-transparent",
         )}
       >
         <Container className="flex h-16 items-center justify-between gap-6 md:h-20">

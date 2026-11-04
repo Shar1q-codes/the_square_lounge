@@ -34,7 +34,10 @@ function useLogoGeometry(curveSegments: number) {
   }, [curveSegments]);
 }
 
-/** The hero centrepiece: the brand's controller-and-burger mark in polished gold, swaying towards the pointer. */
+/** Turns per second of the slow spin. */
+const SPIN = 0.09;
+
+/** The hero centrepiece: the brand's controller-and-burger mark in polished gold, spinning slowly in space. */
 export function GoldLogo({ mobile }: { mobile: boolean }) {
   const ref = useRef<Group>(null);
   const geometry = useLogoGeometry(mobile ? 4 : 8);
@@ -42,31 +45,36 @@ export function GoldLogo({ mobile }: { mobile: boolean }) {
   useFrame((state, delta) => {
     const g = ref.current;
     if (!g) return;
+    const dt = clampDelta(delta);
     const t = state.clock.elapsedTime;
-    const k = 1 - Math.exp(-clampDelta(delta) * 3);
-    g.rotation.y = MathUtils.lerp(g.rotation.y, Math.sin(t * 0.35) * 0.35 + state.pointer.x * 0.35, k);
-    g.rotation.x = MathUtils.lerp(g.rotation.x, -0.12 - state.pointer.y * 0.18, k);
-    g.position.set(0, Math.sin(t * 0.8) * 0.06, -0.6);
+    const k = 1 - Math.exp(-dt * 3);
+    g.rotation.y += dt * SPIN * Math.PI * 2;
+    g.rotation.x = MathUtils.lerp(g.rotation.x, -0.1 - state.pointer.y * 0.15, k);
+    g.rotation.z = Math.sin(t * 0.5) * 0.04;
+    g.position.y = Math.sin(t * 0.8) * 0.08;
   });
 
   return (
-    <group ref={ref} position-z={-0.6} scale={mobile ? 0.8 : 1}>
-      {/* Warm key + fill just for the logo: the hero's studio lighting was tuned for a black cube. */}
-      <pointLight position={[0, 1.5, 4]} intensity={40} distance={12} color="#ffe3a8" />
-      <pointLight position={[-3, -1, 3]} intensity={18} distance={10} color="#f5d38a" />
-      <mesh geometry={geometry}>
-        <meshPhysicalMaterial
-          color="#e2bf74"
-          metalness={0.85}
-          roughness={0.26}
-          clearcoat={0.5}
-          clearcoatRoughness={0.2}
-          emissive="#6b4e20"
-          emissiveIntensity={0.4}
-          envMapIntensity={2.4}
-          side={DoubleSide}
-        />
-      </mesh>
+    <group position-z={-0.6}>
+      {/* Warm key and fill from the camera side; outside the spinning group, so the logo stays lit all the way round. */}
+      <pointLight position={[0, 1.5, 5]} intensity={55} distance={14} color="#ffe3a8" />
+      <pointLight position={[-3.5, -1, 4]} intensity={25} distance={12} color="#f5d38a" />
+      <pointLight position={[3.5, 0.5, 3]} intensity={18} distance={10} color="#fff1cf" />
+      <group ref={ref} scale={mobile ? 0.9 : 1}>
+        <mesh geometry={geometry}>
+          <meshPhysicalMaterial
+            color="#e8c477"
+            metalness={0.8}
+            roughness={0.22}
+            clearcoat={0.6}
+            clearcoatRoughness={0.15}
+            emissive="#8a6526"
+            emissiveIntensity={0.55}
+            envMapIntensity={2.8}
+            side={DoubleSide}
+          />
+        </mesh>
+      </group>
     </group>
   );
 }

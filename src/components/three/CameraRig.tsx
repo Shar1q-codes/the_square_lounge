@@ -6,7 +6,7 @@ import { MathUtils, Vector3 } from "three";
 import { clampDelta } from "./palette";
 
 const HALF_FOV_TAN = Math.tan(MathUtils.degToRad(20)); // camera fov is 40°
-const SCENE_HALF_WIDTH = 4.6; // orbit radius plus half a screen
+const SCENE_HALF_WIDTH = 2.9; // half the logo plus a margin
 
 /**
  * Eases the camera towards a target built from three inputs:

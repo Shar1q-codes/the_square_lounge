@@ -22,26 +22,28 @@ function Ready({ onReady }: { onReady: () => void }) {
 
 /**
  * The hero's WebGL canvas. Loaded with next/dynamic (ssr: false) from HeroVisual.
- * Degrades gracefully: on sustained low FPS it drops to 1× DPR, and if that keeps
- * failing it switches post-processing off.
+ * Phones skip post-processing and use the GPU's own antialiasing at up to 2× DPR, which keeps the
+ * logo sharp and cheap. Desktops get bloom; on sustained low FPS the DPR drops, then bloom goes.
  */
 export default function HeroCanvas({ active, progress, mobile, onReady }: Props) {
-  const maxDpr = mobile ? 1.5 : 1.75;
+  const maxDpr = mobile ? 2 : 1.75;
+  const minDpr = mobile ? 1.5 : 1;
   const [dpr, setDpr] = useState(maxDpr);
-  const [effects, setEffects] = useState(true);
+  const [effects, setEffects] = useState(!mobile);
 
   return (
     <Canvas
       dpr={[1, dpr]}
       frameloop={active ? "always" : "never"}
       camera={{ position: [0, 0.8, 13], fov: 40, near: 0.1, far: 60 }}
-      gl={{ antialias: false, alpha: false, stencil: false, powerPreference: "high-performance" }}    >
+      gl={{ antialias: mobile, alpha: false, stencil: false, powerPreference: "high-performance" }}
+    >
       <PerformanceMonitor
         flipflops={3}
-        onDecline={() => setDpr(1)}
+        onDecline={() => setDpr(minDpr)}
         onIncline={() => setDpr(maxDpr)}
         onFallback={() => {
-          setDpr(1);
+          setDpr(minDpr);
           setEffects(false);
         }}
       >

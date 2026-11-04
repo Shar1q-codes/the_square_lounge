@@ -17,7 +17,6 @@ export function Scene({ mobile, effects, progress }: Props) {
   return (
     <>
       <color attach="background" args={[BG]} />
-      <fog attach="fog" args={[BG, 14, 30]} />
       <Lighting />
 
       <group position-y={0.15}>
@@ -25,7 +24,7 @@ export function Scene({ mobile, effects, progress }: Props) {
       </group>
 
       <CameraRig progress={progress} />
-      {effects && <Effects mobile={mobile} />}
+      {effects && <Effects />}
     </>
   );
 }
