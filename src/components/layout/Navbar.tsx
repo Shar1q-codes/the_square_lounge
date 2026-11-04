@@ -125,7 +125,8 @@ export function Navbar({ home = true }: { home?: boolean }) {
             >
               Log in
             </Link>
-            <Button href={navHref("#booking", home)} size="sm" className="hidden whitespace-nowrap sm:inline-flex">
+            {/* max-sm:hidden, not "hidden sm:inline-flex": the Button's own inline-flex would win over hidden. */}
+            <Button href={navHref("#booking", home)} size="sm" className="max-sm:hidden">
               Book a Station
             </Button>
             <button
