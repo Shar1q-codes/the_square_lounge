@@ -3,17 +3,12 @@
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from "react";
 import { site } from "@/config/site";
-import { cn } from "@/lib/utils";
+import { cn, navHref } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { TslMonogram } from "@/components/brand/Logo";
 import { CloseIcon, MenuIcon } from "@/components/ui/icons";
 import { useLenis } from "./SmoothScroll";
-
-/** Section links ("#pricing") point back to the homepage from other pages. */
-export function navHref(href: string, home: boolean) {
-  return !home && href.startsWith("#") ? `/${href}` : href;
-}
 
 const FOCUSABLE = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
 

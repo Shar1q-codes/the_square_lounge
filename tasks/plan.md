@@ -26,4 +26,4 @@ Branch `feat/lounge-3d` from `main`.
       banner, AC, CCTV, switchboards, bin, entrance glass
 - [x] 5. `/lounge` page, nav/footer link, guided tour + 5 viewpoints, tap-a-TV card, phone landscape shell,
       reduced-motion + no-WebGL fallbacks, adaptive quality; gallery photos
-- [ ] 6. Tests (unit for layout/orientation maths, e2e for nav, page, viewpoints, phone view), full gate, push
+- [x] 6. Tests (unit for layout/orientation maths, e2e for nav, page, viewpoints, phone view), full gate, push
