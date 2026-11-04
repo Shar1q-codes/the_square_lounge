@@ -37,6 +37,9 @@ export default function HeroCanvas({ active, progress, mobile, onReady }: Props)
       frameloop={active ? "always" : "never"}
       camera={{ position: [0, 0.8, 13], fov: 40, near: 0.1, far: 60 }}
       gl={{ antialias: mobile, alpha: false, stencil: false, powerPreference: "high-performance" }}
+      onCreated={({ gl }) => {
+        gl.toneMappingExposure = 1.3; // brighter gold under ACES tone mapping
+      }}
     >
       <PerformanceMonitor
         flipflops={3}
