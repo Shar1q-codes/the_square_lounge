@@ -15,6 +15,9 @@ export default async function GamerLayout({ children }: { children: ReactNode })
       nav={
         gamer ? (
           <>
+            <Link href="/account#book" className={linkClass}>
+              Book
+            </Link>
             <Link href="/order" className={linkClass}>
               Order food
             </Link>

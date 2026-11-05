@@ -61,9 +61,10 @@ function Field({
 
 const noopSubscribe = () => () => {};
 
-export function BookingForm() {
+/** `defaultName` fills in the name for logged-in members (account page). */
+export function BookingForm({ defaultName = "" }: { defaultName?: string }) {
   const uid = useId();
-  const [form, setForm] = useState<Form>(emptyBooking);
+  const [form, setForm] = useState<Form>({ ...emptyBooking, name: defaultName });
   const [errors, setErrors] = useState<BookingErrors>({});
   const [sent, setSent] = useState<string | null>(null);
   const [notConfigured, setNotConfigured] = useState(false);

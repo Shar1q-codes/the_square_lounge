@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { PageTitle } from "@/components/account/AccountShell";
+import { BookingForm } from "@/components/sections/BookingForm";
 import { MemberCard } from "@/components/account/MemberCard";
 import { PasswordForm } from "@/components/account/PasswordForm";
 import { ProfileForm } from "@/components/account/ProfileForm";
@@ -56,6 +57,14 @@ export default async function AccountPage() {
           </Button>
         </div>
       </Card>
+      {!playing && (
+        <section id="book" aria-labelledby="book-title" className="grid scroll-mt-24 gap-3">
+          <h2 id="book-title" className="font-display text-xl font-semibold">
+            Book a station
+          </h2>
+          <BookingForm defaultName={gamer.fullName ?? ""} />
+        </section>
+      )}
       <RecentVisits visits={visits} />
       <ProfileForm
         initial={{

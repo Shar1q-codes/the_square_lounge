@@ -46,3 +46,11 @@ test("the booking form asks which game, filtered to the station's console", asyn
   await expect(game.getByRole("option", { name: "Mortal Kombat 1" })).toHaveCount(0);
   await expect(game.getByRole("option", { name: "Grand Theft Auto V" })).toHaveCount(1);
 });
+
+test("a member can book a station from their account page, with their name filled in", async ({ page }) => {
+  await signUp(page, uniqueEmail("booker"), "booker-pass-1", "Booking Gamer");
+  const book = page.getByRole("region", { name: "Book a station" });
+  await expect(book).toBeVisible();
+  await expect(book.getByLabel("Your name")).toHaveValue("Booking Gamer");
+  await expect(page.getByRole("link", { name: "Book", exact: true })).toHaveAttribute("href", "/account#book");
+});

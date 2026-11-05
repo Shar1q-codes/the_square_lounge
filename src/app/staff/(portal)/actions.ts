@@ -7,6 +7,8 @@ import { checkInSchema, checkOutSchema, gameField, voidSchema } from "@/lib/vali
 import { formatDuration, formatRupees, istTime } from "@/lib/sessions";
 import { requireStaff } from "@/server/identity/currentUser";
 import { findGamers } from "@/server/identity/gamers";
+import { normaliseMemberCode } from "@/server/identity/memberCode";
+import { getBoard } from "@/server/sessions/board";
 import { checkIn } from "@/server/sessions/checkIn";
 import { closeSessions, voidSession } from "@/server/sessions/checkOut";
 
@@ -98,4 +100,37 @@ export async function voidAction(_prev: RowActionState, formData: FormData): Pro
   }
   revalidatePath("/staff");
   return { ok: true, message: "Check-in cancelled." };
+}
+
+export type ScanStation = { id: number; name: string; console: "PS5" | "PS4"; players: number; maxCheckIns: number };
+export type ScanResult =
+  | {
+      ok: true;
+      gamer: { id: string; fullName: string | null; memberCode: string };
+      /** Their open session, if they're playing now: the scan then offers check-out. */
+      playing: { sessionId: string; stationName: string; startedAt: Date; game: string | null } | null;
+      stations: ScanStation[];
+    }
+  | { ok: false; error: string };
+
+/** After a QR scan (or a typed code): who it is, and whether to check them in or out. */
+export async function scanLookupAction(rawCode: string): Promise<ScanResult> {
+  const member = await requireStaff();
+  const code = normaliseMemberCode(String(rawCode ?? "").trim());
+  if (!code) return { ok: false, error: "That isn't a member QR code. Ask the member to open My account." };
+  const [gamer] = await findGamers(member.id, code);
+  if (!gamer) return { ok: false, error: `No member with code ${code}.` };
+
+  const board = await getBoard();
+  let playing: Extract<ScanResult, { ok: true }>["playing"] = null;
+  for (const s of board.stations) {
+    const p = s.players.find((x) => x.gamerId === gamer.id);
+    if (p) playing = { sessionId: p.sessionId, stationName: s.name, startedAt: p.startedAt, game: p.game };
+  }
+  return {
+    ok: true,
+    gamer: { id: gamer.id, fullName: gamer.fullName, memberCode: gamer.memberCode },
+    playing,
+    stations: board.stations.map((s) => ({ id: s.id, name: s.name, console: s.console, players: s.players.length, maxCheckIns: s.maxCheckIns })),
+  };
 }

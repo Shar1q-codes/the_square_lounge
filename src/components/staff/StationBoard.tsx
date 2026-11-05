@@ -29,7 +29,7 @@ function useServerNow(serverNow: Date) {
   return now;
 }
 
-function PaymentFields() {
+export function PaymentFields() {
   return (
     <div className="grid grid-cols-2 gap-2">
       <input name="amount" inputMode="decimal" placeholder="₹ paid (optional)" aria-label="Amount paid in rupees" className={cn(control, "h-10 text-sm")} />
