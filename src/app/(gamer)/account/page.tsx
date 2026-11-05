@@ -12,6 +12,7 @@ import { memberQrSvg } from "@/server/identity/gamers";
 import { balanceOf } from "@/server/loyalty/ledger";
 import { currentSession, recentVisits } from "@/server/sessions/history";
 import { logOut } from "../login/actions";
+import { LoungePoints } from "@/components/brand/LoungePoints";
 
 export const metadata: Metadata = { title: "My account | The Square Lounge" };
 
@@ -39,13 +40,13 @@ export default async function AccountPage() {
         memberSince={formatDate(gamer.createdAt)}
       />
       <Card className="flex flex-wrap items-center justify-between gap-4 p-5 sm:p-6">
-        <p>
-          <span className="font-display text-3xl font-semibold text-gold-soft">{balance}</span>{" "}
-          <span className="text-muted">points</span>
+        <p className="flex items-baseline gap-2">
+          <LoungePoints value={balance} label={false} className="font-display text-3xl font-semibold text-gold-soft" />
+          <span className="text-muted">Lounge Points</span>
         </p>
         <div className="flex flex-wrap gap-2">
           <Button href="/shop" size="sm">
-            Points shop
+            Spend them
           </Button>
           <Button href="/account/vouchers" size="sm" variant="secondary">
             My vouchers

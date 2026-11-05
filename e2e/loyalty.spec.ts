@@ -10,7 +10,7 @@ test("admin adds an offer → member earns points → claims it → counter rede
   await staffLogIn(page, E2E_ADMIN.username, E2E_ADMIN.password);
   await page.goto("/admin/offers");
   await page.getByLabel("Offer", { exact: true }).fill(title);
-  await page.getByLabel("Points cost").fill("100");
+  await page.getByLabel("Lounge Points cost").fill("100");
   await page.getByRole("button", { name: "Add offer" }).click();
   await expect(page.getByText(`"${title}" is now in the shop.`)).toBeVisible();
 
@@ -37,10 +37,10 @@ test("admin adds an offer → member earns points → claims it → counter rede
 
   // The member sees 100 points and claims the offer.
   await member.goto("/shop");
-  await expect(member.getByText(/You have\s*100\s*points/)).toBeVisible();
+  await expect(member.locator("main")).toContainText(/You have\s*100\s*Lounge Points/);
   const card = member.getByRole("article").filter({ hasText: title });
   await card.getByRole("button", { name: "Claim" }).click();
-  await card.getByRole("button", { name: "Confirm: spend 100 points" }).click();
+  await card.getByRole("button", { name: "Confirm: spend 100 Lounge Points" }).click();
   await expect(member).toHaveURL(/\/account\/vouchers\?new=V-/);
   const voucherCode = (await member.locator("main .font-mono").first().textContent())!.trim();
 

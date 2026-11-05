@@ -26,7 +26,7 @@ export default async function VouchersPage({ searchParams }: { searchParams: Pro
         <p className="text-muted">
           No vouchers yet.{" "}
           <Link href="/shop" className="text-gold underline-offset-4 hover:underline">
-            Visit the points shop
+            Visit the Lounge Points shop
           </Link>
           .
         </p>

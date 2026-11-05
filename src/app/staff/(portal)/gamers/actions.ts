@@ -48,5 +48,5 @@ export async function adjustPointsAction(_prev: AdjustState, formData: FormData)
   if (!result.ok) return { errors: { form: "That member account no longer exists." } };
   revalidatePath("/staff/gamers");
   const verb = parsed.data.points > 0 ? `Added ${parsed.data.points}` : `Removed ${Math.abs(parsed.data.points)}`;
-  return { balance: result.balance, notice: `${verb} points. New balance: ${result.balance}.` };
+  return { balance: result.balance, notice: `${verb} Lounge Points. New balance: ${result.balance}.` };
 }

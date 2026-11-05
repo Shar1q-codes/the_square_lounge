@@ -12,7 +12,7 @@ export default async function JoinPage() {
   return (
     <>
       <PageTitle eyebrow="Square Lounge Rewards" title="Create your account">
-        Earn points for every hour you play and spend them in the points shop.
+        Earn Lounge Points for every hour you play and spend them in the Lounge Points shop.
       </PageTitle>
       <SignUpForm currentYear={venueYear()} />
     </>

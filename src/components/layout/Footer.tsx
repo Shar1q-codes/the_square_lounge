@@ -70,7 +70,7 @@ export function Footer() {
             </li>
             <li>
               <a href="/shop" className="text-sm text-muted transition-colors hover:text-gold">
-                Points shop
+                Lounge Points shop
               </a>
             </li>
             <li>

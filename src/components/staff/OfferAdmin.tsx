@@ -8,6 +8,7 @@ import { CheckboxField, FormMessage, SelectField, TextField } from "@/components
 import { SubmitButton } from "@/components/account/SubmitButton";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { LoungePoints } from "@/components/brand/LoungePoints";
 
 export type AdminOffer = {
   id: string;
@@ -56,7 +57,7 @@ export function OfferForm({ offer }: { offer?: AdminOffer }) {
       </div>
       <TextField name="title" label="Offer" placeholder="Free PS4 hour" defaultValue={v.title} error={e.title} wrapperClassName="sm:col-span-2" />
       <TextField name="description" label="Details (optional)" placeholder="One hour on any PS4 station. Not valid on weekends." defaultValue={v.description} error={e.description} wrapperClassName="sm:col-span-2" />
-      <TextField name="pointsCost" label="Points cost" inputMode="numeric" defaultValue={v.pointsCost} error={e.pointsCost} />
+      <TextField name="pointsCost" label="Lounge Points cost" inputMode="numeric" defaultValue={v.pointsCost} error={e.pointsCost} />
       <SelectField name="category" label="Category" options={categoryOptions} defaultValue={v.category} error={e.category} />
       <TextField name="stock" label="Total available (optional)" inputMode="numeric" placeholder="Unlimited" defaultValue={v.stock} error={e.stock} />
       <TextField name="maxPerGamer" label="Max per member (optional)" inputMode="numeric" placeholder="No limit" defaultValue={v.maxPerGamer} error={e.maxPerGamer} />
@@ -90,7 +91,9 @@ function OfferRow({ offer }: { offer: AdminOffer }) {
             {offer.endsAt ? ` · ends ${istDateTime(offer.endsAt)}` : ""}
           </p>
         </div>
-        <p className="font-display text-lg font-semibold text-gold-soft">{offer.pointsCost} pts</p>
+        <p className="font-display text-lg font-semibold text-gold-soft">
+          <LoungePoints value={offer.pointsCost} label={false} />
+        </p>
       </div>
       {editing ? (
         <OfferForm offer={offer} />

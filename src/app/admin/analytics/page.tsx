@@ -81,7 +81,7 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
         <KpiTile label="Average visit" value={formatDuration(Math.round(avgLength(now)))} change={pctChange(Math.round(avgLength(now)), Math.round(avgLength(before)))} />
         <KpiTile label="Spend per visit" value={rupees(Math.round(perVisit(now)))} change={pctChange(Math.round(perVisit(now)), Math.round(perVisit(before)))} />
         <KpiTile label="No amount recorded" value={`${Math.round(unrecorded(now))}%`} change={pctChange(Math.round(unrecorded(now)), Math.round(unrecorded(before)))} lowerIsBetter note="Of check-outs" />
-        <KpiTile label="Unspent points" value={loyalty.outstanding.toLocaleString("en-IN")} note="Rewards members can still claim" />
+        <KpiTile label="Unspent Lounge Points" value={loyalty.outstanding.toLocaleString("en-IN")} note="Rewards members can still claim" />
       </div>
 
       <Section title="Daily trend" csv={exportHref("visits", range)} intro="Visits and revenue per day, as two charts so each has its own scale.">
@@ -145,7 +145,7 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
       <div className="grid gap-6 lg:grid-cols-2">
         <Section title="Top members" csv={exportHref("top-members", range)}>
           <DataTable
-            head={["Member", "Visits", "Hours", "Points"]}
+            head={["Member", "Visits", "Hours", "Lounge Points"]}
             rows={top.map((m) => [`${m.fullName ?? "Member"} (${m.memberCode})`, m.visits, hours(m.minutes), m.balance])}
           />
         </Section>
@@ -162,10 +162,10 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <Section title="Points shop" csv={exportHref("loyalty", range)}>
+        <Section title="Lounge Points shop" csv={exportHref("loyalty", range)}>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <KpiTile label="Points earned" value={loyalty.earned.toLocaleString("en-IN")} />
-            <KpiTile label="Points spent" value={loyalty.spent.toLocaleString("en-IN")} />
+            <KpiTile label="Lounge Points earned" value={loyalty.earned.toLocaleString("en-IN")} />
+            <KpiTile label="Lounge Points spent" value={loyalty.spent.toLocaleString("en-IN")} />
             <KpiTile label="Vouchers claimed" value={String(loyalty.claimed)} />
             <KpiTile label="Used" value={percent(loyalty.used, loyalty.claimed)} note={`${loyalty.expired} expired`} />
           </div>

@@ -6,7 +6,7 @@ import { display, site } from "@/config/site";
 
 export const metadata: Metadata = {
   title: "Privacy notice | The Square Lounge",
-  description: "What The Square Lounge collects for member accounts and points, why, and how to control it.",
+  description: "What The Square Lounge collects for member accounts and Lounge Points, why, and how to control it.",
 };
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
@@ -33,13 +33,13 @@ export default function PrivacyPage() {
             <li>Birth year, and optionally gender, so we know the age groups we serve.</li>
             <li>Your area and pincode (never your live location) and how you heard about us.</li>
             <li>Favourite games, if you tell us.</li>
-            <li>Your visits: when you check in and out, which station you used, points earned and offers claimed.</li>
+            <li>Your visits: when you check in and out, which station you used, Lounge Points earned and offers claimed.</li>
           </ul>
         </Section>
 
         <Section title="Why we use it">
           <ul>
-            <li>To run your account, track your play time and give you points and rewards.</li>
+            <li>To run your account, track your play time and give you Lounge Points and rewards.</li>
             <li>To understand our business in totals, such as busy hours and which areas our gamers come from, so we can plan offers and timings.</li>
             <li>Only if you opt in: to tell you about offers and tournaments. Your mobile number is for contact only; we never send SMS.</li>
           </ul>

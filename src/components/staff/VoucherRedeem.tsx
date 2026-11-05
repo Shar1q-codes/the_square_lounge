@@ -18,8 +18,8 @@ const statusLine = (v: CounterVoucher) =>
   ({
     active: `Valid until ${istDateTime(v.expiresAt)}`,
     used: `Already used${v.usedAt ? ` on ${istDateTime(v.usedAt)}` : ""}`,
-    expired: "Expired (points were refunded)",
-    cancelled: "Cancelled (points were refunded)",
+    expired: "Expired (Lounge Points were refunded)",
+    cancelled: "Cancelled (Lounge Points were refunded)",
   })[v.status];
 
 function VoucherDetails({ voucher }: { voucher: CounterVoucher }) {

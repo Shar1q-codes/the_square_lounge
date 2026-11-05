@@ -24,8 +24,8 @@ const statusText = (v: VoucherView) =>
   ({
     active: `Valid until ${istDateTime(v.expiresAt)}`,
     used: `Used ${v.usedAt ? istDateTime(v.usedAt) : ""}`,
-    expired: "Expired, points refunded",
-    cancelled: "Cancelled, points refunded",
+    expired: "Expired, Lounge Points refunded",
+    cancelled: "Cancelled, Lounge Points refunded",
   })[v.status];
 
 function CancelButton({ voucherId, points }: { voucherId: string; points: number }) {
@@ -42,7 +42,7 @@ function CancelButton({ voucherId, points }: { voucherId: string; points: number
     <form action={action} className="flex flex-wrap items-center gap-2">
       <input type="hidden" name="voucherId" value={voucherId} />
       <SubmitButton size="sm" variant="secondary" pendingLabel="Cancelling…">
-        Yes, give me {points} points back
+        Yes, give me {points} Lounge Points back
       </SubmitButton>
       {state.error && <p className="text-sm text-red-300">{state.error}</p>}
     </form>

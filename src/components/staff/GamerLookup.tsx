@@ -47,10 +47,10 @@ function AdjustPoints({ gamerId }: { gamerId: string }) {
   return (
     <form action={action} noValidate className="grid gap-3 border-t border-border pt-4 sm:grid-cols-[8rem_1fr_auto] sm:items-end">
       <input type="hidden" name="gamerId" value={gamerId} />
-      <TextField name="points" label="Points (+/−)" inputMode="numeric" placeholder="50 or -50" error={e.points} />
+      <TextField name="points" label="Lounge Points (+/−)" inputMode="numeric" placeholder="50 or -50" error={e.points} />
       <TextField name="reason" label="Reason" placeholder="Birthday gift" error={e.reason} />
       <SubmitButton variant="secondary" size="sm" pendingLabel="Saving…">
-        Adjust points
+        Adjust Lounge Points
       </SubmitButton>
       <div className="sm:col-span-3">
         <FormMessage error={e.form} notice={state.notice} />
@@ -68,7 +68,7 @@ function GamerCard({ gamer, canAdjust }: { gamer: LookupResult; canAdjust: boole
       </div>
       <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm sm:grid-cols-5">
         {[
-          ["Points", String(gamer.balance)],
+          ["Lounge Points", String(gamer.balance)],
           ["Mobile", gamer.phone ?? "—"],
           ["Age", gamer.ageBand],
           ["Area", gamer.area],

@@ -10,8 +10,8 @@ export default async function AdminOffersPage() {
   const offers = await listOffersForAdmin();
   return (
     <div className="mx-auto grid max-w-3xl gap-6">
-      <PageTitle eyebrow="Admin" title="Points shop offers">
-        Members earn 10 points per hour played. Hide an offer to take it out of the shop; vouchers already claimed stay valid.
+      <PageTitle eyebrow="Admin" title="Lounge Points shop offers">
+        Members earn 10 Lounge Points per hour played. Hide an offer to take it out of the shop; vouchers already claimed stay valid.
       </PageTitle>
       <OfferList offers={offers} />
       <Card className="p-5 sm:p-8">

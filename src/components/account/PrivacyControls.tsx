@@ -47,7 +47,7 @@ export function DeleteAccountForm() {
     <Card className="border-red-400/30 p-5 sm:p-8">
       <h2 className="mb-2 font-display text-xl font-semibold">Delete my account</h2>
       <p className="mb-5 text-sm text-muted">
-        This erases your name, email, mobile number and password straight away and can&apos;t be undone. Unused points
+        This erases your name, email, mobile number and password straight away and can&apos;t be undone. Unused Lounge Points
         and vouchers are lost.
       </p>
       <form action={action} noValidate className="grid gap-4">

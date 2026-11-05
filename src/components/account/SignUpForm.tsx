@@ -60,7 +60,7 @@ export function SignUpForm({ currentYear }: { currentYear: number }) {
             <Link href="/privacy" className="text-gold underline-offset-4 hover:underline">
               privacy notice
             </Link>{" "}
-            and to The Square Lounge using my details to run my account and points.
+            and to The Square Lounge using my details to run my account and Lounge Points.
           </CheckboxField>
         </div>
 

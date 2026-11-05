@@ -110,7 +110,7 @@ function PlayerRow({ player, now, notify }: { player: BoardPlayer; now: Date; no
         <form action={cancel} className="grid gap-2">
           <input type="hidden" name="sessionId" value={player.sessionId} />
           <input name="reason" required placeholder="Why? e.g. wrong station" aria-label="Reason for cancelling" className={cn(control, "h-10 text-sm")} />
-          <SubmitButton size="sm" variant="secondary" pendingLabel="Cancelling…">Confirm cancel (no points)</SubmitButton>
+          <SubmitButton size="sm" variant="secondary" pendingLabel="Cancelling…">Confirm cancel (no Lounge Points)</SubmitButton>
         </form>
       )}
       <ResultLine state={panel === "void" ? voidState : outState} />

@@ -3,6 +3,8 @@
  * Points for a session = floor(min(minutes, maxMinutesPerSession) × pointsPerHour ÷ 60).
  */
 export const loyalty = {
+  /** What members see: a gold "LP" coin next to every amount (components/brand/LoungePoints.tsx). */
+  pointsName: "Lounge Points",
   pointsPerHour: { PS5: 10, PS4: 10 },
   /** Sessions longer than this (forgotten check-outs) earn no more. 720 = 12 hours. */
   maxMinutesPerSession: 720,

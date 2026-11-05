@@ -8,10 +8,11 @@ import { loyalty } from "@/config/loyalty";
 import { currentGamer } from "@/server/identity/currentUser";
 import { balanceOf } from "@/server/loyalty/ledger";
 import { listShopOffers } from "@/server/loyalty/offers";
+import { LoungePoints } from "@/components/brand/LoungePoints";
 
 export const metadata: Metadata = {
-  title: "Points shop | The Square Lounge",
-  description: "Earn points for every hour you play at The Square Lounge and swap them for free gaming time and café treats.",
+  title: "Lounge Points shop | The Square Lounge",
+  description: "Earn Lounge Points for every hour you play at The Square Lounge and swap them for free gaming time and café treats.",
   robots: { index: true, follow: true },
 };
 
@@ -21,13 +22,13 @@ export default async function ShopPage() {
 
   return (
     <div className="grid gap-6">
-      <PageTitle eyebrow="Square Lounge Rewards" title="Points shop">
-        Earn {loyalty.pointsPerHour.PS5} points for every hour you play, then swap them for these.
+      <PageTitle eyebrow="Square Lounge Rewards" title="Lounge Points shop">
+        Earn <LoungePoints value={loyalty.pointsPerHour.PS5} className="font-medium text-gold-soft" /> for every hour you play, then swap them for these.
       </PageTitle>
 
       {balance === null ? (
         <Card className="flex flex-col items-start gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
-          <p>Join free to start earning points on every visit.</p>
+          <p>Join free to start earning Lounge Points on every visit.</p>
           <div className="flex gap-2">
             <Button href="/join" size="sm">
               Join rewards
@@ -40,7 +41,7 @@ export default async function ShopPage() {
       ) : (
         <Card className="flex items-center justify-between gap-4 p-5">
           <p>
-            You have <span className="font-display text-xl font-semibold text-gold-soft">{balance}</span> points.
+            You have <LoungePoints value={balance} className="font-display text-xl font-semibold text-gold-soft" />.
           </p>
           <Link href="/account/vouchers" className="text-sm text-gold underline-offset-4 hover:underline">
             My vouchers
