@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type RefObject } from "react";
 import { useFrame } from "@react-three/fiber";
-import { CanvasTexture, SRGBColorSpace, VideoTexture, type MeshBasicMaterial } from "three";
+import { Html } from "@react-three/drei";
+import { CanvasTexture, SRGBColorSpace, VideoTexture, type Object3D, type MeshBasicMaterial } from "three";
 import type { Game } from "@/config/site";
 
 /** What a station's TV shows: nothing (free), or the game being played there. */
@@ -77,8 +78,63 @@ function useClip(src: string | undefined): VideoTexture | null {
   return texture;
 }
 
+/** The embedded player is laid out at this size in CSS pixels, then scaled down to the screen. */
+const PLAYER = { width: 640, height: 360 };
+
+/**
+ * The game's official YouTube trailer laid over the TV screen in 3D (YouTube's own embedded player,
+ * placed with CSS transforms; a video from another site can't be drawn into WebGL). Muted and looping,
+ * it lets drags and taps through to the 3D view, and hides while a pillar is in front of it.
+ */
+type TrailerProps = { videoId: string; title: string; width: number; occluders: RefObject<Object3D | null> };
+
+function TrailerOnScreen({ videoId, title, width, occluders }: TrailerProps) {
+  const params = new URLSearchParams({
+    autoplay: "1",
+    mute: "1",
+    loop: "1",
+    playlist: videoId,
+    playsinline: "1",
+    controls: "0",
+    disablekb: "1",
+    rel: "0",
+    modestbranding: "1",
+    iv_load_policy: "3",
+  });
+  return (
+    <Html
+      transform
+      position-z={0.03}
+      // In transform mode one CSS pixel is distanceFactor / 400 metres: this fits 640 px to the screen.
+      distanceFactor={(width / PLAYER.width) * 400}
+      occlude={[occluders as RefObject<Object3D>]}
+      pointerEvents="none"
+      // Stays under the page's own panels (viewpoints, TV card), which come later in the page.
+      zIndexRange={[0, 0]}
+    >
+      <iframe
+        src={`https://www.youtube-nocookie.com/embed/${videoId}?${params}`}
+        title={`${title} official trailer`}
+        allow="autoplay; encrypted-media"
+        tabIndex={-1}
+        style={{ width: PLAYER.width, height: PLAYER.height, border: 0, display: "block", pointerEvents: "none" }}
+      />
+    </Html>
+  );
+}
+
+type ScreenProps = {
+  state: ScreenState;
+  width: number;
+  height: number;
+  /** Play the game's trailer on the screen (only the nearest few booked TVs do, to keep phones smooth). */
+  playTrailer: boolean;
+  /** Things that can stand between the camera and a TV (the pillars), for hiding the trailer. */
+  occluders: RefObject<Object3D | null>;
+};
+
 /** The picture on a booked TV. Free TVs keep the dark glass screen drawn by StationUnit. */
-export function StationScreen({ state, width, height }: { state: ScreenState; width: number; height: number }) {
+export function StationScreen({ state, width, height, playTrailer, occluders }: ScreenProps) {
   const game = state.busy ? state.game : null;
   const card = useMemo(() => (state.busy ? titleCard(game?.title ?? null) : null), [state.busy, game?.title]);
   useEffect(() => () => card?.dispose(), [card]);
@@ -93,10 +149,14 @@ export function StationScreen({ state, width, height }: { state: ScreenState; wi
   });
 
   if (!state.busy || !card) return null;
+  const trailer = playTrailer && !clip ? game?.trailer : undefined;
   return (
-    <mesh position-z={0.027}>
-      <planeGeometry args={[width, height]} />
-      <meshBasicMaterial ref={material} map={clip ?? card} toneMapped={false} />
-    </mesh>
+    <>
+      <mesh position-z={0.027}>
+        <planeGeometry args={[width, height]} />
+        <meshBasicMaterial ref={material} map={clip ?? card} toneMapped={false} />
+      </mesh>
+      {trailer && game && <TrailerOnScreen videoId={trailer} title={game.title} width={width} occluders={occluders} />}
+    </>
   );
 }

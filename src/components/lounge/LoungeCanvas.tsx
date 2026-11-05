@@ -76,7 +76,7 @@ export default function LoungeCanvas({ mobile, motion, view, rotated, screens, i
         <Room reflections={quality === 2} />
         <CeilingLights motion={motion} />
         <Fans motion={motion} />
-        <Stations screens={screens} onSelect={onSelectStation} />
+        <Stations screens={screens} maxTrailers={mobile ? 1 : 3} onSelect={onSelectStation} />
         <Seating />
         <Cafe />
         <Details />
