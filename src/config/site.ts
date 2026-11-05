@@ -55,6 +55,12 @@ export type Game = {
    * public/videos/games/<id>.mp4 (720p or smaller, under ~4 MB). Without a clip the TV shows the title.
    */
   clip?: string;
+  /**
+   * YouTube id of the publisher's official trailer (from their own channel, embeddable). Plays in
+   * the 3D lounge when someone taps a booked station's TV. Embedding is allowed by YouTube's terms;
+   * the video is never copied to this site.
+   */
+  trailer?: string;
 };
 
 export type OpeningHours = {
@@ -258,15 +264,15 @@ export const site = {
 
   // The lounge's library (Nov 2026). Check the consoles and player counts.
   games: [
-    { id: "ea-fc-27", title: "EA SPORTS FC 27", category: "Sports", consoles: ["PS5"], players: "1–4" },
-    { id: "ea-fc-26", title: "EA SPORTS FC 26", category: "Sports", consoles: ["PS5", "PS4"], players: "1–4" },
-    { id: "ufc-5", title: "UFC 5", category: "Fighting", consoles: ["PS5"], players: "1–2" },
-    { id: "mortal-kombat-1", title: "Mortal Kombat 1", category: "Fighting", consoles: ["PS5"], players: "1–2" },
-    { id: "wwe-2k26", title: "WWE 2K26", category: "Fighting", consoles: ["PS5"], players: "1–4" },
-    { id: "wwe-2k25", title: "WWE 2K25", category: "Fighting", consoles: ["PS5", "PS4"], players: "1–4" },
-    { id: "gta-v", title: "Grand Theft Auto V", category: "Action", consoles: ["PS5", "PS4"], players: "1" },
-    { id: "cod-black-ops-3", title: "Call of Duty: Black Ops III", category: "Action", consoles: ["PS5", "PS4"], players: "1–2" },
-    { id: "asphalt-legends", title: "Asphalt Legends", category: "Racing", consoles: ["PS5", "PS4"], players: "1" },
+    { id: "ea-fc-27", title: "EA SPORTS FC 27", category: "Sports", consoles: ["PS5"], players: "1–4", trailer: "zEcmpr1Ssr8" },
+    { id: "ea-fc-26", title: "EA SPORTS FC 26", category: "Sports", consoles: ["PS5", "PS4"], players: "1–4", trailer: "F2Q4xrASt94" },
+    { id: "ufc-5", title: "UFC 5", category: "Fighting", consoles: ["PS5"], players: "1–2", trailer: "1R4MdobS1nI" },
+    { id: "mortal-kombat-1", title: "Mortal Kombat 1", category: "Fighting", consoles: ["PS5"], players: "1–2", trailer: "lQFZC6dzauM" },
+    { id: "wwe-2k26", title: "WWE 2K26", category: "Fighting", consoles: ["PS5"], players: "1–4", trailer: "89e7yn7h1NU" },
+    { id: "wwe-2k25", title: "WWE 2K25", category: "Fighting", consoles: ["PS5", "PS4"], players: "1–4", trailer: "GDMuQWb8seo" },
+    { id: "gta-v", title: "Grand Theft Auto V", category: "Action", consoles: ["PS5", "PS4"], players: "1", trailer: "QkkoHAzjnUs" },
+    { id: "cod-black-ops-3", title: "Call of Duty: Black Ops III", category: "Action", consoles: ["PS5", "PS4"], players: "1–2", trailer: "SseJEiaw6gk" },
+    { id: "asphalt-legends", title: "Asphalt Legends", category: "Racing", consoles: ["PS5", "PS4"], players: "1", trailer: "rH-eZd01NEQ" },
   ] satisfies Game[],
 
   experience: [

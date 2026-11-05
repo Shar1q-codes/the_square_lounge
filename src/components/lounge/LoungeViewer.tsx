@@ -153,6 +153,7 @@ export function LoungeViewer() {
 
   const card = selected && stationCard(selected);
   const selectedScreen = selected ? screens.get(selected.id) : undefined;
+  const trailer = selectedScreen?.busy ? selectedScreen.game?.trailer : undefined;
 
   return (
     <LandscapeShell
@@ -235,7 +236,10 @@ export function LoungeViewer() {
         <div
           role="dialog"
           aria-label={card.name}
-          className="absolute right-3 top-24 w-60 rounded-2xl border border-gold/30 bg-black/70 p-4 backdrop-blur-md md:right-5 md:top-28"
+          className={cn(
+            "absolute right-3 top-24 max-h-[calc(100%-7.5rem)] overflow-y-auto rounded-2xl border border-gold/30 bg-black/70 p-4 backdrop-blur-md md:right-5 md:top-28",
+            trailer ? "w-[min(24rem,calc(100%-1.5rem))]" : "w-60",
+          )}
         >
           <button
             type="button"
@@ -267,6 +271,9 @@ export function LoungeViewer() {
               )}
             </p>
           )}
+          {trailer && selectedScreen?.busy && selectedScreen.game && (
+            <TrailerPlayer key={trailer} videoId={trailer} title={selectedScreen.game.title} />
+          )}
           <Link
             href={card.bookHref}
             className="mt-3 inline-flex w-full items-center justify-center rounded-full bg-gold px-4 py-2 text-sm font-medium text-bg"
@@ -282,6 +289,36 @@ export function LoungeViewer() {
         </p>
       )}
     </LandscapeShell>
+  );
+}
+
+/**
+ * The game's official trailer from the publisher's YouTube channel, embedded (YouTube's
+ * privacy-enhanced mode), muted and looping. Loads only when someone taps a booked TV.
+ */
+function TrailerPlayer({ videoId, title }: { videoId: string; title: string }) {
+  const params = new URLSearchParams({
+    autoplay: "1",
+    mute: "1",
+    loop: "1",
+    playlist: videoId,
+    playsinline: "1",
+    rel: "0",
+    modestbranding: "1",
+  });
+  return (
+    <div className="mt-3 overflow-hidden rounded-xl border border-white/10 bg-black">
+      <iframe
+        src={`https://www.youtube-nocookie.com/embed/${videoId}?${params}`}
+        title={`${title} official trailer`}
+        allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+        allowFullScreen
+        loading="lazy"
+        referrerPolicy="strict-origin-when-cross-origin"
+        className="aspect-video w-full"
+      />
+      <p className="px-3 py-1.5 text-[11px] text-muted">Official trailer · tap for sound</p>
+    </div>
   );
 }
 

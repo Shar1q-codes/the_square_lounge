@@ -44,6 +44,10 @@ export default function PrivacyPage() {
             <li>Only if you opt in: to tell you about offers and tournaments. Your mobile number is for contact only; we never send SMS.</li>
           </ul>
           <p>We do not sell your details or share them with advertisers.</p>
+          <p>
+            Game trailers in the 3D lounge come from the game publishers&apos; YouTube channels. They load (in YouTube&apos;s
+            privacy-enhanced mode) only when you tap a TV to play one, and YouTube&apos;s own privacy policy applies to them.
+          </p>
         </Section>
 
         <Section title="Under 18?">

@@ -10,6 +10,10 @@ describe("game library", () => {
     for (const id of GAME_IDS) expect(id).toMatch(/^[a-z0-9-]+$/);
   });
 
+  it("gives every game an official trailer (a YouTube video id)", () => {
+    for (const g of site.games) expect(g.trailer, g.title).toMatch(/^[A-Za-z0-9_-]{11}$/);
+  });
+
   it("finds games by id and ignores unknown ones", () => {
     expect(findGame("ufc-5")?.title).toBe("UFC 5");
     expect(findGame("tetris")).toBeUndefined();
