@@ -13,7 +13,7 @@ import { Effects } from "./Effects";
 import { Fans } from "./Fans";
 import { Room } from "./Room";
 import { Seating } from "./Seating";
-import { Stations } from "./Stations";
+import { Stations, type Screens } from "./Stations";
 import { WalkControls, type MoveInput } from "./WalkControls";
 
 type Props = {
@@ -24,6 +24,8 @@ type Props = {
   motion: boolean;
   /** True inside the rotated phone shell: pointer events arrive already in the canvas's own frame. */
   rotated: boolean;
+  /** What each booked station's TV shows. */
+  screens: Screens;
   /** The on-screen walk arrows. */
   input: RefObject<MoveInput>;
   onInteract: () => void;
@@ -45,7 +47,7 @@ function computePointer(event: MouseEvent, state: RootState, rotated: boolean) {
  * The 3D lounge. Loaded with next/dynamic (ssr: false) from LoungeViewer, only on /lounge.
  * Quality steps down on slow devices: floor reflections go first, then bloom. Phones start without reflections.
  */
-export default function LoungeCanvas({ mobile, motion, view, rotated, input, onInteract, onSelectStation }: Props) {
+export default function LoungeCanvas({ mobile, motion, view, rotated, screens, input, onInteract, onSelectStation }: Props) {
   const start = VIEWPOINTS.find((v) => v.id === view) ?? VIEWPOINTS[0];
   // The event manager is created once, so it reads the current rotation through a ref.
   const rotatedRef = useRef(rotated);
@@ -74,7 +76,7 @@ export default function LoungeCanvas({ mobile, motion, view, rotated, input, onI
         <Room reflections={quality === 2} />
         <CeilingLights motion={motion} />
         <Fans motion={motion} />
-        <Stations onSelect={onSelectStation} />
+        <Stations screens={screens} onSelect={onSelectStation} />
         <Seating />
         <Cafe />
         <Details />

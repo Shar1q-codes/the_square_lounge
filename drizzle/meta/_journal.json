@@ -57,6 +57,13 @@
       "when": 1793828050968,
       "tag": "0007_cafe_orders_rls",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1793909969771,
+      "tag": "0008_session_game",
+      "breakpoints": true
     }
   ]
 }

@@ -4,9 +4,11 @@ import { db, schema } from "@/db";
 import { minutesBetween } from "@/lib/sessions";
 
 /** Where the gamer is playing right now, if anywhere. */
-export async function currentSession(gamerId: string): Promise<{ stationName: string; startedAt: Date } | null> {
+export async function currentSession(
+  gamerId: string,
+): Promise<{ stationName: string; startedAt: Date; game: string | null } | null> {
   const [row] = await db
-    .select({ stationName: schema.stations.name, startedAt: schema.playSessions.startedAt })
+    .select({ stationName: schema.stations.name, startedAt: schema.playSessions.startedAt, game: schema.playSessions.game })
     .from(schema.playSessions)
     .innerJoin(schema.stations, eq(schema.stations.id, schema.playSessions.stationId))
     .where(and(eq(schema.playSessions.gamerId, gamerId), eq(schema.playSessions.status, "open")))

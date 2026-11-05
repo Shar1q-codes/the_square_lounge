@@ -2,17 +2,21 @@ import { formatDuration, istDateTime, istTime } from "@/lib/sessions";
 import type { Visit } from "@/server/sessions/history";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { GamePicker } from "./GamePicker";
 
-export function NowPlaying({ stationName, startedAt }: { stationName: string; startedAt: Date }) {
+export function NowPlaying({ stationName, startedAt, game }: { stationName: string; startedAt: Date; game: string | null }) {
   return (
-    <Card className="flex items-center gap-4 border-gold/40 p-5" role="status">
-      <span aria-hidden className="size-2.5 shrink-0 animate-pulse rounded-full bg-gold" />
-      <p className="flex-1">
-        <span className="font-medium">Now playing</span> at {stationName} since {istTime(startedAt)}.
-      </p>
-      <Button href="/order" size="sm">
-        Order food
-      </Button>
+    <Card className="grid gap-4 border-gold/40 p-5" role="status">
+      <div className="flex items-center gap-4">
+        <span aria-hidden className="size-2.5 shrink-0 animate-pulse rounded-full bg-gold" />
+        <p className="flex-1">
+          <span className="font-medium">Now playing</span> at {stationName} since {istTime(startedAt)}.
+        </p>
+        <Button href="/order" size="sm">
+          Order food
+        </Button>
+      </div>
+      <GamePicker game={game} />
     </Card>
   );
 }

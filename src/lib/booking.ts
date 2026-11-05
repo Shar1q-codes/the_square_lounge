@@ -1,4 +1,5 @@
 import { site, type OpeningHours } from "@/config/site";
+import { findGame } from "@/lib/games";
 
 /** Raw form values (everything is a string, straight from the inputs). */
 export type BookingForm = {
@@ -8,6 +9,8 @@ export type BookingForm = {
   time: string; // HH:MM
   duration: string; // hours
   players: string;
+  /** Optional game id from site.games, so the station can be set up for it. */
+  game: string;
 };
 
 export type BookingErrors = Partial<Record<keyof BookingForm, string>>;
@@ -19,6 +22,7 @@ export const emptyBooking: BookingForm = {
   time: "",
   duration: "",
   players: "",
+  game: "",
 };
 
 const WEEKDAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"] as const;
@@ -163,6 +167,7 @@ export function buildBookingMessage(form: BookingForm): string {
     `Date: ${date}`,
     `Time: ${form.time} – ${end} (${hours} ${hours === 1 ? "hour" : "hours"})`,
     `Players: ${form.players}`,
+    ...(findGame(form.game) ? [`Game: ${findGame(form.game)!.title}`] : []),
     "",
     "Please confirm availability. Thanks!",
   ].join("\n");

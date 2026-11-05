@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 import type { ThreeEvent } from "@react-three/fiber";
 import { COLORS, STATIONS, type Station } from "@/config/lounge";
+import { StationScreen, type ScreenState } from "./StationScreen";
 import { marble } from "./textures";
 
 /** Screen width and height in metres for a 16:9 TV of a given diagonal. */
@@ -37,10 +38,10 @@ function Console({ kind }: { kind: Station["console"] }) {
   );
 }
 
-type StationProps = { station: Station; onSelect?: (station: Station) => void };
+type StationProps = { station: Station; screen: ScreenState; onSelect?: (station: Station) => void };
 
 /** One gaming station: TV on the wall, marble console table and console below it. */
-function StationUnit({ station, onSelect }: StationProps) {
+function StationUnit({ station, screen, onSelect }: StationProps) {
   const [w, h] = screenSize(station.inches);
   const stone = useMemo(marble, []);
   const select = (e: ThreeEvent<MouseEvent>) => {
@@ -62,6 +63,7 @@ function StationUnit({ station, onSelect }: StationProps) {
           <planeGeometry args={[w, h]} />
           <meshPhysicalMaterial color="#05070a" roughness={0.08} metalness={0.1} clearcoat={1} emissive="#0b1d3a" emissiveIntensity={0.35} />
         </mesh>
+        <StationScreen state={screen} width={w} height={h} />
       </group>
       {/* Switchboard beside the TV */}
       <mesh position={[w / 2 + 0.35, 1.05, 0.008]}>
@@ -84,11 +86,15 @@ function StationUnit({ station, onSelect }: StationProps) {
   );
 }
 
-export function Stations({ onSelect }: { onSelect?: (station: Station) => void }) {
+/** Station id → what its TV shows. Stations missing from the map are free. */
+export type Screens = ReadonlyMap<number, ScreenState>;
+const FREE: ScreenState = { busy: false };
+
+export function Stations({ screens, onSelect }: { screens: Screens; onSelect?: (station: Station) => void }) {
   return (
     <group>
       {STATIONS.map((s) => (
-        <StationUnit key={s.id} station={s} onSelect={onSelect} />
+        <StationUnit key={s.id} station={s} screen={screens.get(s.id) ?? FREE} onSelect={onSelect} />
       ))}
     </group>
   );

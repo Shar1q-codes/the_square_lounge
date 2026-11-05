@@ -75,6 +75,8 @@ export const playSessions = pgTable(
     endedBy: uuid("ended_by").references(() => staff.id),
     paymentId: uuid("payment_id").references(() => payments.id),
     voidReason: text("void_reason"),
+    /** Game id from site.games, picked at check-in or by the gamer; shown on the station's TV in the 3D lounge. */
+    game: text("game"),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },

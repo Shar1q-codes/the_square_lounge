@@ -97,6 +97,8 @@ export function BookingForm() {
       if (name === "stationId") {
         const s = findStation(value);
         if (s && Number(f.players) > s.maxPlayers) next.players = "";
+        // A game the station's console can't run is dropped.
+        if (s && f.game && !site.games.some((g) => g.id === f.game && g.consoles.includes(s.console))) next.game = "";
       }
       return next;
     });
@@ -237,7 +239,7 @@ export function BookingForm() {
           </select>
         </Field>
 
-        <Field id={id("duration")} label="Duration" error={errors.duration} className="sm:col-span-2">
+        <Field id={id("duration")} label="Duration" error={errors.duration}>
           <select
             id={id("duration")}
             name="duration"
@@ -253,6 +255,26 @@ export function BookingForm() {
                 {h} {h === 1 ? "hour" : "hours"}
               </option>
             ))}
+          </select>
+        </Field>
+
+        <Field id={id("game")} label="Game (optional)" hint="We'll have it ready on your station.">
+          <select
+            id={id("game")}
+            name="game"
+            value={form.game}
+            onChange={(e) => update("game", e.target.value)}
+            aria-describedby={`${id("game")}-hint`}
+            className={cn(control, "border-border-strong")}
+          >
+            <option value="">Not sure yet</option>
+            {site.games
+              .filter((g) => !station || g.consoles.includes(station.console))
+              .map((g) => (
+                <option key={g.id} value={g.id}>
+                  {g.title}
+                </option>
+              ))}
           </select>
         </Field>
       </div>

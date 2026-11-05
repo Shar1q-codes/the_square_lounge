@@ -2,7 +2,14 @@ import "server-only";
 import { and, asc, eq, sql } from "drizzle-orm";
 import { db, schema } from "@/db";
 
-export type BoardPlayer = { sessionId: string; gamerId: string; fullName: string | null; memberCode: string; startedAt: Date };
+export type BoardPlayer = {
+  sessionId: string;
+  gamerId: string;
+  fullName: string | null;
+  memberCode: string;
+  startedAt: Date;
+  game: string | null;
+};
 export type BoardStation = { id: number; name: string; console: "PS5" | "PS4"; maxCheckIns: number; players: BoardPlayer[] };
 
 /** Active stations with who is playing right now, plus the database clock for timers. */
@@ -15,6 +22,7 @@ export async function getBoard(): Promise<{ now: Date; stations: BoardStation[] 
       fullName: schema.gamers.fullName,
       memberCode: schema.gamers.memberCode,
       startedAt: schema.playSessions.startedAt,
+      game: schema.playSessions.game,
       now: sql<string>`now()`,
     })
     .from(schema.stations)
@@ -38,6 +46,7 @@ export async function getBoard(): Promise<{ now: Date; stations: BoardStation[] 
         fullName: row.fullName,
         memberCode: row.memberCode,
         startedAt: row.startedAt,
+        game: row.game,
       });
     }
   }

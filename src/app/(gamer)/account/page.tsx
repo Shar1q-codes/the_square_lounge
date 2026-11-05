@@ -31,7 +31,7 @@ export default async function AccountPage() {
   return (
     <div className="grid gap-6">
       <PageTitle eyebrow="My account" title={`Hi, ${firstName}`} />
-      {playing && <NowPlaying stationName={playing.stationName} startedAt={playing.startedAt} />}
+      {playing && <NowPlaying stationName={playing.stationName} startedAt={playing.startedAt} game={playing.game} />}
       <MemberCard
         name={gamer.fullName ?? ""}
         memberCode={gamer.memberCode}

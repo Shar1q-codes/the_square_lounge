@@ -2,6 +2,7 @@
 
 import { useActionState, useCallback, useRef } from "react";
 import { checkInAction, type CheckInState } from "@/app/staff/(portal)/actions";
+import { gameOptions } from "@/lib/games";
 import type { BoardStation } from "@/server/sessions/board";
 import { FormMessage, SelectField, TextField } from "@/components/account/fields";
 import { SubmitButton } from "@/components/account/SubmitButton";
@@ -24,7 +25,7 @@ export function CheckInForm({ stations }: { stations: BoardStation[] }) {
   return (
     <Card className="p-5 sm:p-6">
       <h2 className="mb-4 font-display text-lg font-semibold">Check in</h2>
-      <form action={action} noValidate className="grid gap-4 md:grid-cols-[1fr_16rem_auto] md:items-end">
+      <form action={action} noValidate className="grid gap-4 md:grid-cols-2 xl:grid-cols-[1fr_15rem_15rem_auto] md:items-end">
         <div className="flex items-end gap-2">
           <TextField
             ref={queryRef}
@@ -48,6 +49,7 @@ export function CheckInForm({ stations }: { stations: BoardStation[] }) {
           key={state.stationId ?? "none"}
           error={e.stationId}
         />
+        <SelectField name="game" label="Game (optional)" options={gameOptions()} placeholder="Not sure yet" defaultValue="" />
         <SubmitButton pendingLabel="Checking in…">Check in</SubmitButton>
       </form>
 
@@ -60,6 +62,7 @@ export function CheckInForm({ stations }: { stations: BoardStation[] }) {
               <form key={c.gamerId} action={action}>
                 <input type="hidden" name="gamerId" value={c.gamerId} />
                 <input type="hidden" name="stationId" value={state.stationId} />
+                <input type="hidden" name="game" value={state.game ?? ""} />
                 <SubmitButton variant="secondary" size="sm">
                   {c.fullName} · {c.memberCode}
                 </SubmitButton>

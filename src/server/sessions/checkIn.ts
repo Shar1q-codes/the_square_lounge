@@ -10,7 +10,7 @@ export type CheckInResult =
   | { ok: false; reason: "station_full" | "station_inactive" | "gamer_not_found" };
 
 /** Starts a session. Locks the station row so two counters can't fill the last seat together. */
-export async function checkIn(staffId: string, gamerId: string, stationId: number): Promise<CheckInResult> {
+export async function checkIn(staffId: string, gamerId: string, stationId: number, game: string | null = null): Promise<CheckInResult> {
   try {
     return await db.transaction(async (tx) => {
       const [station] = await tx
@@ -41,17 +41,17 @@ export async function checkIn(staffId: string, gamerId: string, stationId: numbe
 
       const [session] = await tx
         .insert(schema.playSessions)
-        .values({ gamerId, stationId, startedBy: staffId })
+        .values({ gamerId, stationId, startedBy: staffId, game })
         .returning({ id: schema.playSessions.id });
       await writeAudit(
-        { actorStaffId: staffId, action: "session.check_in", targetType: "play_session", targetId: session.id, details: { stationId } },
+        { actorStaffId: staffId, action: "session.check_in", targetType: "play_session", targetId: session.id, details: { stationId, game } },
         tx,
       );
       return { ok: true, sessionId: session.id, fullName: gamer.fullName } as const;
     });
   } catch (error) {
     // The same gamer checked in at two stations at the same moment: the unique index caught it.
-    if (isUniqueViolation(error, "play_sessions_one_open_per_gamer")) return checkIn(staffId, gamerId, stationId);
+    if (isUniqueViolation(error, "play_sessions_one_open_per_gamer")) return checkIn(staffId, gamerId, stationId, game);
     throw error;
   }
 }

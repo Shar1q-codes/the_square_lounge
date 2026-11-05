@@ -1,9 +1,13 @@
 import { z } from "zod";
+import { GAME_IDS } from "@/lib/games";
 import { MAX_CORRECTED_MS, PAYMENT_METHODS, parseIstInput, parseRupees } from "@/lib/sessions";
 
 export { PAYMENT_METHODS };
 
 const stationIdField = z.coerce.number({ error: "Pick a station." }).int().positive("Pick a station.");
+
+/** Optional game from the library: "" or an unknown id means "not said". */
+export const gameField = z.preprocess((v) => (typeof v === "string" && GAME_IDS.includes(v) ? v : null), z.string().nullable());
 
 export const checkInSchema = z.object({
   query: z.string().trim().min(1, "Enter or scan a member code."),

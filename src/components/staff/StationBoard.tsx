@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useActionState, useCallback, useEffect, useState } from "react";
 import { checkOutAction, voidAction, type RowActionState } from "@/app/staff/(portal)/actions";
+import { findGame } from "@/lib/games";
 import { canVoid, formatDuration, istTime, minutesBetween, needsAttention, PAYMENT_METHODS } from "@/lib/sessions";
 import type { BoardPlayer, BoardStation } from "@/server/sessions/board";
 import { control, FormMessage } from "@/components/account/fields";
@@ -81,6 +82,7 @@ function PlayerRow({ player, now, notify }: { player: BoardPlayer; now: Date; no
           <p className="font-mono text-xs tracking-wider text-muted">
             {player.memberCode} · since {istTime(player.startedAt)}
           </p>
+          {findGame(player.game) && <p className="truncate text-xs text-gold-soft">{findGame(player.game)!.title}</p>}
         </div>
         <div className="shrink-0 text-right">
           <p className={cn("font-display font-semibold tabular-nums", flagged && "text-red-300")}>{formatDuration(minutes)}</p>

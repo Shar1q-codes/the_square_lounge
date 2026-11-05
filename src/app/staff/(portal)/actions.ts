@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { fieldErrors } from "@/lib/validation/identity";
-import { checkInSchema, checkOutSchema, voidSchema } from "@/lib/validation/sessions";
+import { checkInSchema, checkOutSchema, gameField, voidSchema } from "@/lib/validation/sessions";
 import { formatDuration, formatRupees, istTime } from "@/lib/sessions";
 import { requireStaff } from "@/server/identity/currentUser";
 import { findGamers } from "@/server/identity/gamers";
@@ -17,6 +17,8 @@ export type CheckInState = {
   /** Several members share the mobile number that was searched: staff pick one. */
   choices?: { gamerId: string; fullName: string | null; memberCode: string }[];
   stationId?: string;
+  /** Kept when staff have to pick between members, so the game isn't lost. */
+  game?: string;
 };
 
 export async function checkInAction(_prev: CheckInState, formData: FormData): Promise<CheckInState> {
@@ -35,6 +37,7 @@ export async function checkInAction(_prev: CheckInState, formData: FormData): Pr
     if (found.length > 1) {
       return {
         stationId,
+        game: String(formData.get("game") ?? ""),
         choices: found.map((g) => ({ gamerId: g.id, fullName: g.fullName, memberCode: g.memberCode })),
         message: "Several members share this number. Who is checking in?",
       };
@@ -45,7 +48,7 @@ export async function checkInAction(_prev: CheckInState, formData: FormData): Pr
   const station = z.coerce.number().int().positive().safeParse(stationId);
   if (!station.success) return { errors: { stationId: "Pick a station." }, stationId };
 
-  const result = await checkIn(member.id, gamerId, station.data);
+  const result = await checkIn(member.id, gamerId, station.data, gameField.parse(formData.get("game")));
   if (!result.ok) {
     const message = {
       already_playing:

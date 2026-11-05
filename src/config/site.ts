@@ -43,10 +43,18 @@ export type PricingTier = {
 export type GameCategory = "Sports" | "Racing" | "Action" | "Fighting" | "Co-op";
 
 export type Game = {
+  /** Stable id: stored on play sessions and used for the clip file name. */
+  id: string;
   title: string;
   category: GameCategory;
   consoles: ConsoleType[];
   players: string;
+  /**
+   * 10–20 second gameplay clip shown on a booked station's TV in the 3D lounge (muted, looping).
+   * Record it on the lounge's own PS5 (Create button → save recent gameplay), trim it, and save it as
+   * public/videos/games/<id>.mp4 (720p or smaller, under ~4 MB). Without a clip the TV shows the title.
+   */
+  clip?: string;
 };
 
 export type OpeningHours = {
@@ -246,22 +254,19 @@ export const site = {
   pricingNote:
     "Prices are per hour unless specified. Group, tournament and party bookings available — message us on WhatsApp for custom packages.",
 
-  gameCategories: ["Sports", "Racing", "Action", "Fighting", "Co-op"] satisfies GameCategory[],
+  gameCategories: ["Sports", "Racing", "Action", "Fighting"] satisfies GameCategory[],
 
+  // The lounge's library (Nov 2026). Check the consoles and player counts.
   games: [
-    // TODO: replace placeholder titles with your actual library
-    { title: "TODO: Football Title", category: "Sports", consoles: ["PS5", "PS4"], players: "1–4" },
-    { title: "TODO: Basketball Title", category: "Sports", consoles: ["PS5"], players: "1–4" },
-    { title: "TODO: Cricket Title", category: "Sports", consoles: ["PS5", "PS4"], players: "1–2" },
-    { title: "TODO: Racing Sim", category: "Racing", consoles: ["PS5"], players: "1–2" },
-    { title: "TODO: Arcade Racer", category: "Racing", consoles: ["PS5", "PS4"], players: "1–4" },
-    { title: "TODO: Open-World Action", category: "Action", consoles: ["PS5"], players: "1" },
-    { title: "TODO: Superhero Adventure", category: "Action", consoles: ["PS5", "PS4"], players: "1" },
-    { title: "TODO: Shooter", category: "Action", consoles: ["PS5", "PS4"], players: "1–2" },
-    { title: "TODO: Arena Fighter", category: "Fighting", consoles: ["PS5", "PS4"], players: "1–2" },
-    { title: "TODO: Classic Brawler", category: "Fighting", consoles: ["PS4"], players: "1–2" },
-    { title: "TODO: Couch Co-op Party", category: "Co-op", consoles: ["PS5", "PS4"], players: "2–4" },
-    { title: "TODO: Co-op Puzzle Adventure", category: "Co-op", consoles: ["PS5", "PS4"], players: "2" },
+    { id: "ea-fc-27", title: "EA SPORTS FC 27", category: "Sports", consoles: ["PS5"], players: "1–4" },
+    { id: "ea-fc-26", title: "EA SPORTS FC 26", category: "Sports", consoles: ["PS5", "PS4"], players: "1–4" },
+    { id: "ufc-5", title: "UFC 5", category: "Fighting", consoles: ["PS5"], players: "1–2" },
+    { id: "mortal-kombat-1", title: "Mortal Kombat 1", category: "Fighting", consoles: ["PS5"], players: "1–2" },
+    { id: "wwe-2k26", title: "WWE 2K26", category: "Fighting", consoles: ["PS5"], players: "1–4" },
+    { id: "wwe-2k25", title: "WWE 2K25", category: "Fighting", consoles: ["PS5", "PS4"], players: "1–4" },
+    { id: "gta-v", title: "Grand Theft Auto V", category: "Action", consoles: ["PS5", "PS4"], players: "1" },
+    { id: "cod-black-ops-3", title: "Call of Duty: Black Ops III", category: "Action", consoles: ["PS5", "PS4"], players: "1–2" },
+    { id: "asphalt-legends", title: "Asphalt Legends", category: "Racing", consoles: ["PS5", "PS4"], players: "1" },
   ] satisfies Game[],
 
   experience: [

@@ -5,6 +5,8 @@ import { changePasswordSchema, fieldErrors, profileSchema } from "@/lib/validati
 import { refillValues, venueYear, type FormState } from "@/lib/forms";
 import { requireGamer, startGamerSession } from "@/server/identity/currentUser";
 import { changeGamerPassword, updateGamerProfile } from "@/server/identity/gamers";
+import { gameField } from "@/lib/validation/sessions";
+import { setMyGame } from "@/server/sessions/live";
 
 export async function saveProfile(_prev: FormState, formData: FormData): Promise<FormState> {
   const gamer = await requireGamer();
@@ -35,4 +37,11 @@ export async function changePassword(_prev: FormState, formData: FormData): Prom
   // Every session was signed out, including this one; keep this device logged in.
   await startGamerSession(gamer.id);
   return { notice: "Password changed. Other devices have been logged out." };
+}
+
+/** "What are you playing?" on the account page while checked in. */
+export async function setGameAction(formData: FormData): Promise<void> {
+  const gamer = await requireGamer();
+  await setMyGame(gamer.id, gameField.parse(formData.get("game")));
+  revalidatePath("/account");
 }
